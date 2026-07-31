@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Generate a Census-format bitmap: 40x40, 2 bits per pixel, row-major, MSB-first.
 
-Stands in for the Claude Skill package's binarisation step so the contract can be
-exercised end to end with a real portrait rather than a synthetic blob.
+Exercises the bitmap format end to end with a deterministic portrait.
 
 Tones: 0 background, 1 light, 2 mid, 3 full ink.
 Usage: make_bitmap.py [seed] -> 800 hex chars on stdout

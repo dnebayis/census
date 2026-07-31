@@ -6,9 +6,7 @@ batch stays unique — with three changes:
   - `.bin` becomes `.hex`, because what you actually do next is paste it into a
     `cast send` as calldata.
   - A `.png` preview is written, because at 40×40 you want to look at it before paying.
-  - `.traits` holds readable JSON, not a packed byte string: the contract stores traits
-    as ERC-8048 keys, so there is nothing to pack, and the names are what built the
-    prompt in the first place.
+  - `.traits` holds readable JSON beside the packed bytes9 indices committed at mint.
 """
 
 import json
@@ -96,7 +94,7 @@ def save_contact_sheet(output_dir: str, path: str = None, cols: int = 5,
 
 def save_token(
     output_dir: str,
-    token_id: int,
+    draft_id: str,
     bitmap: bytes,
     pixels,
     traits: dict,
@@ -121,7 +119,7 @@ def save_token(
         raise ValueError(f"invalid traits: {traits}")
 
     os.makedirs(output_dir, exist_ok=True)
-    base = os.path.join(output_dir, str(token_id))
+    base = os.path.join(output_dir, str(draft_id))
 
     with open(base + ".hex", "w") as f:
         f.write(bitmap.hex())
@@ -132,7 +130,7 @@ def save_token(
         json.dump({"traits": traits, "indices": list(to_indices(traits))}, f, indent=2)
 
     with open(base + ".json", "w") as f:
-        json.dump({"token_id": token_id, "bytes": len(bitmap), **stats}, f, indent=2)
+        json.dump({"draft_id": draft_id, "bytes": len(bitmap), **stats}, f, indent=2)
 
     if source_image:
         with open(base + ".src.png", "wb") as f:
@@ -156,6 +154,16 @@ def load_existing_traits(output_dir: str) -> set:
         try:
             data = json.loads(f.read_text())
             idx = data.get("indices")
+            if idx:
+                existing.add(tuple(idx))
+        except (ValueError, OSError):
+            continue
+
+    # A draft owns its assignment as soon as it is created, before artwork is built.
+    # Include manifests so two open drafts can never receive the same combination.
+    for f in path.glob("*.draft.json"):
+        try:
+            idx = json.loads(f.read_text()).get("trait_indices")
             if idx:
                 existing.add(tuple(idx))
         except (ValueError, OSError):
@@ -185,3 +193,41 @@ def load_existing_signatures(output_dir: str) -> set:
             continue
 
     return sigs
+
+
+def load_signature_owners(output_dir: str) -> dict:
+    """Map each signature to every draft that currently owns it."""
+    owners = {}
+    path = Path(output_dir)
+    if not path.exists():
+        return owners
+    for f in path.glob("*.json"):
+        if f.name.endswith(".draft.json"):
+            continue
+        try:
+            sig = json.loads(f.read_text()).get("signature")
+            if sig:
+                owners.setdefault(sig, []).append(f.stem)
+        except (ValueError, OSError):
+            continue
+    return owners
+
+
+def draft_manifest_path(output_dir: str, draft_id: str) -> Path:
+    return Path(output_dir) / f"{draft_id}.draft.json"
+
+
+def load_draft_manifest(output_dir: str, draft_id: str) -> dict:
+    path = draft_manifest_path(output_dir, draft_id)
+    if not path.exists():
+        raise ValueError(f"no draft {draft_id!r}; run `brief --draft {draft_id}` first")
+    return json.loads(path.read_text())
+
+
+def save_draft_manifest(output_dir: str, draft_id: str, manifest: dict) -> str:
+    os.makedirs(output_dir, exist_ok=True)
+    path = draft_manifest_path(output_dir, draft_id)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+    os.replace(tmp, path)
+    return str(path)

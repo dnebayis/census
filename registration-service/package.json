@@ -1,0 +1,16 @@
+{
+  "name": "census-registration-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check api/registration.js && node --check lib/registration.js"
+  },
+  "dependencies": {
+    "viem": "2.55.10"
+  }
+}

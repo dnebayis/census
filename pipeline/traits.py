@@ -50,7 +50,10 @@ def generate_traits(
         idx = []
         for name, options in TRAIT_CATEGORIES:
             idx.append(forced[name] if name in forced else rng.randrange(len(options)))
-        combo = tuple(idx)
+        # Weighted vocabularies repeat some display values (for example four human
+        # slots). Canonicalize aliases before uniqueness checks so two drafts cannot
+        # serialize to the same bytes9 after appearing distinct during the draw.
+        combo = tuple(options.index(options[i]) for (_, options), i in zip(TRAIT_CATEGORIES, idx))
 
         if combo in existing:
             continue

@@ -3,9 +3,10 @@ pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {Census} from "../src/Census.sol";
-import {Bitmap} from "../src/lib/Bitmap.sol";
+import {Art} from "../src/lib/Art.sol";
 import {IAdapter8004} from "../src/interfaces/IAdapter8004.sol";
 import {MockAdapter8004} from "./mocks/MockAdapter8004.sol";
+import {ICensusMintV1} from "./interfaces/ICensusMintV1.sol";
 
 contract CensusTest is Test {
     Census internal census;
@@ -15,10 +16,14 @@ contract CensusTest is Test {
     address internal bob = address(0xB0B);
 
     string internal constant HOST = "https://census.example";
+    bytes9 internal constant TRAITS = hex"000000000000000000";
+
+    event MetadataSet(uint256 indexed tokenId, string indexed indexedKey, string key, bytes value);
 
     function setUp() public {
         adapter = new MockAdapter8004();
         census = new Census(address(adapter), HOST);
+        census.openMinting();
     }
 
     // ------------------------------------------------------------ helpers
@@ -59,19 +64,49 @@ contract CensusTest is Test {
 
     function _mint(address who, uint256 seed) internal returns (uint256 id) {
         vm.prank(who);
-        id = census.mint(_bitmap(seed), "a quiet clerk who counts things");
+        id = census.mint(_bitmap(seed), TRAITS, "a quiet clerk who counts things");
     }
 
     // ------------------------------------------------------------ validation
 
+    function test_MintStartsClosedAndOpensOnlyOnce() public {
+        Census closed = new Census(address(adapter), HOST);
+        (bool ok, uint8 reason,) = closed.validate(_bitmap(1), TRAITS, alice);
+        assertFalse(ok);
+        assertEq(reason, closed.ERR_MINT_CLOSED());
+
+        vm.prank(alice);
+        vm.expectRevert(Census.MintingClosed.selector);
+        closed.mint(_bitmap(1), TRAITS, "ctx");
+
+        closed.openMinting();
+        vm.expectRevert(Census.MintingAlreadyOpen.selector);
+        closed.openMinting();
+    }
+
+    function test_ConstructorRejectsInvalidCanonicalHost() public {
+        vm.expectRevert(Census.InvalidHost.selector);
+        new Census(address(adapter), "http://census.example");
+
+        vm.expectRevert(Census.InvalidHost.selector);
+        new Census(address(adapter), "https://census.example/");
+    }
+
+    function test_ValidateRejectsInvalidTraits() public view {
+        bytes9 invalid = hex"00000000000000000c";
+        (bool ok, uint8 reason,) = census.validate(_bitmap(1), invalid, alice);
+        assertFalse(ok);
+        assertEq(reason, census.ERR_TRAITS());
+    }
+
     function test_ValidateRejectsWrongLength() public view {
-        (bool ok, uint8 reason,) = census.validate(new bytes(399), alice);
+        (bool ok, uint8 reason,) = census.validate(new bytes(399), TRAITS, alice);
         assertFalse(ok);
         assertEq(reason, census.ERR_LENGTH());
     }
 
     function test_ValidateRejectsBlankCanvas() public view {
-        (bool ok, uint8 reason,) = census.validate(new bytes(400), alice);
+        (bool ok, uint8 reason,) = census.validate(new bytes(400), TRAITS, alice);
         assertFalse(ok);
         assertEq(reason, census.ERR_TOO_SPARSE());
     }
@@ -81,13 +116,13 @@ contract CensusTest is Test {
         for (uint256 i; i < 400; ++i) {
             bm[i] = 0xFF;
         }
-        (bool ok, uint8 reason,) = census.validate(bm, alice);
+        (bool ok, uint8 reason,) = census.validate(bm, TRAITS, alice);
         assertFalse(ok);
         assertEq(reason, census.ERR_TOO_DENSE());
     }
 
     function test_ValidateAcceptsGoodBitmap() public view {
-        (bool ok, uint8 reason,) = census.validate(_bitmap(1), alice);
+        (bool ok, uint8 reason,) = census.validate(_bitmap(1), TRAITS, alice);
         assertTrue(ok);
         assertEq(reason, census.OK());
     }
@@ -95,14 +130,14 @@ contract CensusTest is Test {
     function test_ValidateIsFreeAndMatchesMint() public {
         bytes memory bm = _bitmap(7);
 
-        (bool ok,,) = census.validate(bm, alice);
+        (bool ok,,) = census.validate(bm, TRAITS, alice);
         assertTrue(ok);
 
         vm.prank(alice);
-        census.mint(bm, "ctx");
+        census.mint(bm, TRAITS, "ctx");
 
         // the same bitmap must now fail preflight for the same reason mint would revert
-        (bool ok2, uint8 reason2,) = census.validate(bm, bob);
+        (bool ok2, uint8 reason2,) = census.validate(bm, TRAITS, bob);
         assertFalse(ok2);
         assertEq(reason2, census.ERR_DUPLICATE());
     }
@@ -116,12 +151,12 @@ contract CensusTest is Test {
             }
         }
 
-        (bool ok,, uint8[] memory warnings) = census.validate(bm, alice);
+        (bool ok,, uint8[] memory warnings) = census.validate(bm, TRAITS, alice);
         assertTrue(ok, "warnings must never block");
         assertGt(warnings.length, 0, "this shape should raise at least one warning");
 
         vm.prank(alice);
-        census.mint(bm, "ctx");
+        census.mint(bm, TRAITS, "ctx");
         assertEq(census.totalMinted(), 1);
     }
 
@@ -142,6 +177,25 @@ contract CensusTest is Test {
 
         // the entry's owner is its controller — no activation step anywhere
         assertTrue(adapter.isController(agentId, alice));
+        assertEq(adapter.agentURI(agentId), "https://census.example/a/1/registration.json");
+    }
+
+    function test_TraitsRoundTripFromArtRecord() public {
+        bytes9 traits_ = hex"09020c0b0a080b090b";
+        vm.prank(alice);
+        uint256 id = census.mint(_bitmap(1), traits_, "ctx");
+
+        assertEq(census.traitsOf(id), traits_);
+        assertEq(bytes(census.bitmapOf(id)).length, 400);
+        assertEq(census.traitOf(id, 0), "ape-like humanoid");
+        assertEq(census.traitOf(id, 8), "collar tag");
+        assertEq(string(census.metadata(id, "trait[hair]")), "wild curly hair");
+    }
+
+    function test_InvalidTraitsRevertMint() public {
+        vm.prank(alice);
+        vm.expectRevert(Census.InvalidTraits.selector);
+        census.mint(_bitmap(1), hex"0a0000000000000000", "ctx");
     }
 
     function test_MintIsFree() public {
@@ -187,11 +241,19 @@ contract CensusTest is Test {
         }
     }
 
+    function _traitBatch(uint256 n) internal pure returns (bytes9[] memory traits_) {
+        traits_ = new bytes9[](n);
+        for (uint256 i; i < n; ++i) {
+            traits_[i] = TRAITS;
+        }
+    }
+
     function test_BatchMintsEachAsItsOwnAgent() public {
         (bytes[] memory bms, string[] memory ctx) = _batch(1, 4);
+        bytes9[] memory traits_ = _traitBatch(4);
 
         vm.prank(alice);
-        uint256[] memory ids = census.mintBatch(bms, ctx);
+        uint256[] memory ids = census.mintBatch(bms, traits_, ctx);
 
         assertEq(ids.length, 4);
         assertEq(census.totalMinted(), 4);
@@ -213,23 +275,26 @@ contract CensusTest is Test {
 
     function test_BatchRespectsWalletCap() public {
         (bytes[] memory bms, string[] memory ctx) = _batch(1, 6);
+        bytes9[] memory traits_ = _traitBatch(6);
         vm.prank(alice);
         vm.expectRevert(Census.WalletCapReached.selector);
-        census.mintBatch(bms, ctx);
+        census.mintBatch(bms, traits_, ctx);
     }
 
     function test_BatchRejectsMismatchedArrays() public {
         (bytes[] memory bms,) = _batch(1, 3);
+        bytes9[] memory traits_ = _traitBatch(3);
         string[] memory ctx = new string[](2);
 
         vm.prank(alice);
         vm.expectRevert(abi.encodeWithSelector(Census.InvalidBitmap.selector, uint8(1)));
-        census.mintBatch(bms, ctx);
+        census.mintBatch(bms, traits_, ctx);
     }
 
     function test_BatchRejectsDuplicateWithinItself() public {
         bytes[] memory bms = new bytes[](2);
         string[] memory ctx = new string[](2);
+        bytes9[] memory traits_ = _traitBatch(2);
         bms[0] = _bitmap(5);
         bms[1] = _bitmap(5); // same signature twice in one call
         ctx[0] = "ctx";
@@ -237,13 +302,13 @@ contract CensusTest is Test {
 
         vm.prank(alice);
         vm.expectRevert(Census.DuplicateSignature.selector);
-        census.mintBatch(bms, ctx);
+        census.mintBatch(bms, traits_, ctx);
     }
 
     function test_BitmapRoundTrips() public {
         bytes memory bm = _bitmap(9);
         vm.prank(alice);
-        uint256 id = census.mint(bm, "ctx");
+        uint256 id = census.mint(bm, TRAITS, "ctx");
         assertEq(keccak256(census.bitmapOf(id)), keccak256(bm), "stored bitmap must be byte-identical");
     }
 
@@ -306,48 +371,46 @@ contract CensusTest is Test {
         vm.prank(alice);
         vm.expectRevert(Census.ImmutableKey.selector);
         census.setMetadata(id, "class", bytes("Skull"));
-    }
-
-    function test_EndpointsAreDerivedNotStored() public {
-        uint256 id = _mint(alice, 1);
-        assertEq(string(census.metadata(id, "endpoint[restap]")), string.concat(HOST, "/a/1"));
-        assertEq(string(census.metadata(id, "endpoint[mcp]")), string.concat(HOST, "/mcp/1"));
-        assertEq(string(census.metadata(id, "endpoint[x402]")), string.concat(HOST, "/pay/1"));
-    }
-
-    /// @dev Because endpoints are derived rather than stored, untouched entries follow the
-    ///      shared host automatically — no per-token migration if the host ever moves.
-    function test_UntouchedEntriesFollowBaseHost() public {
-        uint256 id = _mint(alice, 1);
-
-        census.setBaseHost("https://moved.example");
-
-        assertEq(string(census.metadata(id, "endpoint[restap]")), "https://moved.example/a/1");
-        assertEq(string(census.metadata(id, "endpoint[x402]")), "https://moved.example/pay/1");
-    }
-
-    /// @dev An explicit override wins over the derived default and is immune to host changes.
-    function test_OverrideBeatsDerivedAndSurvivesHostChange() public {
-        uint256 id = _mint(alice, 1);
 
         vm.prank(alice);
-        census.setMetadata(id, "endpoint[restap]", bytes("https://my-own-host.xyz/agent"));
+        vm.expectRevert(Census.ImmutableKey.selector);
+        census.setMetadata(id, "trait[species]", bytes("grey alien"));
 
-        census.setBaseHost("https://moved.example");
-
-        assertEq(string(census.metadata(id, "endpoint[restap]")), "https://my-own-host.xyz/agent");
-        // keys never overridden still track the new host
-        assertEq(string(census.metadata(id, "endpoint[mcp]")), "https://moved.example/mcp/1");
+        vm.prank(alice);
+        vm.expectRevert(Census.ImmutableKey.selector);
+        census.setMetadata(id, "trait[future]", bytes("reserved"));
     }
 
-    /// @dev This is what makes the shared host a default rather than a lock-in.
-    function test_OwnerCanRepointRestapEndpoint() public {
+    function test_MetadataEmitsCurrentERC8048Event() public {
+        uint256 id = _mint(alice, 1);
+        vm.prank(alice);
+        vm.expectEmit(true, true, false, true);
+        emit MetadataSet(id, "note", "note", bytes("hello"));
+        census.setMetadata(id, "note", bytes("hello"));
+    }
+
+    function test_RuntimeEndpointKeysAreEmptyUntilOwnerWritesThem() public {
+        uint256 id = _mint(alice, 1);
+        assertEq(census.metadata(id, "endpoint[restap]").length, 0);
+        assertEq(census.metadata(id, "endpoint[mcp]").length, 0);
+        assertEq(census.metadata(id, "endpoint[x402]").length, 0);
+    }
+
+    function test_CanonicalHostIsFixedAtConstruction() public {
+        uint256 id = _mint(alice, 1);
+
+        assertEq(census.canonicalHost(), HOST);
+        assertEq(adapter.agentURI(census.agentIdOf(id)), "https://census.example/a/1/registration.json");
+    }
+
+    function test_OwnerCanWriteRuntimeKeysWithoutActivatingRuntime() public {
         uint256 id = _mint(alice, 1);
 
         vm.prank(alice);
         census.setMetadata(id, "endpoint[restap]", bytes("https://my-own-host.xyz/agent"));
 
         assertEq(string(census.metadata(id, "endpoint[restap]")), "https://my-own-host.xyz/agent");
+        assertEq(census.metadata(id, "endpoint[mcp]").length, 0);
     }
 
     function test_NonOwnerCannotWriteMetadata() public {
@@ -359,6 +422,17 @@ contract CensusTest is Test {
 
     function test_SupportsERC8048InterfaceId() public view {
         assertTrue(census.supportsInterface(0xdf670be1));
+        assertTrue(census.supportsInterface(0x80ac58cd), "ERC721");
+        assertTrue(census.supportsInterface(0x5b5e139f), "ERC721Metadata");
+    }
+
+    function test_MintAbiMatchesLockedSnapshot() public pure {
+        assertEq(Census.validate.selector, ICensusMintV1.validate.selector);
+        assertEq(Census.mint.selector, ICensusMintV1.mint.selector);
+        assertEq(Census.mintBatch.selector, ICensusMintV1.mintBatch.selector);
+        assertEq(Census.bitmapOf.selector, ICensusMintV1.bitmapOf.selector);
+        assertEq(Census.traitsOf.selector, ICensusMintV1.traitsOf.selector);
+        assertEq(Census.traitOf.selector, ICensusMintV1.traitOf.selector);
     }
 
     // ------------------------------------------------------------ art
@@ -369,6 +443,13 @@ contract CensusTest is Test {
 
         assertTrue(bytes(uri).length > 100);
         assertEq(_slice(uri, 0, 29), "data:application/json;base64,", "must be a self-contained data URI");
+    }
+
+    function test_TokenURICommitsToTraits() public pure {
+        bytes memory bm = _bitmap(1);
+        string memory a = Art.tokenURI(1, bm, "Human", "Arbitrageur", "ctx", hex"000000000000000000");
+        string memory b = Art.tokenURI(1, bm, "Human", "Arbitrageur", "ctx", hex"040000000000000000");
+        assertTrue(keccak256(bytes(a)) != keccak256(bytes(b)));
     }
 
     function test_RenderedSVGContainsRects() public {
@@ -401,10 +482,12 @@ contract CensusOptimisationHazardTest is Test {
     Census internal census;
     HighIdAdapter internal adapter;
     address internal alice = address(0xA11CE);
+    bytes9 internal constant TRAITS = hex"000000000000000000";
 
     function setUp() public {
         adapter = new HighIdAdapter();
         census = new Census(address(adapter), "https://census.example");
+        census.openMinting();
     }
 
     function _setPixel(bytes memory bm, uint256 r, uint256 c, uint256 tone) internal pure {
@@ -429,13 +512,13 @@ contract CensusOptimisationHazardTest is Test {
         adapter.setNextId(uint256(type(uint24).max) + 1);
         vm.prank(alice);
         vm.expectRevert(abi.encodeWithSelector(Census.AgentIdTooLarge.selector, uint256(type(uint24).max) + 1));
-        census.mint(_bitmap(), "ctx");
+        census.mint(_bitmap(), TRAITS, "ctx");
     }
 
     function test_LargestFittingAgentIdStillWorks() public {
         adapter.setNextId(type(uint24).max);
         vm.prank(alice);
-        uint256 id = census.mint(_bitmap(), "ctx");
+        uint256 id = census.mint(_bitmap(), TRAITS, "ctx");
         assertEq(census.agentIdOf(id), type(uint24).max);
     }
 
@@ -444,7 +527,7 @@ contract CensusOptimisationHazardTest is Test {
     function test_EntryIsReadableFromWithinTheAdapterCall() public {
         adapter.setProbe(address(census));
         vm.prank(alice);
-        uint256 id = census.mint(_bitmap(), "ctx");
+        uint256 id = census.mint(_bitmap(), TRAITS, "ctx");
 
         assertGt(adapter.observedSkillPlusOne(), 0, "adapter never probed");
         assertTrue(adapter.observedBitmapNonZero(), "bitmap pointer was null mid-mint");
@@ -501,4 +584,5 @@ contract HighIdAdapter is IAdapter8004 {
         return "";
     }
     function setMetadata(uint256, string memory, bytes memory) external {}
+    function setAgentURI(uint256, string calldata) external {}
 }

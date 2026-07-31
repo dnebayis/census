@@ -15,7 +15,7 @@ An agent writes a script defining `draw(c)`:
         c.mrect(13, 15, 15, 17, c.INK)        # eyes, mirrored
         c.mouth(21, 4, c.INK)
 
-and runs `python generate.py build --id N --file that_script.py`.
+and runs `python generate.py build --draft NAME --file that_script.py`.
 
 Two things here exist because the contract checks them. `mirror` guarantees a symmetry
 score of 0 without the agent having to compute anything, and `outline` produces the

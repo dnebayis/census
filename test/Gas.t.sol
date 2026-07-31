@@ -45,6 +45,7 @@ abstract contract BitmapFixture is Test {
 contract GasTest is BitmapFixture {
     function test_Breakdown() public {
         bytes memory bm = _bitmap(1);
+        bytes memory record = bytes.concat(bm, bytes9(0));
         uint256 g;
         uint256 used;
 
@@ -55,21 +56,22 @@ contract GasTest is BitmapFixture {
         sink = lit + sig;
 
         g = gasleft();
-        address p = SSTORE2.write(bm);
+        address p = SSTORE2.write(record);
         used = g - gasleft();
-        console2.log("SSTORE2.write (400B)  :", used);
+        console2.log("SSTORE2.write (409B)  :", used);
         sink = uint160(p);
 
         g = gasleft();
-        bytes memory back = SSTORE2.read(p);
+        bytes memory back = SSTORE2.read(p, 0, 400);
         used = g - gasleft();
-        console2.log("SSTORE2.read  (400B)  :", used);
+        console2.log("SSTORE2.read bitmap   :", used);
         sink = back.length;
     }
 }
 
 contract BatchGasTest is BitmapFixture {
     Census internal census;
+    bytes9 internal constant TRAITS = hex"000000000000000000";
 
     address internal warmup = address(0xC0FFEE);
     address internal single = address(0x51);
@@ -77,30 +79,33 @@ contract BatchGasTest is BitmapFixture {
 
     function setUp() public {
         census = new Census(address(new MockAdapter8004()), "https://census.example");
+        census.openMinting();
         // Keep the very first mint out of the comparison: it pays every one-time cold write
         // in the contract and would flatter everything measured after it.
         vm.prank(warmup);
-        census.mint(_bitmap(200), "warmup");
+        census.mint(_bitmap(200), TRAITS, "warmup");
     }
 
     function test_BatchVersusSingles() public {
         uint256 g = gasleft();
         for (uint256 i; i < 4; ++i) {
             vm.prank(single);
-            census.mint(_bitmap(i + 1), "ctx");
+            census.mint(_bitmap(i + 1), TRAITS, "ctx");
         }
         uint256 singles = g - gasleft();
 
         bytes[] memory bms = new bytes[](4);
         string[] memory ctx = new string[](4);
+        bytes9[] memory traits_ = new bytes9[](4);
         for (uint256 i; i < 4; ++i) {
             bms[i] = _bitmap(i + 100);
             ctx[i] = "ctx";
+            traits_[i] = TRAITS;
         }
 
         g = gasleft();
         vm.prank(batcher);
-        census.mintBatch(bms, ctx);
+        census.mintBatch(bms, traits_, ctx);
         uint256 batch = g - gasleft();
 
         console2.log("4 separate mints      :", singles);
