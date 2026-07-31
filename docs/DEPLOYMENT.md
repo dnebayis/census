@@ -8,8 +8,8 @@
 - source verification: Sourcify exact match, job
   `b5f65814-e0ba-44f1-be18-b2168c733bcd`
 - canonical host: `https://census-registration-v2.vercel.app`
-- Vercel preview deployment: `dpl_DCPJYQ5LAE7u99M3F8U2UfSc9oqQ`
-- Vercel production deployment: `dpl_CMrqGWAX6BSP6Fv71ivnXTxShu2v`
+- Vercel preview deployment: `dpl_BNJbhJZWqcnP1j9Ka11YS3ayqCgE`
+- Vercel production deployment: `dpl_BegzB711CaDveVWD4HbsQiQBoReH`
 - open-mint transaction:
   `0x097fe1b72a541b2df6d0c98ab181e945d0dae26f458bf3ebc403962dda7148ab`
 - mint status: irreversibly open; there is no pause or close function
@@ -18,10 +18,16 @@
 
 ## Launch state
 
-- no v2 token or agent ID exists yet
-- production service is configured against v2 and returns 404 for missing tokens
 - the one-way launch was explicitly approved and executed on Sepolia
-- the first real mint still requires its own reviewed draft and explicit mint request
+- genesis draft: `genesis-registrar`
+- token ID / ERC-8004 agent ID: `1 / 9104`
+- mint transaction:
+  `0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4`
+- block: `11389267`
+- registration URI:
+  `https://census-registration-v2.vercel.app/a/1/registration.json`
+- production verification: HTTP 200, `no-store`, missing-token 404, binding back to
+  active Census token 1, and Identity Registry URI exact match
 
 ## Fixed dependencies
 

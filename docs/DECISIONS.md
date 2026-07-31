@@ -104,7 +104,7 @@ pastel `#E9DDC7`.
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - minting: irreversibly open
-- rollout token/agent: none yet
+- rollout token/agent: `1 / 9104`
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains at `https://census-registration.vercel.app`.

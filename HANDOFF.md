@@ -25,8 +25,12 @@ Read, in order:
 - Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
 - Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`
 
-V2 minting is irreversibly open and no v2 token exists yet. The open transaction is
+V2 minting is irreversibly open. The open transaction is
 `0x097fe1b72a541b2df6d0c98ab181e945d0dae26f458bf3ebc403962dda7148ab`.
+Genesis draft `genesis-registrar` is token 1 / ERC-8004 agent 9104; mint transaction:
+`0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4`.
+Its verified registration URI is
+`https://census-registration-v2.vercel.app/a/1/registration.json`.
 The archived v1 rollout token 1 remains ERC-8004 agent 9100 at
 `https://census-registration.vercel.app/a/1/registration.json`.
 

@@ -1,0 +1,25 @@
+{
+  "draft_id": "genesis-registrar",
+  "bytes": 200,
+  "density": 524,
+  "density_pct": 32.8,
+  "isolated_pct": 0.2,
+  "symmetry": 4,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff3e04263c040000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "the first Census registrar",
+  "traits": {
+    "Accessory": "none",
+    "Age": "old",
+    "Attire": "armoured shoulders",
+    "Expression": "faint smile",
+    "Eyes": "dark sunglasses",
+    "Facial": "face tattoo",
+    "Hair": "receding hairline",
+    "Headwear": "headphones",
+    "Species": "android with visible seams"
+  }
+}

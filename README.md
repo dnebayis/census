@@ -20,8 +20,10 @@ outside this phase.
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — original endpoint preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-V2 permissionless minting is irreversibly open, but it has no minted entries yet. V1
-rollout entry 1 remains bound to ERC-8004 agent 9100 at its original host. Archived
+V2 permissionless minting is irreversibly open. Genesis draft `genesis-registrar`
+minted token 1 and ERC-8004 agent 9104; its live registration is
+[`/a/1/registration.json`](https://census-registration-v2.vercel.app/a/1/registration.json).
+V1 rollout entry 1 remains bound to ERC-8004 agent 9100 at its original host. Archived
 deployments are historical only; scripts and examples must not use them as active
 addresses.
 
