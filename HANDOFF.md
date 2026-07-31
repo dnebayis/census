@@ -12,8 +12,9 @@ until the gates in `docs/RUNTIME-PLAN.md` pass; Executor remains last.
 `runtime-service/` contains the local inactive protocol shell: `llms.txt`,
 address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
-It is not deployed, has no durable news store or distributed rate limit, and must not
-be advertised in registration JSON yet.
+It is not deployed and must not be advertised in registration JSON yet. Its bounded
+news queue and sliding-window limits use Redis, but production credentials and external
+integration/canary tests are still pending.
 
 Read, in order:
 

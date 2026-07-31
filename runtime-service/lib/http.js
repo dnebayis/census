@@ -1,4 +1,6 @@
 import { MissingBindingError, TokenNotFoundError } from "./agent.js";
+import { RuntimeBackendConfigurationError } from "./backends.js";
+import { ConfigurationError } from "./config.js";
 
 export function json(response, status, body) {
   response.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -21,7 +23,10 @@ export function chainError(response, error) {
   if (error instanceof TokenNotFoundError || error instanceof TypeError) {
     return json(response, 404, { error: error.message || "token not found" });
   }
-  const kind = error instanceof MissingBindingError ? "agent binding unavailable" : "chain data unavailable";
+  let kind = "chain data unavailable";
+  if (error instanceof MissingBindingError) kind = "agent binding unavailable";
+  if (error instanceof ConfigurationError) kind = "chain configuration unavailable";
+  if (error instanceof RuntimeBackendConfigurationError) kind = "runtime backend unavailable";
   console.error(kind, error instanceof Error ? error.message : String(error));
   return json(response, 502, { error: kind });
 }

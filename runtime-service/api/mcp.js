@@ -1,13 +1,23 @@
 import { readConfiguredAgent } from "../lib/config.js";
-import { nodeRequestToWeb, webResponseToNode } from "../lib/http.js";
+import { runtimeBackends } from "../lib/backends.js";
+import { chainError, nodeRequestToWeb, webResponseToNode } from "../lib/http.js";
 import { createAgentMcpHandler } from "../lib/mcp.js";
-
-const mcp = createAgentMcpHandler(async (url) =>
-  readConfiguredAgent(Object.fromEntries(url.searchParams.entries())),
-);
+import { newsKey } from "../lib/news.js";
+import { applyRateLimit, clientKey } from "../lib/rate-limit.js";
 
 export default async function handler(request, response) {
-  const webRequest = nodeRequestToWeb(request);
-  const webResponse = await mcp.fetch(webRequest, { parsedBody: request.body });
-  return webResponseToNode(webResponse, response);
+  let mcp;
+  try {
+    const agent = await readConfiguredAgent(request.query || {});
+    const backends = runtimeBackends();
+    if (!(await applyRateLimit(response, backends.limits.mcp, `${newsKey(agent)}:${clientKey(request)}`))) return;
+    mcp = createAgentMcpHandler(async () => agent);
+    const webRequest = nodeRequestToWeb(request);
+    const webResponse = await mcp.fetch(webRequest, { parsedBody: request.body });
+    return await webResponseToNode(webResponse, response);
+  } catch (error) {
+    return chainError(response, error);
+  } finally {
+    await mcp?.close();
+  }
 }

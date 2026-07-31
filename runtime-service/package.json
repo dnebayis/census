@@ -8,10 +8,12 @@
   },
   "scripts": {
     "test": "node --test",
-    "check": "node --check api/catalog.js && node --check api/llms.js && node --check api/mcp.js && node --check api/news.js && node --check api/talk.js && node --check lib/agent.js && node --check lib/catalog.js && node --check lib/config.js && node --check lib/http.js && node --check lib/mcp.js && node --check lib/news.js && node --check lib/skills.js"
+    "check": "node --check api/catalog.js && node --check api/llms.js && node --check api/mcp.js && node --check api/news.js && node --check api/talk.js && node --check lib/agent.js && node --check lib/backends.js && node --check lib/catalog.js && node --check lib/config.js && node --check lib/http.js && node --check lib/mcp.js && node --check lib/news.js && node --check lib/rate-limit.js && node --check lib/skills.js"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.0.0",
+    "@upstash/ratelimit": "2.0.8",
+    "@upstash/redis": "1.38.1",
     "viem": "2.55.10",
     "zod": "4.4.3"
   },

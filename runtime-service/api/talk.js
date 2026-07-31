@@ -1,5 +1,8 @@
 import { readConfiguredAgent } from "../lib/config.js";
 import { chainError, json, methodNotAllowed } from "../lib/http.js";
+import { runtimeBackends } from "../lib/backends.js";
+import { applyRateLimit, clientKey } from "../lib/rate-limit.js";
+import { newsKey } from "../lib/news.js";
 
 function parseBody(body) {
   const value = typeof body === "string" ? JSON.parse(body) : body;
@@ -18,6 +21,8 @@ export default async function handler(request, response) {
   }
   try {
     const agent = await readConfiguredAgent(request.query || {});
+    const backends = runtimeBackends();
+    if (!(await applyRateLimit(response, backends.limits.talk, `${newsKey(agent)}:${clientKey(request)}`))) return;
     return json(response, 503, {
       error: "runtime_inactive",
       census: agent.censusAddress,

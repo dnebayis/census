@@ -15,8 +15,8 @@ Implemented surfaces:
 Every per-entry request reads live Census state and verifies the ERC-8217 adapter
 binding. `/talk` and MCP tool calls return `runtime_inactive`; no LLM, payment, wallet,
 or external action runs. `/news` never invokes an LLM and never emits a reply. Its
-current in-memory store is test/dev-only and must be replaced with durable storage
-before deployment or activation.
+production storage uses Upstash Redis with an atomic bounded queue. Distributed sliding
+window limits protect `/talk`, `/news`, and MCP. No production credentials are committed.
 
 Required local environment:
 
@@ -24,7 +24,9 @@ Required local environment:
 - `SEPOLIA_RPC_URL`
 - `ADAPTER_ADDRESS`
 - `CHAIN_ID` (`11155111`)
+- `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
+  `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)
 
 Do not add runtime services to ERC-8004 registration JSON and do not set `active: true`
-until durable news storage, rate limits, x402, skill execution, and external canary
-checks pass.
+until storage and rate-limit integration tests, x402, skill execution, and external
+canary checks pass.

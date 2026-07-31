@@ -3,9 +3,11 @@ import test from "node:test";
 import { Client } from "@modelcontextprotocol/client";
 import { InMemoryTransport } from "@modelcontextprotocol/server";
 import { MissingBindingError, TokenNotFoundError, readAgent } from "../lib/agent.js";
+import { RuntimeBackendConfigurationError, createRuntimeBackends } from "../lib/backends.js";
 import { buildCatalog, buildLlmsText, normalizeOrigin } from "../lib/catalog.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
-import { InMemoryNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
+import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
+import { applyRateLimit, clientKey } from "../lib/rate-limit.js";
 import { skillByIndex } from "../lib/skills.js";
 
 const census = "0x1111111111111111111111111111111111111111";
@@ -120,6 +122,76 @@ test("news storage is passive and bounded", async () => {
   assert.equal(items[0].received_at, "1970-01-01T00:00:00.000Z");
   assert.equal("reply" in items[0], false);
   assert.throws(() => normalizeNewsItem("reply to me"), /JSON object/);
+});
+
+test("Redis news storage persists JSON and trims the queue", async () => {
+  const lists = new Map();
+  const redis = {
+    multi() {
+      const operations = [];
+      return {
+        rpush(key, value) {
+          operations.push(() => lists.set(key, [...(lists.get(key) || []), value]));
+          return this;
+        },
+        ltrim(key, start) {
+          operations.push(() => lists.set(key, (lists.get(key) || []).slice(start)));
+          return this;
+        },
+        async exec() {
+          operations.forEach((operation) => operation());
+        },
+      };
+    },
+    async lrange(key) {
+      return lists.get(key) || [];
+    },
+  };
+  const store = new RedisNewsStore(redis, { maxItems: 2 });
+  await store.append("agent", { id: "1" });
+  await store.append("agent", { id: "2" });
+  await store.append("agent", { id: "3" });
+  assert.deepEqual(await store.list("agent"), [{ id: "2" }, { id: "3" }]);
+});
+
+test("runtime backends require secret-managed Redis credentials", () => {
+  assert.throws(() => createRuntimeBackends({}), RuntimeBackendConfigurationError);
+  assert.doesNotThrow(() =>
+    createRuntimeBackends({
+      UPSTASH_REDIS_REST_URL: "https://example.upstash.io",
+      UPSTASH_REDIS_REST_TOKEN: "test-only-token",
+    }),
+  );
+});
+
+test("rate limiting hashes the client address and emits retry metadata", async () => {
+  const request = { headers: { "x-forwarded-for": "203.0.113.8, 10.0.0.1" } };
+  assert.equal(clientKey(request).length, 24);
+  assert.doesNotMatch(clientKey(request), /203\.0\.113\.8/);
+
+  const headers = new Map();
+  let body;
+  const response = {
+    setHeader(name, value) {
+      headers.set(name, value);
+    },
+    status(code) {
+      assert.equal(code, 429);
+      return this;
+    },
+    json(value) {
+      body = value;
+    },
+  };
+  const allowed = await applyRateLimit(
+    response,
+    { limit: async () => ({ success: false, limit: 20, remaining: 0, reset: Date.now() + 5_000 }) },
+    "agent:client",
+  );
+  assert.equal(allowed, false);
+  assert.equal(headers.get("X-RateLimit-Limit"), "20");
+  assert.equal(headers.get("Retry-After"), "5");
+  assert.deepEqual(body, { error: "rate limit exceeded" });
 });
 
 test("MCP exposes the assigned skill but cannot invoke an inactive runtime", async () => {

@@ -152,7 +152,7 @@ def load_existing_traits(output_dir: str) -> set:
     if not path.exists():
         return existing
 
-    for f in path.glob("*.traits"):
+    for f in sorted(path.glob("*.traits")):
         try:
             data = json.loads(f.read_text())
             idx = data.get("indices")
@@ -163,7 +163,7 @@ def load_existing_traits(output_dir: str) -> set:
 
     # A draft owns its assignment as soon as it is created, before artwork is built.
     # Include manifests so two open drafts can never receive the same combination.
-    for f in path.glob("*.draft.json"):
+    for f in sorted(path.glob("*.draft.json")):
         try:
             idx = json.loads(f.read_text()).get("trait_indices")
             if idx:
@@ -186,7 +186,7 @@ def load_existing_signatures(output_dir: str) -> set:
     if not path.exists():
         return sigs
 
-    for f in path.glob("*.json"):
+    for f in sorted(path.glob("*.json")):
         try:
             data = json.loads(f.read_text())
             sig = data.get("signature")
@@ -204,7 +204,7 @@ def load_signature_owners(output_dir: str) -> dict:
     path = Path(output_dir)
     if not path.exists():
         return owners
-    for f in path.glob("*.json"):
+    for f in sorted(path.glob("*.json")):
         if f.name.endswith(".draft.json"):
             continue
         try:
