@@ -1,0 +1,14 @@
+{
+  "transaction_hash": "0x96120d28fa71de05767d77f655c52b8dd558402c5519455bc5578c42bef8ee87",
+  "block_number": 11388766,
+  "entries": [
+    {
+      "draft_id": "rollout-smoke",
+      "token_id": 1,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 6,
+      "signature": "0xff7e3c3c3c3c1800",
+      "agent_id": 9100
+    }
+  ]
+}

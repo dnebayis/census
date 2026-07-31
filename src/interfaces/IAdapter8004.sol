@@ -2,7 +2,9 @@
 pragma solidity ^0.8.24;
 
 /// @notice ERC-8217 agent NFT identity bindings, as implemented by adapter8004.
-/// @dev Sepolia proxy 0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92
+/// @dev ERC-8004 lock: 503591a6e80e6e1affdd6403341e25269141f046.
+///      ERC-8217 lock: 6ca6a3a3a5230c0a5ec30c21c3c3b9eba5ba8e29.
+///      Sepolia proxy 0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92
 ///      (impl 0x31a68e5bc0224ad081d6ec20229b05f558609257, UUPS).
 ///      Every selector below was verified against the deployed runtime bytecode.
 interface IAdapter8004 {
@@ -51,4 +53,7 @@ interface IAdapter8004 {
     ///      could rewrite their own quota assignment. Those two keys live on Census itself,
     ///      with no setter. See docs/SPEC.md §5.2 and docs/DECISIONS.md D25.
     function setMetadata(uint256 agentId, string memory key, bytes memory value) external;
+
+    /// @notice Update the ERC-8004 registration file URI. Controller-gated.
+    function setAgentURI(uint256 agentId, string calldata newURI) external;
 }

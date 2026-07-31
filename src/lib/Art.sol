@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Bitmap} from "./Bitmap.sol";
+import {TraitData} from "./TraitData.sol";
 import {DynamicBufferLib} from "solady/utils/DynamicBufferLib.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {Base64} from "solady/utils/Base64.sol";
@@ -69,24 +70,45 @@ library Art {
         bytes memory bm,
         string memory class_,
         string memory skill_,
-        string memory context_
+        string memory context_,
+        bytes9 traits_
     ) internal pure returns (string memory) {
         string memory image = string.concat("data:image/svg+xml;base64,", Base64.encode(bytes(svg(bm))));
 
-        string memory json = string.concat(
-            '{"name":"Census #',
-            LibString.toString(tokenId),
-            '","description":',
-            LibString.escapeJSON(context_, true),
-            ',"image":"',
-            image,
-            '","attributes":[{"trait_type":"Class","value":"',
-            class_,
-            '"},{"trait_type":"Skill","value":"',
-            skill_,
-            '"}]}'
+        DynamicBufferLib.DynamicBuffer memory buf;
+        buf.p(
+            bytes(
+                string.concat(
+                    '{"name":"Census #',
+                    LibString.toString(tokenId),
+                    '","description":',
+                    LibString.escapeJSON(context_, true),
+                    ',"image":"',
+                    image,
+                    '","attributes":[{"trait_type":"Class","value":"',
+                    class_,
+                    '"},{"trait_type":"Skill","value":"',
+                    skill_,
+                    '"}'
+                )
+            )
         );
 
-        return string.concat("data:application/json;base64,", Base64.encode(bytes(json)));
+        for (uint256 i; i < TraitData.COUNT; ++i) {
+            buf.p(
+                bytes(
+                    string.concat(
+                        ',{"trait_type":"',
+                        TraitData.label(i),
+                        '","value":"',
+                        TraitData.value(i, uint8(traits_[i])),
+                        '"}'
+                    )
+                )
+            );
+        }
+        buf.p("]}");
+
+        return string.concat("data:application/json;base64,", Base64.encode(buf.data));
     }
 }

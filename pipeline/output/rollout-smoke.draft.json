@@ -1,0 +1,70 @@
+{
+  "build": {
+    "bitmap_file": "rollout-smoke.hex",
+    "bitmap_sha256": "0x55c6d9d6e837c2f2c847fb71e2c5fba78b0d8c0ff854929aa09543cde63e3405",
+    "source_file": "rollout_smoke_art.py",
+    "source_sha256": "0x68bd1f0ec5d25caeb37b4156e8a4446c6e0e9b9960c528a24f83e86e2936a5be",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 802,
+      "density_pct": 50.1,
+      "full_ink_pct": 40.1,
+      "isolated_pct": 0.0,
+      "mintable": true,
+      "signature": "0xff7e3c3c3c3c1800",
+      "subject": "a rollout archivist",
+      "symmetry": 0,
+      "traits": {
+        "Accessory": "bandaged jaw",
+        "Age": "old",
+        "Attire": "hoodie",
+        "Expression": "smirk",
+        "Eyes": "heavy-lidded tired eyes",
+        "Facial": "thick moustache",
+        "Hair": "long straight hair",
+        "Headwear": "beanie",
+        "Species": "human"
+      },
+      "warnings": []
+    },
+    "stats_file": "rollout-smoke.json"
+  },
+  "draft_id": "rollout-smoke",
+  "mint": {
+    "agent_id": 9100,
+    "block_number": 11388766,
+    "draft_id": "rollout-smoke",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0xff7e3c3c3c3c1800",
+    "skill": 6,
+    "token_id": 1,
+    "transaction_hash": "0x96120d28fa71de05767d77f655c52b8dd558402c5519455bc5578c42bef8ee87"
+  },
+  "seed": "0x16881453c5c5bef41ebf8672b716d7f6",
+  "subject": "a rollout archivist",
+  "trait_indices": [
+    0,
+    2,
+    3,
+    3,
+    5,
+    7,
+    4,
+    2,
+    8
+  ],
+  "traits": {
+    "Accessory": "bandaged jaw",
+    "Age": "old",
+    "Attire": "hoodie",
+    "Expression": "smirk",
+    "Eyes": "heavy-lidded tired eyes",
+    "Facial": "thick moustache",
+    "Hair": "long straight hair",
+    "Headwear": "beanie",
+    "Species": "human"
+  },
+  "traits_hex": "0x000203030507040208",
+  "version": 1
+}

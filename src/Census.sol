@@ -8,9 +8,9 @@ import {LibString} from "solady/utils/LibString.sol";
 
 import {Bitmap} from "./lib/Bitmap.sol";
 import {Art} from "./lib/Art.sol";
+import {TraitData} from "./lib/TraitData.sol";
 import {IERC8048} from "./interfaces/IERC8048.sol";
 import {IAdapter8004} from "./interfaces/IAdapter8004.sol";
-import {IToolRegistry} from "./interfaces/IToolRegistry.sol";
 
 /// @title Census
 /// @notice A record of 10,000 faces and what each one does.
@@ -43,6 +43,8 @@ contract Census is ERC721, Ownable, IERC8048 {
     uint8 public constant ERR_DUPLICATE = 4;
     uint8 public constant ERR_SOLD_OUT = 5;
     uint8 public constant ERR_WALLET_CAP = 6;
+    uint8 public constant ERR_MINT_CLOSED = 7;
+    uint8 public constant ERR_TRAITS = 8;
 
     // advisory warning codes
     uint8 public constant WARN_ASYMMETRIC = 1;
@@ -60,6 +62,11 @@ contract Census is ERC721, Ownable, IERC8048 {
     error NotEntryOwner();
     error NonexistentEntry();
     error AgentIdTooLarge(uint256 agentId);
+    error InvalidHost();
+    error MintingClosed();
+    error MintingAlreadyOpen();
+    error InvalidTraits();
+    error InvalidAdapter();
 
     // ---------------------------------------------------------------- immutables
 
@@ -83,8 +90,8 @@ contract Census is ERC721, Ownable, IERC8048 {
         return _pool[7];
     }
 
-    IToolRegistry public toolRegistry;
-    string public baseHost;
+    string public canonicalHost;
+    bool public mintingOpen;
 
     /// @dev Exactly one 256-bit slot: 64 + 24 + 8 + 160. Everything an entry is, in one
     ///      SSTORE. `agentId` is uint24 because the ERC-8004 registry will not issue
@@ -99,7 +106,6 @@ contract Census is ERC721, Ownable, IERC8048 {
 
     mapping(uint256 => Entry) internal _entry;
     mapping(uint64 => bool) public signatureUsed;
-    mapping(uint256 => uint256) public toolIdOf;
     mapping(address => uint256) public mintedBy;
 
     function signatureOf(uint256 tokenId) public view returns (uint64) {
@@ -122,9 +128,11 @@ contract Census is ERC721, Ownable, IERC8048 {
 
     // ---------------------------------------------------------------- setup
 
-    constructor(address adapter_, string memory baseHost_) {
+    constructor(address adapter_, string memory canonicalHost_) {
+        if (adapter_ == address(0) || adapter_.code.length == 0) revert InvalidAdapter();
+        if (!_validHost(canonicalHost_)) revert InvalidHost();
         adapter = IAdapter8004(adapter_);
-        baseHost = baseHost_;
+        canonicalHost = canonicalHost_;
         _initializeOwner(msg.sender);
     }
 
@@ -136,14 +144,10 @@ contract Census is ERC721, Ownable, IERC8048 {
         return "CENSUS";
     }
 
-    /// @dev Sepolia is disposable (DECISIONS D26); these exist so the shared host and the
-    ///      tool registry can be repointed without redeploying the whole collection.
-    function setBaseHost(string calldata newHost) external onlyOwner {
-        baseHost = newHost;
-    }
-
-    function setToolRegistry(address registry) external onlyOwner {
-        toolRegistry = IToolRegistry(registry);
+    /// @notice Permanently opens permissionless minting after the registration service is live.
+    function openMinting() external onlyOwner {
+        if (mintingOpen) revert MintingAlreadyOpen();
+        mintingOpen = true;
     }
 
     // ---------------------------------------------------------------- skills
@@ -174,12 +178,11 @@ contract Census is ERC721, Ownable, IERC8048 {
 
     // ---------------------------------------------------------------- validation
 
-    /// @notice Free preflight. The Claude Skill package calls this before every mint attempt,
-    ///         iterating locally until the result is clean, so a minter never hits a revert.
+    /// @notice Free preflight used by the local pipeline before every mint attempt.
     /// @return ok       true when `mint` would succeed for `minter`
     /// @return reason   hard failure code, 0 when ok
     /// @return warnings advisory codes — never block a mint
-    function validate(bytes calldata bitmap, address minter)
+    function validate(bytes calldata bitmap, bytes9 traits_, address minter)
         external
         view
         returns (bool ok, uint8 reason, uint8[] memory warnings)
@@ -187,6 +190,8 @@ contract Census is ERC721, Ownable, IERC8048 {
         warnings = new uint8[](0);
 
         if (bitmap.length != Bitmap.BYTE_LEN) return (false, ERR_LENGTH, warnings);
+        if (!TraitData.valid(traits_)) return (false, ERR_TRAITS, warnings);
+        if (!mintingOpen) return (false, ERR_MINT_CLOSED, warnings);
 
         bytes memory bm = bitmap;
         (uint256 lit, uint64 sig) = Bitmap.analyze(bm);
@@ -228,28 +233,33 @@ contract Census is ERC721, Ownable, IERC8048 {
     ///      per entry, and the quota pool, mint counter and caller balance go warm after the
     ///      first, which is where most of the saving comes from. Minting the full allowance
     ///      of five this way costs materially less than five separate transactions.
-    function mintBatch(bytes[] calldata bitmaps, string[] calldata contexts)
+    function mintBatch(bytes[] calldata bitmaps, bytes9[] calldata traits_, string[] calldata contexts)
         external
         returns (uint256[] memory tokenIds)
     {
         uint256 n = bitmaps.length;
-        if (n != contexts.length || n == 0) revert InvalidBitmap(ERR_LENGTH);
+        if (n != contexts.length || n != traits_.length || n == 0) revert InvalidBitmap(ERR_LENGTH);
 
         tokenIds = new uint256[](n);
         for (uint256 i; i < n; ++i) {
-            tokenIds[i] = _mintOne(bitmaps[i], contexts[i]);
+            tokenIds[i] = _mintOne(bitmaps[i], traits_[i], contexts[i]);
         }
     }
 
     /// @notice Mint one entry. Free — the caller pays gas only.
     /// @dev One transaction produces the artwork, the skill assignment, the ERC-8004 identity
     ///      and the metadata. There is no activation step; an entry that exists is an agent.
-    function mint(bytes calldata bitmap, string calldata context_) external returns (uint256 tokenId) {
-        return _mintOne(bitmap, context_);
+    function mint(bytes calldata bitmap, bytes9 traits_, string calldata context_) external returns (uint256 tokenId) {
+        return _mintOne(bitmap, traits_, context_);
     }
 
-    function _mintOne(bytes calldata bitmap, string calldata context_) internal returns (uint256 tokenId) {
+    function _mintOne(bytes calldata bitmap, bytes9 traits_, string calldata context_)
+        internal
+        returns (uint256 tokenId)
+    {
+        if (!mintingOpen) revert MintingClosed();
         if (bitmap.length != Bitmap.BYTE_LEN) revert InvalidBitmap(ERR_LENGTH);
+        if (!TraitData.valid(traits_)) revert InvalidTraits();
         if (_pool[7] == 0) revert SoldOut();
         if (mintedBy[msg.sender] >= MAX_PER_WALLET) revert WalletCapReached();
 
@@ -266,7 +276,7 @@ contract Census is ERC721, Ownable, IERC8048 {
         }
 
         signatureUsed[sig] = true;
-        address ptr = SSTORE2.write(bm);
+        address ptr = SSTORE2.write(bytes.concat(bm, traits_));
         uint8 skill = _drawSkill(tokenId);
 
         // Written before the external call, not after. Saving one warm SSTORE by writing
@@ -296,7 +306,6 @@ contract Census is ERC721, Ownable, IERC8048 {
         _entry[tokenId].agentId = uint24(agentId);
 
         _write(tokenId, "context", bytes(context_));
-        _registerTool(tokenId, id);
 
         emit EntryMinted(tokenId, msg.sender, skill, sig, agentId);
     }
@@ -321,25 +330,14 @@ contract Census is ERC721, Ownable, IERC8048 {
         revert SoldOut(); // unreachable while the pool is non-empty
     }
 
-    /// @dev No metadata is duplicated into the 8004 registry. `context` already lives on
-    ///      Census, and the endpoints live in the RESTAP catalog — writing either here
-    ///      would pay for a second copy of something that already has a source of truth.
-    ///
-    ///      `agentURI` is the RESTAP *base*, not the catalog path: discovery is defined as
-    ///      `GET {base}/.well-known/restap.json`, so appending it is both redundant and a
-    ///      longer string to store. Shorter is more correct here, not just cheaper.
+    /// @dev Registration discovery is deliberately the only runtime surface in this phase.
     function _bindIdentity(uint256 tokenId, string memory id) internal returns (uint256 agentId) {
         agentId = adapter.register(
-            IAdapter8004.TokenStandard.ERC721, address(this), tokenId, string.concat(baseHost, "/a/", id)
+            IAdapter8004.TokenStandard.ERC721,
+            address(this),
+            tokenId,
+            string.concat(canonicalHost, "/a/", id, "/registration.json")
         );
-    }
-
-    /// @dev Skipped while `toolRegistry` is unset — no ERC-8257 deployment is wired in yet.
-    ///      Entries minted before it is set can be registered later by their owner.
-    function _registerTool(uint256 tokenId, string memory id) internal {
-        if (address(toolRegistry) == address(0)) return;
-        string memory uri = string.concat(baseHost, "/a/", id);
-        toolIdOf[tokenId] = toolRegistry.registerTool(uri, keccak256(bytes(uri)));
     }
 
     // ---------------------------------------------------------------- ERC-8048
@@ -347,66 +345,93 @@ contract Census is ERC721, Ownable, IERC8048 {
     /// @notice Read any metadata key.
     /// @dev Three kinds of key, in priority order:
     ///      - `skill` / `class` are served from packed state and can never be written;
-    ///      - an explicit stored override, if the owner has set one;
-    ///      - otherwise the endpoints are *derived* from `baseHost`, not stored.
-    ///
-    ///      Deriving them keeps three cold SSTOREs out of every mint and means entries that
-    ///      have never been touched follow the shared host automatically if it moves.
+    ///      - `trait[...]` keys are served from the immutable art record;
+    ///      - all other keys are owner-writable.
     function metadata(uint256 tokenId, string calldata key) external view returns (bytes memory) {
         if (!_exists(tokenId)) revert NonexistentEntry();
         bytes32 h = keccak256(bytes(key));
 
         if (h == keccak256("skill")) return bytes(skillName(_entry[tokenId].skill));
         if (h == keccak256("class")) return bytes(className(_entry[tokenId].skill));
+        (bool isTrait, uint256 category) = _traitCategory(h);
+        if (isTrait) return bytes(traitOf(tokenId, uint8(category)));
 
-        bytes memory stored = _meta[tokenId][h];
-        if (stored.length != 0) return stored;
-
-        if (h == keccak256("endpoint[restap]")) return bytes(_endpoint("/a/", tokenId));
-        if (h == keccak256("endpoint[mcp]")) return bytes(_endpoint("/mcp/", tokenId));
-        if (h == keccak256("endpoint[x402]")) return bytes(_endpoint("/pay/", tokenId));
-
-        return stored;
-    }
-
-    function _endpoint(string memory path, uint256 tokenId) internal view returns (string memory) {
-        return string.concat(baseHost, path, tokenId.toString());
+        return _meta[tokenId][h];
     }
 
     /// @notice Update an owner-writable key.
     /// @dev `skill` and `class` are the quota assignment. An owner able to rewrite them could
     ///      mint a common entry and relabel it as an Executor, making every cap meaningless.
-    ///      Repointing `endpoint[restap]` is explicitly allowed — it is what makes the shared
-    ///      host a default rather than a lock-in.
+    ///      Other ERC-8048 keys remain under the current NFT owner's control.
     function setMetadata(uint256 tokenId, string calldata key, bytes calldata value) external {
         if (ownerOf(tokenId) != msg.sender) revert NotEntryOwner();
         bytes32 h = keccak256(bytes(key));
-        if (h == keccak256("skill") || h == keccak256("class")) revert ImmutableKey();
+        if (h == keccak256("skill") || h == keccak256("class") || _hasTraitPrefix(key)) revert ImmutableKey();
         _meta[tokenId][h] = value;
-        emit MetadataSet(tokenId, key, value);
+        emit MetadataSet(tokenId, key, key, value);
     }
 
     function _write(uint256 tokenId, string memory key, bytes memory value) internal {
         _meta[tokenId][keccak256(bytes(key))] = value;
-        emit MetadataSet(tokenId, key, value);
+        emit MetadataSet(tokenId, key, key, value);
     }
 
     // ---------------------------------------------------------------- art
 
     function bitmapOf(uint256 tokenId) public view returns (bytes memory) {
         if (!_exists(tokenId)) revert NonexistentEntry();
-        return SSTORE2.read(_entry[tokenId].bitmap);
+        return SSTORE2.read(_entry[tokenId].bitmap, 0, Bitmap.BYTE_LEN);
+    }
+
+    function traitsOf(uint256 tokenId) public view returns (bytes9 traits_) {
+        if (!_exists(tokenId)) revert NonexistentEntry();
+        bytes memory raw = SSTORE2.read(_entry[tokenId].bitmap, Bitmap.BYTE_LEN, Bitmap.BYTE_LEN + TraitData.COUNT);
+        assembly ("memory-safe") {
+            traits_ := mload(add(raw, 0x20))
+        }
+    }
+
+    function traitOf(uint256 tokenId, uint8 category) public view returns (string memory) {
+        if (category >= TraitData.COUNT) revert InvalidTraits();
+        bytes9 traits_ = traitsOf(tokenId);
+        return TraitData.value(category, uint8(traits_[category]));
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         if (!_exists(tokenId)) revert NonexistentEntry();
         uint8 s = _entry[tokenId].skill;
         return Art.tokenURI(
-            tokenId, bitmapOf(tokenId), className(s), skillName(s), string(_meta[tokenId][keccak256("context")])
+            tokenId,
+            bitmapOf(tokenId),
+            className(s),
+            skillName(s),
+            string(_meta[tokenId][keccak256("context")]),
+            traitsOf(tokenId)
         );
     }
 
     function supportsInterface(bytes4 id) public view override returns (bool) {
         return id == 0xdf670be1 || super.supportsInterface(id); // ERC-8048
+    }
+
+    function _validHost(string memory host) private pure returns (bool) {
+        bytes memory b = bytes(host);
+        if (b.length < 9 || b[b.length - 1] == "/") return false;
+        bytes8 prefix;
+        assembly ("memory-safe") {
+            prefix := mload(add(b, 0x20))
+        }
+        return prefix == bytes8("https://");
+    }
+
+    function _hasTraitPrefix(string calldata key) private pure returns (bool) {
+        bytes calldata b = bytes(key);
+        return b.length >= 6 && b[0] == "t" && b[1] == "r" && b[2] == "a" && b[3] == "i" && b[4] == "t" && b[5] == "[";
+    }
+
+    function _traitCategory(bytes32 h) private pure returns (bool found, uint256 category) {
+        for (uint256 i; i < TraitData.COUNT; ++i) {
+            if (h == keccak256(bytes(TraitData.key(i)))) return (true, i);
+        }
     }
 }

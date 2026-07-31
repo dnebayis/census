@@ -9,8 +9,15 @@ keystore/
 cache/
 out/
 broadcast/*/dry-run/
+broadcast/**/dry-run/
 
 # Node
 node_modules/
 dist/
+.vercel/
+
+# Python
+__pycache__/
+*.py[cod]
+
 .DS_Store

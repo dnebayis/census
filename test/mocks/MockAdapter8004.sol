@@ -67,4 +67,9 @@ contract MockAdapter8004 is IAdapter8004 {
     function setMetadata(uint256 agentId, string memory key, bytes memory value) external {
         _meta[agentId][keccak256(bytes(key))] = value;
     }
+
+    function setAgentURI(uint256 agentId, string calldata newURI) external {
+        if (!this.isController(agentId, msg.sender)) revert NotController(msg.sender, agentId);
+        agentURI[agentId] = newURI;
+    }
 }

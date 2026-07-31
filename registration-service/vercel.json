@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/a/:tokenId/registration.json",
+      "destination": "/api/registration?tokenId=:tokenId"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/a/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    }
+  ]
+}
