@@ -114,7 +114,7 @@ ERC-8217 binding instead of relying on one mutable `CENSUS_ADDRESS` environment 
 - rollout token/agent: none yet
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
-token/agent `1 / 9100` remains at `https://census-registration.vercel.app`.
+token/agent `1 / 9100` remains available through the permanent address-routed host.
 
 Gas figures in project documents are Foundry mock comparisons: about 710k per separate
 mint and 429k per entry in a four-entry batch, a 40% saving. They are not live adapter

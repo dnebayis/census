@@ -37,6 +37,7 @@
     {
       "address": "0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4",
       "canonicalHost": "https://census-registration.vercel.app",
+      "registrationHost": "https://census-registration-dnebayis.vercel.app",
       "reason": "v1 four-tone deployment; token 1 remains bound to ERC-8004 agent 9100"
     },
     {

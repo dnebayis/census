@@ -48,7 +48,7 @@ All three production registration URLs returned HTTP 200 with `no-store`; the mi
 token probe returned 404, and each live adapter binding and Identity Registry URI
 matched.
 The archived v1 rollout token 1 remains ERC-8004 agent 9100 at
-`https://census-registration.vercel.app/a/1/registration.json`.
+`https://census-registration-dnebayis.vercel.app/a/0x62514267a0f203e73b66c4f6fa1ed71a6db6bfa4/1/registration.json`.
 
 Production creation now starts at `skills/census-mint/SKILL.md`. The IDE agent must use
 real raster image generation and can inspect the source/comparison/palette preview.

@@ -56,7 +56,9 @@ accidentally reused the v2 host before address-routed registration was introduce
 was never active and must not be used.
 
 V1 Census `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4` remains historical with
-token 1 / ERC-8004 agent 9100. Prototype Census
+token 1 / ERC-8004 agent 9100. Its URI migration transaction is
+`0x76e3e85fae650ec18c587d19c4424c5fcf87fb3f1dbf38e9562aecc169eb82ac`.
+Prototype Census
 `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5` is also historical. No archived address
 may be used by the active pipeline.
 

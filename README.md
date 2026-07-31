@@ -18,7 +18,7 @@ outside this phase.
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
 | Archived v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — tokens 1–4 preserved |
-| Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — original endpoint preserved |
+| Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
 V3 permissionless minting is irreversibly open and currently has no minted entries.
@@ -28,7 +28,7 @@ minted token 1 and ERC-8004 agent 9104; its live registration is
 The first production batch minted `night-ledger`, `signal-auditor`, and
 `archive-courier` as tokens 2–4 / agents 9106–9108 in transaction
 [`0x7db94f…b3428`](https://sepolia.etherscan.io/tx/0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428).
-V1 rollout entry 1 remains bound to ERC-8004 agent 9100 at its original host. Archived
+V1 rollout entry 1 remains bound to ERC-8004 agent 9100 through the permanent host. Archived
 deployments are historical only; scripts and examples must not use them as active
 addresses.
 

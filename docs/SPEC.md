@@ -192,7 +192,7 @@ Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`; its tokens 1–4
 remain registered through the permanent address-routed service.
 
 Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`, whose token 1
-remains ERC-8004 agent 9100 at `https://census-registration.vercel.app`.
+remains ERC-8004 agent 9100 through the permanent address-routed registration host.
 
 Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`.
 
