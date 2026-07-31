@@ -88,3 +88,8 @@ automatic token IDs.
 `config/sepolia.json` is the machine-readable active deployment record.
 `skills/census-mint/scripts/verify_registration.py` reproduces the external 200/404,
 cache, live adapter binding, and Identity Registry URI checks.
+
+Production registration deploys are owned by
+`.github/workflows/deploy-registration-v2.yml`. The workflow uses repository secrets
+for the Vercel token, org ID, and v2 project ID; it runs service tests and audit before
+deploying the complete `registration-service` directory.

@@ -10,6 +10,9 @@
 - canonical host: `https://census-registration-v2.vercel.app`
 - Vercel preview deployment: `dpl_BNJbhJZWqcnP1j9Ka11YS3ayqCgE`
 - Vercel production deployment: `dpl_BegzB711CaDveVWD4HbsQiQBoReH`
+- repeatable deployment: `.github/workflows/deploy-registration-v2.yml` tests and
+  deploys the repository's `registration-service` directory to the v2 Vercel project
+  whenever that directory changes on `main`
 - open-mint transaction:
   `0x097fe1b72a541b2df6d0c98ab181e945d0dae26f458bf3ebc403962dda7148ab`
 - mint status: irreversibly open; there is no pause or close function
