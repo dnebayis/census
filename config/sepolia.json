@@ -1,41 +1,39 @@
 {
   "chainId": 11155111,
-  "census": "0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC",
+  "census": "0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc",
   "adapter": "0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92",
   "identityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
-  "canonicalHost": "https://census-registration-v2.vercel.app",
+  "canonicalHost": "https://census-registration-dnebayis.vercel.app",
+  "registrationPath": "/a/{censusAddress}/{tokenId}/registration.json",
   "publicRpc": "https://ethereum-sepolia-rpc.publicnode.com",
   "bitmapFormat": "census-1bit-v2",
   "bitmapBytes": 200,
   "artRecordBytes": 209,
   "mintingOpen": true,
-  "rolloutTokenId": 1,
-  "rolloutAgentId": 9104,
-  "rolloutTransaction": "0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4",
-  "productionBatches": [
+  "deploymentTransaction": "0x6d5ec0e686997f513a151c099aa7703885a2fc56defb20b60959e5bb0fa9f945",
+  "openMintTransaction": "0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094",
+  "rolloutTokenId": null,
+  "rolloutAgentId": null,
+  "rolloutTransaction": null,
+  "productionBatches": [],
+  "archivedCensus": [
     {
-      "transaction": "0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428",
-      "blockNumber": 11389367,
-      "entries": [
+      "address": "0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC",
+      "canonicalHost": "https://census-registration-v2.vercel.app",
+      "registrationHost": "https://census-registration-dnebayis.vercel.app",
+      "reason": "v2 one-bit deployment; tokens 1-4 and agents 9104/9106-9108 are preserved",
+      "productionBatches": [
         {
-          "draftId": "night-ledger",
-          "tokenId": 2,
-          "agentId": 9106
-        },
-        {
-          "draftId": "signal-auditor",
-          "tokenId": 3,
-          "agentId": 9107
-        },
-        {
-          "draftId": "archive-courier",
-          "tokenId": 4,
-          "agentId": 9108
+          "transaction": "0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428",
+          "blockNumber": 11389367
         }
       ]
-    }
-  ],
-  "archivedCensus": [
+    },
+    {
+      "address": "0x3DBd72ffE620A6000547495016b7cb810BF41CA4",
+      "canonicalHost": "https://census-registration-v2.vercel.app",
+      "reason": "abandoned tokens-zero deployment created before contract-address routing; never active"
+    },
     {
       "address": "0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4",
       "canonicalHost": "https://census-registration.vercel.app",

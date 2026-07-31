@@ -45,8 +45,9 @@ def cast(rpc: str, address: str, signature: str, *args: object) -> str:
 
 def verify(config: dict, token_id: int, missing_token_id: int) -> dict:
     origin = config["canonicalHost"].rstrip("/")
-    token_url = f"{origin}/a/{token_id}/registration.json"
-    missing_url = f"{origin}/a/{missing_token_id}/registration.json"
+    collection = config["census"].lower()
+    token_url = f"{origin}/a/{collection}/{token_id}/registration.json"
+    missing_url = f"{origin}/a/{collection}/{missing_token_id}/registration.json"
 
     status, headers, body = http_json(token_url)
     if status != 200:

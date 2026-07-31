@@ -20,17 +20,22 @@ Read, in order:
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
-- Active Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
-- Canonical registration origin: `https://census-registration-v2.vercel.app`
+- Active Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
+- Canonical registration origin: `https://census-registration-dnebayis.vercel.app`
+- Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
 - Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
 - Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`
 
-V2 minting is irreversibly open. The open transaction is
-`0x097fe1b72a541b2df6d0c98ab181e945d0dae26f458bf3ebc403962dda7148ab`.
-Genesis draft `genesis-registrar` is token 1 / ERC-8004 agent 9104; mint transaction:
+V3 minting is irreversibly open. Deploy transaction:
+`0x6d5ec0e686997f513a151c099aa7703885a2fc56defb20b60959e5bb0fa9f945`;
+open transaction:
+`0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094`.
+It uses the broad 1%–95% density band and currently has no minted entries.
+
+Archived v2 genesis draft `genesis-registrar` is token 1 / ERC-8004 agent 9104; mint transaction:
 `0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4`.
 Its verified registration URI is
-`https://census-registration-v2.vercel.app/a/1/registration.json`.
+`https://census-registration-dnebayis.vercel.app/a/0x3763feca935668e1ffc191f3c509f3a545b3acbc/1/registration.json`.
 The first production batch transaction is
 `0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428`
 at block `11389367`:
@@ -46,10 +51,10 @@ The archived v1 rollout token 1 remains ERC-8004 agent 9100 at
 `https://census-registration.vercel.app/a/1/registration.json`.
 
 Production creation now starts at `skills/census-mint/SKILL.md`. The IDE agent must use
-real raster image generation and inspect the source/comparison/palette preview.
-Structural failures still stop minting. Art metrics remain advisory and may be
-explicitly accepted after visual review; Python/SVG smoke drawings are archive proof,
-not collection art.
+real raster image generation and can inspect the source/comparison/palette preview.
+Only effectively blank or solid output requires regeneration. Art metrics are
+informational and never block minting; PNG/JPEG/WebP user uploads are also accepted.
+Python/SVG smoke drawings are archive proof, not collection art.
 
 ## Safety-critical rollout order
 
@@ -59,14 +64,15 @@ The initial rollout completed in this order:
 2. Run its unit/schema/404/chain-read tests.
 3. Obtain the stable public Vercel production project URL.
 4. Deploy Census to Sepolia with that exact URL; it starts closed.
-5. Set `CENSUS_ADDRESS`, `ADAPTER_ADDRESS`, `IDENTITY_REGISTRY_ADDRESS`, `CHAIN_ID`, and
-   `SEPOLIA_RPC_URL` in Vercel production and redeploy.
+5. Set `ADAPTER_ADDRESS`, `IDENTITY_REGISTRY_ADDRESS`, `CHAIN_ID`, and
+   `SEPOLIA_RPC_URL` in Vercel production and deploy the address-routed service.
 6. Verify registration JSON and the Identity Registry `agentURI` are identical for a
    real token.
 7. Only then call the irreversible `openMinting()`.
 
-Future redeployments must preserve this order. Never deploy with a temporary immutable
-host.
+Future contract deployments reuse this one registration project. Their URIs include
+the Census contract address, so token IDs cannot collide. Never deploy with a temporary
+immutable host.
 
 ## Verification
 
@@ -89,7 +95,7 @@ follows ownership.
 
 `draftId` is the stable local identity. A secure seed and trait assignment are written
 once to `<draftId>.draft.json`; reopening does not reroll. Build records source and
-bitmap SHA-256 hashes, `agent:*` provenance, and stats. Mint derives the sender from `PRIVATE_KEY`,
+bitmap SHA-256 hashes, optional source provenance, and stats. Mint derives the sender from `PRIVATE_KEY`,
 simulates the exact call, batches multiple drafts, and writes real receipt token/agent
 IDs under `output/mints/`.
 
@@ -101,6 +107,6 @@ automatic token IDs.
 cache, live adapter binding, and Identity Registry URI checks.
 
 Production registration deploys are owned by
-`.github/workflows/deploy-registration-v2.yml`. The workflow uses repository secrets
-for the Vercel token, org ID, and v2 project ID; it runs service tests and audit before
+`.github/workflows/deploy-registration.yml`. The workflow uses repository secrets
+for the `dnebayis` Vercel token, org ID, and permanent registration project ID; it runs service tests and audit before
 deploying the complete `registration-service` directory.

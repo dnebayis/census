@@ -29,8 +29,7 @@ Generate a normal high-resolution, high-contrast portrait source. Do not generat
 art; the pipeline owns the only 40x40 reduction and 1-bit conversion. Save it as a PNG,
 then run:
 
-    python generate.py build --draft {draft_id} --file <your file> \\
-      --generator agent:codex-imagegen
+    python generate.py build --draft {draft_id} --file <your file>
 
 SUBJECT
   {subject}
@@ -49,7 +48,7 @@ STYLE
   - The final preview uses the locked Census charcoal/pastel two-color palette.
   - No border, frame, text, signature, watermark or scenery.
 
-`build` prints the real 40x40 result. Redraw when it looks wrong or warns.
+`build` prints the real 40x40 result. Warnings are informational.
 """
 
 ENTRY_EVENT_TOPIC = None
@@ -137,19 +136,17 @@ def _read_drawing(path: str):
     return Path(path).read_bytes()
 
 
-def _agent_generator(value: str) -> str:
-    if not re.fullmatch(r"agent:[a-z0-9][a-z0-9._-]{1,63}", value or ""):
-        raise ValueError(
-            "--generator must identify an image-capable IDE agent, "
-            "for example agent:codex-imagegen"
-        )
+def _generator_provenance(value) -> str:
+    value = value or "user:raster"
+    if not re.fullmatch(r"(?:agent|user|tool):[a-z0-9][a-z0-9._-]{1,63}", value):
+        raise ValueError("--generator must be agent:<name>, user:<name>, or tool:<name>")
     return value
 
 
 def cmd_build(args):
     draft_id = _draft_id(args)
     manifest = load_draft_manifest(args.output, draft_id)
-    generator = _agent_generator(args.generator)
+    generator = _generator_provenance(args.generator)
     source = _read_drawing(args.file)
     bitmap, px, stats = binarize_image(source)
     source_bytes = source
@@ -193,7 +190,9 @@ def cmd_build(args):
     }
     save_draft_manifest(args.output, draft_id, manifest)
     print(f"\nwrote {args.output}/{draft_id}.hex / .png / .json / .draft.json")
-    if stats["warnings"] or not stats["mintable"]:
+    if stats["warnings"]:
+        print("\nWarnings are informational and do not block minting.")
+    if not stats["mintable"]:
         print("\nDraw it again if you can do better — nothing has been spent yet.")
     return 0 if stats["mintable"] else 1
 
@@ -209,29 +208,26 @@ def _load_mint_drafts(args):
         raise ValueError("the same draft cannot appear twice in one mint")
 
     personas = args.persona or []
-    if len(personas) != len(draft_ids):
+    if personas and len(personas) != len(draft_ids):
         raise ValueError("provide exactly one --persona for each --draft, in the same order")
 
     drafts = []
     signatures = set()
-    for draft_id, persona in zip(draft_ids, personas):
+    for index, draft_id in enumerate(draft_ids):
         manifest = load_draft_manifest(args.output, draft_id)
+        persona = personas[index] if personas else manifest["subject"]
         build = manifest.get("build")
         if not build:
             raise ValueError(f"draft {draft_id!r} has not been built")
         if manifest.get("version") != PIPELINE_VERSION or build.get("bitmap_format") != BITMAP_FORMAT:
             raise ValueError(f"draft {draft_id!r} is not built for {BITMAP_FORMAT}")
-        _agent_generator(build.get("generator"))
+        _generator_provenance(build.get("generator"))
         bitmap = bytes.fromhex((Path(args.output) / f"{draft_id}.hex").read_text().strip())
         if _sha256(bitmap) != build["bitmap_sha256"]:
             raise ValueError(f"draft {draft_id!r} bitmap changed after build")
         stats = build["stats"]
         if not stats["mintable"]:
             raise ValueError(f"draft {draft_id!r} is not locally mintable")
-        if stats["warnings"] and not args.accept_warnings:
-            raise ValueError(
-                f"draft {draft_id!r} has warnings; redraw or pass --accept-warnings explicitly"
-            )
         if stats["signature"] in signatures:
             raise ValueError(f"duplicate signature inside batch: {stats['signature']}")
         signatures.add(stats["signature"])
@@ -321,22 +317,32 @@ def cmd_mint(args):
     private_key = os.environ.get("PRIVATE_KEY")
     if not private_key:
         raise ValueError("PRIVATE_KEY is not set")
+    deployment = json.loads(
+        (Path(__file__).resolve().parents[1] / "config" / "sepolia.json").read_text()
+    )
+    census = args.census or deployment["census"]
+    rpc = (
+        args.rpc
+        or os.environ.get("SEPOLIA_RPC_URL")
+        or os.environ.get("RPC_URL")
+        or deployment["publicRpc"]
+    )
     sender = _sender(private_key)
     signature, call_args = _mint_call(drafts)
     print(f"simulating {len(drafts)} draft(s) from {sender}…")
-    _simulate(args.census, args.rpc, sender, signature, call_args)
+    _simulate(census, rpc, sender, signature, call_args)
 
     result = _run(
         [
             "cast",
             "send",
-            args.census,
+            census,
             signature,
             *call_args,
             "--private-key",
             private_key,
             "--rpc-url",
-            args.rpc,
+            rpc,
             "--json",
         ],
         timeout=300,
@@ -401,17 +407,17 @@ def main():
     build.add_argument("--file", required=True)
     build.add_argument(
         "--generator",
-        required=True,
-        help="agent provenance, for example agent:codex-imagegen",
+        default="user:raster",
+        help="optional provenance, for example agent:codex-imagegen or user:upload",
     )
     build.set_defaults(fn=cmd_build)
 
     mint = sub.add_parser("mint", help="simulate then mint one or more drafts")
     _add_draft_arg(mint, multiple=True)
-    mint.add_argument("--persona", action="append", required=True)
-    mint.add_argument("--accept-warnings", action="store_true")
-    mint.add_argument("--census", required=True)
-    mint.add_argument("--rpc", required=True)
+    mint.add_argument("--persona", action="append", help="defaults to the draft subject")
+    mint.add_argument("--accept-warnings", action="store_true", help=argparse.SUPPRESS)
+    mint.add_argument("--census", help="defaults to config/sepolia.json")
+    mint.add_argument("--rpc", help="defaults to environment or config/sepolia.json")
     mint.set_defaults(fn=cmd_mint)
 
     sheet = sub.add_parser("sheet", help="contact sheet of built drafts")

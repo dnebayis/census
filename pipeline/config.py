@@ -22,9 +22,10 @@ THRESHOLD = 128
 
 # ---------------------------------------------------------------- contract limits
 
-# Hard, enforced on chain (SPEC §4.3). Outside this band `mint` reverts.
-DENSITY_MIN = 128  # 8% of 1600
-DENSITY_MAX = 1120  # 70%
+# Hard, enforced on chain. The broad band rejects only effectively blank or solid
+# uploads; art quality is informational and never a mint gate.
+DENSITY_MIN = 16  # 1% of 1600
+DENSITY_MAX = 1520  # 95%
 
 # Advisory only — reported by validate(), never blocking. Mirrored so the pipeline can
 # fix its own output instead of shipping a warning to the chain.
@@ -35,8 +36,8 @@ WARN_ISOLATED_PCT = 15  # share of lit pixels with no lit orthogonal neighbour
 # ---------------------------------------------------------------- generation
 
 # Production art is agent-native: an image-capable IDE agent generates a normal,
-# high-contrast portrait source, runs it through `build`, visually inspects the reduced
-# 1-bit preview, and redraws the same persistent draft until it passes.
+# high-contrast portrait source and runs it through `build`. Visual statistics help the
+# creator but do not require a redraw.
 #
 # Script and SVG sources are excluded from the mint path. They made useful deployment
 # smoke tests, but they are not the collection's production art workflow.

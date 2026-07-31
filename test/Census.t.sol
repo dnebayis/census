@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
+import {LibString} from "solady/utils/LibString.sol";
 import {Census} from "../src/Census.sol";
 import {Art} from "../src/lib/Art.sol";
 import {IAdapter8004} from "../src/interfaces/IAdapter8004.sol";
@@ -123,6 +124,26 @@ contract CensusTest is Test {
         assertEq(reason, census.OK());
     }
 
+    function test_ValidateAcceptsSparseButVisibleBitmap() public view {
+        bytes memory bm = new bytes(200);
+        for (uint256 i; i < 100; ++i) {
+            _setPixel(bm, 5 + i / 10, 10 + i % 10, 1);
+        }
+        (bool ok, uint8 reason,) = census.validate(bm, TRAITS, alice);
+        assertTrue(ok);
+        assertEq(reason, census.OK());
+    }
+
+    function test_ValidateAcceptsDenseButNotSolidBitmap() public view {
+        bytes memory bm = new bytes(200);
+        for (uint256 i; i < 1440; ++i) {
+            _setPixel(bm, i / 40, i % 40, 1);
+        }
+        (bool ok, uint8 reason,) = census.validate(bm, TRAITS, alice);
+        assertTrue(ok);
+        assertEq(reason, census.OK());
+    }
+
     function test_ValidateIsFreeAndMatchesMint() public {
         bytes memory bm = _bitmap(7);
 
@@ -173,7 +194,10 @@ contract CensusTest is Test {
 
         // the entry's owner is its controller — no activation step anywhere
         assertTrue(adapter.isController(agentId, alice));
-        assertEq(adapter.agentURI(agentId), "https://census.example/a/1/registration.json");
+        assertEq(
+            adapter.agentURI(agentId),
+            string.concat(HOST, "/a/", LibString.toHexString(address(census)), "/1/registration.json")
+        );
     }
 
     function test_TraitsRoundTripFromArtRecord() public {
@@ -396,7 +420,10 @@ contract CensusTest is Test {
         uint256 id = _mint(alice, 1);
 
         assertEq(census.canonicalHost(), HOST);
-        assertEq(adapter.agentURI(census.agentIdOf(id)), "https://census.example/a/1/registration.json");
+        assertEq(
+            adapter.agentURI(census.agentIdOf(id)),
+            string.concat(HOST, "/a/", LibString.toHexString(address(census)), "/1/registration.json")
+        );
     }
 
     function test_OwnerCanWriteRuntimeKeysWithoutActivatingRuntime() public {

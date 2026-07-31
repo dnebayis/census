@@ -29,11 +29,17 @@ export default async function handler(request, response) {
     if (!/^(0|[1-9][0-9]*)$/.test(raw || "")) {
       return json(response, 404, { error: "token not found" });
     }
+    const rawCensusAddress = Array.isArray(request.query.censusAddress)
+      ? request.query.censusAddress[0]
+      : request.query.censusAddress;
+    if (!/^0x[0-9a-fA-F]{40}$/.test(rawCensusAddress || "")) {
+      return json(response, 404, { error: "collection not found" });
+    }
 
     const rpcUrl = process.env.SEPOLIA_RPC_URL;
     if (!rpcUrl) throw new ConfigurationError("SEPOLIA_RPC_URL is missing");
 
-    const censusAddress = requiredAddress("CENSUS_ADDRESS");
+    const censusAddress = rawCensusAddress;
     const adapterAddress = requiredAddress("ADAPTER_ADDRESS");
     const identityRegistryAddress = requiredAddress("IDENTITY_REGISTRY_ADDRESS");
     const chainId = Number(process.env.CHAIN_ID || sepolia.id);

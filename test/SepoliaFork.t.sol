@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
+import {LibString} from "solady/utils/LibString.sol";
 import {Census} from "../src/Census.sol";
 import {IAdapter8004} from "../src/interfaces/IAdapter8004.sol";
 
@@ -27,7 +28,9 @@ contract SepoliaForkTest is Test {
         vm.prank(alice);
         uint256 tokenId = census.mint(_bitmap(), TRAITS, "fork verification");
         uint256 agentId = census.agentIdOf(tokenId);
-        string memory expected = "https://census-fork.example/a/1/registration.json";
+        string memory expected = string.concat(
+            "https://census-fork.example/a/", LibString.toHexString(address(census)), "/1/registration.json"
+        );
 
         IAdapter8004.Binding memory binding = IAdapter8004(ADAPTER).bindingOf(agentId);
         assertEq(binding.tokenContract, address(census));

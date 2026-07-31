@@ -24,9 +24,9 @@ The image generator renders a normal high-resolution portrait. The pipeline alon
 the one reduction to 36×36, placement at y=4 on a 40×40 canvas, threshold, 1-bit
 packing, and palette application.
 
-## Visual pass
+## Visual guidance
 
-The reduced preview passes only when all are true:
+The following are quality suggestions, not mint requirements:
 
 1. The species, head shape, eyes, expression, and overall silhouette can be recognized
    without consulting the source. Secondary traits should remain visible when the
@@ -48,6 +48,6 @@ Correct only the most important failure each attempt:
 4. missing assigned trait;
 5. stray detail or tonal noise.
 
-Do not change the subject, seed, or traits during retries. Pipeline warnings trigger a
-visual review. They require explicit CLI acceptance before minting, but do not require
-repeated redraws when the user has chosen the less-strict art gate.
+Do not change the subject, seed, or traits during a retry. Pipeline warnings are
+informational and require no CLI override. Retry only when the output is effectively
+blank/solid or when the user explicitly asks for an art revision.

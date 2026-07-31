@@ -5,9 +5,9 @@ description: Create, visually review, and safely mint Census portraits from an I
 
 # Census Mint
 
-Create the art with the IDE's image-capable agent, not with a drawing script. Keep the
-draft's seed and traits stable, inspect the actual 40×40 result, and publish only when
-the user explicitly asked to mint.
+Create the art with the IDE's image-capable agent or use a user-supplied raster. Keep
+the draft's seed and traits stable, show the actual 40×40 result when useful, and
+publish only when the user explicitly asked to mint.
 
 ## Locate the project
 
@@ -20,8 +20,7 @@ artifacts.
 
 - “create”, “draw”, “prepare”, or “show” means stop after a passing preview.
 - “mint” or an equally explicit request authorizes the transaction after all gates pass.
-- A batch request follows the same loop per draft, then uses one CLI `mint` command with
-  repeated `--draft` and `--persona` arguments.
+- A batch request uses one CLI `mint` command with repeated `--draft` arguments.
 
 Do not ask for contract addresses, trait choices, a seed, or a token ID. The project
 already owns those decisions. Ask only when the subject or intended context is genuinely
@@ -61,26 +60,21 @@ Inspect the source image, then run:
 ```sh
 python3 generate.py build \
   --draft <draftId> \
-  --file <output>/<draftId>.agent-v<attempt>.png \
-  --generator agent:codex-imagegen
+  --file <output>/<draftId>.png
 ```
 
 Use the actual agent identifier when another image-capable IDE agent generated it.
 Inspect both `<draftId>.compare.png` and the palette-exact 1-bit `<draftId>.png` with an image
 viewer. Also read `<draftId>.json`.
 
-Always redraw the same draft when:
+Redraw the same draft only when:
 
 - `mintable` is false;
-- the face, expression, or silhouette is muddy at 40×40;
-- the result looks like generic deployment smoke art.
 
-Treat advisory warnings and small secondary-trait losses as visual-review prompts, not
-automatic redraw loops. Make at most one targeted correction when it materially
-improves the portrait. After visual review, `--accept-warnings` may be used only when
-the user has explicitly asked for a less strict art gate. It never bypasses
-`mintable: false`, duplicate checks, wallet limits, invalid traits, or failed exact
-simulation.
+The deliberately broad density band rejects only effectively blank or solid output.
+All advisory warnings and secondary-trait losses are informational; do not start an
+automatic retry loop. Duplicate checks, wallet limits, invalid traits, and failed exact
+simulation remain hard failures.
 
 ## Mint only on explicit instruction
 
@@ -92,10 +86,7 @@ Run the CLI with the active Census address:
 
 ```sh
 python3 generate.py mint \
-  --draft <draftId> \
-  --persona "<short context>" \
-  --census <active Census> \
-  --rpc <Sepolia RPC>
+  --draft <draftId>
 ```
 
 The CLI must derive the sender, simulate the exact call, and decode the receipt. Never
@@ -116,6 +107,7 @@ registration URL. Before a receipt, call the work item only `draftId`, never tok
 - Never overwrite a minted draft or infer IDs from filenames.
 - Never claim runtime availability: registration remains `active: false`, has no
   services, and does not create an agent wallet.
-- Never mint a non-raster source or a build without `agent:*` provenance.
+- Never mint a non-raster source. Provenance may be `agent:*`, `user:*`, or `tool:*`
+  and defaults to `user:raster`.
 - Never delete a failed attempt merely to hide it; the selected build may overwrite the
   canonical preview, while source attempts remain available for review.

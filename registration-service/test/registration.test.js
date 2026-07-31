@@ -162,8 +162,16 @@ test("does not misclassify an RPC outage as a 404", async () => {
 
 test("HTTP handler returns uncached 404 for an invalid token path", async () => {
   const response = fakeResponse();
-  await handler({ query: { tokenId: "-1" } }, response);
+  await handler({ query: { censusAddress: census, tokenId: "-1" } }, response);
   assert.equal(response.statusCode, 404);
+  assert.equal(response.headers["Cache-Control"], "no-store, max-age=0");
+});
+
+test("HTTP handler returns uncached 404 for an invalid collection path", async () => {
+  const response = fakeResponse();
+  await handler({ query: { censusAddress: "not-an-address", tokenId: "1" } }, response);
+  assert.equal(response.statusCode, 404);
+  assert.equal(response.body.error, "collection not found");
   assert.equal(response.headers["Cache-Control"], "no-store, max-age=0");
 });
 
@@ -174,7 +182,7 @@ test("HTTP handler returns 502 when chain configuration is absent", async () => 
   const originalError = console.error;
   console.error = () => {};
   try {
-    await handler({ query: { tokenId: "1" } }, response);
+    await handler({ query: { censusAddress: census, tokenId: "1" } }, response);
   } finally {
     console.error = originalError;
     if (originalRpc !== undefined) process.env.SEPOLIA_RPC_URL = originalRpc;

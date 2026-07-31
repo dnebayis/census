@@ -1,13 +1,12 @@
 # Census agent-native art pipeline
 
-The IDE agent generates the artwork, visually reviews the reduced portrait, and drives
-this pipeline. The CLI assigns persistent visual traits, converts raster art into the
-exact onchain bitmap, and simulates the exact transaction before minting. It is not an
-image generator.
+An IDE agent can generate the artwork, or a user can supply a raster directly. The CLI
+assigns persistent visual traits, converts raster art into the exact onchain bitmap,
+and simulates the exact transaction before minting. It is not an image generator.
 
-Active Sepolia Census is `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`; its
-registration origin is `https://census-registration-v2.vercel.app`. Minting is
-irreversibly open; genesis draft `genesis-registrar` is token 1 / agent 9104. The adapter is
+Active Sepolia Census is `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`; its
+registration origin is `https://census-registration-dnebayis.vercel.app`. Minting is
+irreversibly open and the deployment currently has no entries. The adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
 and ERC-8217 only.
 
@@ -28,37 +27,32 @@ python3 generate.py brief \
 # The IDE agent generates a raster from the printed brief, then:
 python3 generate.py build \
   --draft tired-bureaucrat \
-  --file output/tired-bureaucrat.agent-v1.png \
-  --generator agent:codex-imagegen
+  --file output/tired-bureaucrat.png
 
 PRIVATE_KEY=… python3 generate.py mint \
-  --draft tired-bureaucrat \
-  --persona "keeps the ledger" \
-  --census "$CENSUS" \
-  --rpc "$RPC"
+  --draft tired-bureaucrat
 ```
 
-For multiple drafts, repeat `--draft` and `--persona` in matching order. The CLI
-automatically uses `mintBatch`.
+For multiple drafts, repeat `--draft`; the CLI automatically uses `mintBatch`. Context
+defaults to each draft subject. `--persona`, `--generator`, `--census`, and `--rpc`
+remain optional overrides.
 
-The Foundry mock comparison is about 685k gas per separate mint and 404k per entry in a
-four-entry batch, a 42% saving. It is directional, not a live fee quote.
+The Foundry mock comparison is about 710k gas per separate mint and 429k per entry in a
+four-entry batch, a 40% saving. It is directional, not a live fee quote.
 
 ```sh
 PRIVATE_KEY=… python3 generate.py mint \
-  --draft one --persona "first context" \
-  --draft two --persona "second context" \
-  --census "$CENSUS" --rpc "$RPC"
+  --draft one \
+  --draft two
 ```
 
 `--id` remains a deprecated alias and prints a warning. It does not mean token ID.
 
 For Codex and compatible IDE agents, use the repo skill at
 `skills/census-mint/SKILL.md`. It creates the prompt from the immutable draft manifest,
-uses the IDE's image generation, opens the source and 40×40 previews for visual review,
-and redraws structural failures or materially unreadable art. Advisory metrics are
-reviewed once and can be explicitly accepted under the user-selected less-strict art
-gate. Production build inputs are raster-only:
+uses the IDE's image generation and can open the source and 40×40 previews for visual
+review. Art metrics are informational; only effectively blank or solid output is
+rejected. Production build inputs are raster-only:
 PNG, JPEG, or WebP. Python drawings, SVG, ASCII, and the historical rollout smoke image
 are not accepted as production art.
 
@@ -74,7 +68,7 @@ The manifest contains:
 - draft ID and subject
 - seed
 - readable traits, nine indices, and packed `bytes9`
-- image-capable agent provenance
+- optional agent, user, or tool provenance
 - source file hash
 - bitmap hash
 - density/signature/quality statistics
@@ -85,10 +79,9 @@ The manifest contains:
 The pipeline:
 
 - hash-checks built artifacts;
-- requires declarative `agent:*` provenance for each raster build;
 - checks duplicates against existing artifacts and separately inside a batch;
-- refuses non-mintable drafts;
-- requires `--accept-warnings` when advisory warnings exist;
+- refuses only effectively blank or solid drafts;
+- reports advisory warnings without blocking;
 - derives the sender locally from `PRIVATE_KEY`;
 - simulates the exact `mint` or `mintBatch` call with that sender;
 - broadcasts only after simulation succeeds.
@@ -99,9 +92,8 @@ After success, the pipeline decodes `EntryMinted` events and writes
 `output/mints/<transactionHash>.json` with each `draftId`, actual `tokenId`, `agentId`,
 transaction hash, and block number.
 
-The agent-native skill visually checks the palette-exact preview. It may use
-`--accept-warnings` only after explicit user direction to relax the art gate; hard
-mintability, duplicate, wallet, trait, and simulation failures remain non-bypassable.
+Hard mintability, duplicate, wallet, trait, and simulation failures remain
+non-bypassable.
 
 ## Bitmap and traits
 

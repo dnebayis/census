@@ -4,8 +4,8 @@ You create the portrait with the IDE's image generator; this CLI assigns persist
 traits, reduces the raster image to the onchain format, and safely submits it. Use the
 repo skill at `skills/census-mint/SKILL.md` for the complete autonomous loop.
 
-Active Sepolia Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`.
-Canonical host: `https://census-registration-v2.vercel.app`. Minting is irreversibly
+Active Sepolia Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`.
+Canonical host: `https://census-registration-dnebayis.vercel.app`. Minting is irreversibly
 open. This release implements
 ERC-8004 + ERC-8048 + ERC-8217; do not assume ERC-8257, MCP, RESTAP, or x402 runtime.
 
@@ -22,18 +22,14 @@ python3 generate.py brief \
 
 python3 generate.py build \
   --draft <same-draft-id> \
-  --file <drawing.png> \
-  --generator agent:codex-imagegen
+  --file <drawing.png>
 
 PRIVATE_KEY=… python3 generate.py mint \
-  --draft <same-draft-id> \
-  --persona "<short context>" \
-  --census "$CENSUS" \
-  --rpc "$RPC"
+  --draft <same-draft-id>
 ```
 
-The agent-native path redraws on every advisory and never passes `--accept-warnings`.
-That flag remains a manual escape hatch only. Hard failures can never be overridden.
+Advisories are informational and never block minting. Only hard failures stop the
+transaction, and they can never be overridden.
 
 ## Rules
 
@@ -42,9 +38,8 @@ That flag remains a manual escape hatch only. Hard failures can never be overrid
 - Never print, paste into a document, or persist `PRIVATE_KEY`.
 - Never infer token or agent IDs from filenames or counters.
 - Never use Python, SVG, ASCII, or procedural smoke art as a production source.
-- Inspect both the comparison sheet and palette-exact PNG with an image viewer.
-- For more than one draft, repeat `--draft` and `--persona`; let the CLI use
-  `mintBatch`.
+- Inspect the comparison sheet and palette-exact PNG when visual review is requested.
+- For more than one draft, repeat `--draft`; let the CLI use `mintBatch`.
 - If exact simulation fails, stop. Do not bypass it with a manual send.
 - Keep legacy output 7–9 as artifacts only.
 
@@ -64,9 +59,8 @@ Prefer:
 - solid eyes, brows, and mouth;
 - shoulders cut by the bottom edge.
 
-`build` prints and saves the exact reduced portrait. Inspect the PNG, not only the text
-preview. Redraw the same draft until the silhouette and assigned traits survive with no
-warning.
+`build` prints and saves the exact reduced portrait. Warnings are informational. Redraw
+only when the output is effectively blank/solid or when the user asks for a revision.
 
 ## Contract checks
 
@@ -75,7 +69,7 @@ Hard failures include:
 - bitmap length other than 200;
 - invalid trait index;
 - minting closed;
-- density outside 128–1120 lit pixels;
+- density outside 16–1520 lit pixels (1%–95%);
 - duplicate 8×8 signature;
 - sold-out pool;
 - five-token wallet cap;

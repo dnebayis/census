@@ -62,7 +62,7 @@ silently treated as minted tokens.
 
 The sender is derived locally from `PRIVATE_KEY`, never logged as a key or written to a
 file. The exact single or batch transaction is simulated with the same sender before
-broadcast. Hard failures stop. Advisory warnings require `--accept-warnings`.
+broadcast. Chain failures stop; visual warnings are informational.
 
 ### D11 — Registration is truthful and read-only
 
@@ -83,13 +83,11 @@ never an active pipeline or README address.
 
 ### D14 — Production art is agent-native raster
 
-An image-capable IDE agent generates a normal high-contrast portrait source, then sees
-both the source and exact one-bit 40×40 result before minting. Production builds accept
-PNG, JPEG, or WebP and record `agent:*` provenance. Python, SVG, ASCII, and procedural
-rollout smoke art are not production sources. Structural failures and materially
-unreadable art are redrawn. Advisory art metrics receive one visual review and may use
-the existing explicit `--accept-warnings` path only when the user has selected the
-less-strict art gate; chain-safety failures remain non-bypassable.
+An image-capable IDE agent is the default source, but users may also supply PNG, JPEG,
+or WebP directly. Builds record optional `agent:*`, `user:*`, or `tool:*` provenance.
+Python, SVG, ASCII, and procedural rollout smoke art are not production sources. Only
+effectively blank or solid output is a visual hard failure; all composition metrics are
+informational. Chain-safety failures remain non-bypassable.
 
 ### D15 — One-bit framing and palette are collection constants
 
@@ -98,21 +96,28 @@ four-pixel top margin while anchoring shoulders to the bottom. Threshold 128 pro
 200-byte MSB-first bitmap. The onchain renderer uses only charcoal `#34343A` and warm
 pastel `#E9DDC7`.
 
+### D16 — One permanent registration project
+
+Registration URIs include both the Census contract address and token ID. This prevents
+cross-deployment token-ID collisions while every deployment reuses the same Vercel
+project and canonical host. The service verifies the requested contract through the
+ERC-8217 binding instead of relying on one mutable `CENSUS_ADDRESS` environment value.
+
 ## Active Sepolia record
 
-- Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
-- canonical host: `https://census-registration-v2.vercel.app`
+- Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
+- canonical host: `https://census-registration-dnebayis.vercel.app`
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - minting: irreversibly open
-- rollout token/agent: `1 / 9104`
+- rollout token/agent: none yet
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains at `https://census-registration.vercel.app`.
 
-Gas figures in project documents are Foundry mock comparisons: about 685k per separate
-mint and 404k per entry in a four-entry batch, a 42% saving. They are not live adapter
+Gas figures in project documents are Foundry mock comparisons: about 710k per separate
+mint and 429k per entry in a four-entry batch, a 40% saving. They are not live adapter
 estimates.
 
 ## Collection constants retained

@@ -54,7 +54,7 @@ class PipelineTest(unittest.TestCase):
         )
         self.assertEqual(framed.getpixel((2, 39)), 0, "portrait must reach the bottom")
 
-    def test_production_build_inputs_are_agent_rasters(self):
+    def test_build_accepts_rasters_with_optional_provenance(self):
         with tempfile.TemporaryDirectory() as output:
             png = Path(output) / "portrait.png"
             buffer = io.BytesIO()
@@ -66,12 +66,13 @@ class PipelineTest(unittest.TestCase):
             svg.write_text("<svg/>")
             with self.assertRaisesRegex(ValueError, "unsupported input"):
                 generate._read_drawing(str(svg))
-            with self.assertRaisesRegex(ValueError, "--generator"):
-                generate._agent_generator("manual")
+            with self.assertRaisesRegex(ValueError, "generator"):
+                generate._generator_provenance("manual")
             self.assertEqual(
-                generate._agent_generator("agent:codex-imagegen"),
+                generate._generator_provenance("agent:codex-imagegen"),
                 "agent:codex-imagegen",
             )
+            self.assertEqual(generate._generator_provenance(None), "user:raster")
 
     def test_bitmap_python_matches_naive_reference_with_209_byte_records(self):
         rng = random.Random(80048217)
@@ -154,7 +155,7 @@ class PipelineTest(unittest.TestCase):
         self.assertEqual(args[0], "[0x01,0x02]")
         self.assertEqual(json.loads(args[2]), ["one", "two"])
 
-    def test_warning_requires_explicit_acceptance(self):
+    def test_warning_is_informational_during_mint(self):
         with tempfile.TemporaryDirectory() as output:
             bitmap = bytes(200)
             Path(output, "warn.hex").write_text(bitmap.hex())
@@ -181,10 +182,38 @@ class PipelineTest(unittest.TestCase):
                 output=output,
                 accept_warnings=False,
             )
-            with self.assertRaisesRegex(ValueError, "--accept-warnings"):
-                generate._load_mint_drafts(args)
-            args.accept_warnings = True
             self.assertEqual(generate._load_mint_drafts(args)[0]["id"], "warn")
+
+    def test_persona_defaults_to_draft_subject(self):
+        with tempfile.TemporaryDirectory() as output:
+            bitmap = bytes(200)
+            Path(output, "plain.hex").write_text(bitmap.hex())
+            save_draft_manifest(
+                output,
+                "plain",
+                {
+                    "version": generate.PIPELINE_VERSION,
+                    "subject": "a plain portrait",
+                    "traits": VALID_TRAITS,
+                    "traits_hex": "0x000000000000000000",
+                    "build": {
+                        "bitmap_format": generate.BITMAP_FORMAT,
+                        "generator": "user:raster",
+                        "bitmap_sha256": generate._sha256(bitmap),
+                        "stats": {"mintable": True, "warnings": [], "signature": "0x01"},
+                    },
+                },
+            )
+            args = argparse.Namespace(
+                drafts=["plain"],
+                legacy_ids=None,
+                persona=None,
+                output=output,
+                accept_warnings=False,
+            )
+            self.assertEqual(
+                generate._load_mint_drafts(args)[0]["persona"], "a plain portrait"
+            )
 
     def test_legacy_two_bit_draft_cannot_enter_mint(self):
         with tempfile.TemporaryDirectory() as output:

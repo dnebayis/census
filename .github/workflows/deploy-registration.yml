@@ -1,4 +1,4 @@
-name: Deploy registration v2
+name: Deploy permanent registration service
 
 on:
   workflow_dispatch:
@@ -7,13 +7,13 @@ on:
       - main
     paths:
       - "registration-service/**"
-      - ".github/workflows/deploy-registration-v2.yml"
+      - ".github/workflows/deploy-registration.yml"
 
 permissions:
   contents: read
 
 concurrency:
-  group: census-registration-v2-production
+  group: census-registration-production
   cancel-in-progress: false
 
 jobs:

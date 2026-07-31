@@ -25,9 +25,10 @@ contract Census is ERC721, Ownable, IERC8048 {
     uint256 public constant SUPPLY = 10_000;
     uint256 public constant MAX_PER_WALLET = 5;
 
-    /// @dev Hard density band, 8%-70% of 1600. Catches only a blank canvas and a solid block.
-    uint256 public constant DENSITY_MIN = 128;
-    uint256 public constant DENSITY_MAX = 1120;
+    /// @dev Deliberately permissive 1%-95% density band. This rejects only effectively
+    ///      blank or solid uploads; composition and visual quality are never mint gates.
+    uint256 public constant DENSITY_MIN = 16;
+    uint256 public constant DENSITY_MAX = 1520;
 
     /// @dev Soft thresholds. Advisory only — `validate` reports them, `mint` ignores them.
     uint256 internal constant WARN_SYMMETRY = 10; // of 32 comparable signature bits
@@ -332,7 +333,7 @@ contract Census is ERC721, Ownable, IERC8048 {
             IAdapter8004.TokenStandard.ERC721,
             address(this),
             tokenId,
-            string.concat(canonicalHost, "/a/", id, "/registration.json")
+            string.concat(canonicalHost, "/a/", LibString.toHexString(address(this)), "/", id, "/registration.json")
         );
     }
 

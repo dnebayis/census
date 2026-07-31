@@ -4,21 +4,23 @@ Census records 10,000 faces and what each one does. A token contains a 40×40 on
 portrait, one onchain-assigned skill and class, nine pipeline-assigned visual traits,
 and an ERC-8004 identity.
 
-Active Sepolia Census is `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`.
-Registration is served from `https://census-registration-v2.vercel.app`; adapter and
+Active Sepolia Census is `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`.
+Registration is served from `https://census-registration-dnebayis.vercel.app`; adapter and
 Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
 `0x8004a818bfb912233c491871b3d84c89a494bd9e`. Permissionless minting is irreversibly
-open. Genesis token 1 is ERC-8004 agent 9104.
+open. This deployment currently has no minted entries; archived v2 tokens 1–4 remain
+available through the same address-routed registration project.
 
 ## What exists in this phase
 
 Minting is the product boundary:
 
 1. A draft receives a secure persistent seed and nine visual traits.
-2. An image-capable IDE agent generates a raster portrait from those locked traits.
-3. The agent inspects the source and exact one-bit 40×40 preview, redraws structural
-   failures or materially unreadable art, and reviews advisory metrics once. The
-   pipeline checks duplicates, wallet allowance, and exact transaction behavior.
+2. An IDE agent generates a raster portrait from those locked traits, or the user
+   supplies a PNG, JPEG, or WebP.
+3. The pipeline shows the exact one-bit 40×40 preview and informational art metrics.
+   Only effectively blank or solid output must be replaced. Duplicate, wallet, trait,
+   and exact transaction checks remain automatic.
 4. Census writes a single 209-byte immutable art record, draws a capped skill, registers
    an ERC-8004 identity, and transfers the NFT to the minter in one transaction.
 5. A read-only service publishes the current ERC-8004 registration JSON.
