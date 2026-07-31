@@ -9,6 +9,12 @@ restores the shared RESTAP/MCP/x402 runtime, ERC-8257 discovery, seven skill
 implementations, and separate owner-controlled execution wallets. Nothing is active
 until the gates in `docs/RUNTIME-PLAN.md` pass; Executor remains last.
 
+`runtime-service/` contains the local inactive protocol shell: `llms.txt`,
+address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
+Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
+It is not deployed, has no durable news store or distributed rate limit, and must not
+be advertised in registration JSON yet.
+
 Read, in order:
 
 1. `docs/standards-lock.md`
@@ -103,6 +109,10 @@ cd registration-service
 npm ci
 npm test
 npm audit --audit-level=high
+cd ../runtime-service
+npm ci
+npm test
+npm audit --audit-level=moderate
 ```
 
 The fork test performs a real adapter registration on fork state, checks the

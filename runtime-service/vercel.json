@@ -1,0 +1,36 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/llms.txt",
+      "destination": "/api/llms"
+    },
+    {
+      "source": "/a/:censusAddress/:tokenId/.well-known/restap.json",
+      "destination": "/api/catalog?censusAddress=:censusAddress&tokenId=:tokenId"
+    },
+    {
+      "source": "/a/:censusAddress/:tokenId/talk",
+      "destination": "/api/talk?censusAddress=:censusAddress&tokenId=:tokenId"
+    },
+    {
+      "source": "/a/:censusAddress/:tokenId/news",
+      "destination": "/api/news?censusAddress=:censusAddress&tokenId=:tokenId"
+    },
+    {
+      "source": "/mcp/:censusAddress/:tokenId",
+      "destination": "/api/mcp?censusAddress=:censusAddress&tokenId=:tokenId"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 # Census runtime phase
 
-Status: architecture direction approved; implementation and activation pending.
+Status: architecture approved; inactive protocol shell implemented locally; production
+implementation and activation pending.
 
 The runtime returns to the original Census product thesis: entries are working agents,
 not only onchain identities. A single shared host provides RESTAP by default, MCP gives
@@ -59,7 +60,9 @@ Sepolia fork.
 ## Delivery order
 
 1. Build the shared protocol shell: `llms.txt`, RESTAP catalog, JSON `/talk`, passive
-   `/news`, MCP projection, address-routed chain reads, schemas, rate limits, and tests.
+   `/news`, MCP projection, address-routed chain reads, and schemas. This local shell is
+   implemented under `runtime-service/`; `/talk` and MCP invocation remain inactive.
+   Durable news storage and distributed rate limits are still required before deploy.
 2. Implement Mint Scanner end to end without payment, then the other five report-only
    skill engines. Every result includes evidence and reasoning.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →

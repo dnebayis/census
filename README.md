@@ -15,6 +15,7 @@ are approved but not active; see [`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
 |---|---|
 | Census v3 | [`0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`](https://sepolia.etherscan.io/address/0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc) — mint open |
 | Registration | [`https://census-registration-dnebayis.vercel.app`](https://census-registration-dnebayis.vercel.app) — permanent single project |
+| Runtime | local inactive shell in [`runtime-service`](runtime-service/README.md) — not deployed or advertised |
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
 | Archived v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — tokens 1–4 preserved |
@@ -78,6 +79,7 @@ forge fmt --check
 forge test -vv
 python3 -m unittest -v pipeline/test_pipeline.py
 cd registration-service && npm ci && npm test && npm audit --audit-level=high
+cd ../runtime-service && npm ci && npm test && npm audit --audit-level=moderate
 ```
 
 The current local Foundry mock measurement is about 710k gas per separate mint and 429k

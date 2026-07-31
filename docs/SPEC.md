@@ -10,6 +10,10 @@ Phase 2: ERC-8257, RESTAP, MCP, x402, seven skill runtimes, Executor authorizati
 separate execution wallets are approved but not yet active. Their delivery gates are in
 `RUNTIME-PLAN.md`. A frontend remains outside the product direction.
 
+The inactive `runtime-service/` shell implements address-routed RESTAP discovery,
+`/talk`, passive `/news`, and MCP without claiming service activation. Registration
+continues to return `active: false`, empty services, and `x402Support: false`.
+
 The normative standards and upstream commits are in `standards-lock.md`.
 
 ## 2. Contract
