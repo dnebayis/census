@@ -5,21 +5,24 @@ not sufficient if its important forms disappear after reduction.
 
 ## Prompt contract
 
-Use a high-resolution monochrome editorial stencil or screen-print portrait, not pixel
-art. Require:
+Match the RAO/Basies final visual language, but generate a normal source illustration
+before reduction. Require:
 
-- one head-and-shoulders subject, directly front-facing;
-- strong centered silhouette and near bilateral symmetry;
-- plain pure-white background and empty upper corners;
-- large black, dark-grey, and light-grey shapes;
-- readable solid eyes, brows, nose, and mouth;
-- shoulders cut by the bottom edge;
-- every assigned trait expressed with a large, unmistakable shape;
-- no text, logo, watermark, border, scene, prop clutter, gradients, halftone, or
-  hairline detail.
+- square close-up portrait headshot, directly front-facing;
+- the head is centered with clean space above the hair and shoulders reaching the
+  bottom;
+- a high-resolution vintage ink/woodcut source, not source pixel art;
+- broad high-contrast shapes and controlled facial detail that survive reduction;
+- a final chunky 1-bit bitmap aesthetic like Macintosh 1984 icons;
+- detailed facial features clearly visible in the final 40×40 preview;
+- exactly two final colors: Census charcoal `#34343A` and warm pastel `#E9DDC7`;
+- every assigned trait expressed with a large unmistakable pixel shape;
+- no final grey levels, gradients, antialiasing, dithering, text, watermark, border or
+  scenery.
 
-The image generator may render at high resolution. The pipeline, not the generator,
-owns the 40×40 conversion.
+The image generator renders a normal high-resolution portrait. The pipeline alone owns
+the one reduction to 36×36, placement at y=4 on a 40×40 canvas, threshold, 1-bit
+packing, and palette application.
 
 ## Visual pass
 
@@ -30,7 +33,7 @@ The reduced preview passes only when all are true:
 2. Eyes and mouth remain distinct; the face is not a single dark mass.
 3. The outer silhouette is continuous and the shoulders anchor the bottom edge.
 4. The top corners are empty and there is no accidental frame.
-5. All four palette tones have a useful role rather than random speckle.
+5. Only foreground and background exist; there are no grey pixels or simulated shading.
 6. The result looks intentionally illustrated, not procedurally filled.
 
 ## Retry order

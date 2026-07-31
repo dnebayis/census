@@ -1,39 +1,24 @@
-"""Configuration for the Census art pipeline.
+"""Configuration for the Census 1-bit art pipeline.
 
-Adapted from Basies. Same pipeline shape — assign traits, generate, binarize, save —
-with these changes:
-
-  Basies                       Census
-  ------                       ------
-  1 bit/pixel, 200 bytes       2 bits/pixel, 400 bytes   (SPEC §3.1)
-  single threshold at 128      four tone levels
-  Gender trait                 removed                   (DECISIONS D12)
-  traits are metadata only     traits also build the prompt
-  Flux Dev via Replicate       an LLM draws the portrait
-  9:16                         1:1, head and shoulders, front facing
+Geometry and thresholding intentionally match the RAO/Basies pipeline: 40×40,
+MSB-first, one bit per pixel, one direct LANCZOS resize, and threshold 128. Census
+changes the source workflow, rendered palette, and persistent nine-trait assignment.
 """
 
 # Grid dimensions
 GRID_WIDTH = 40
 GRID_HEIGHT = 40
 TOTAL_PIXELS = GRID_WIDTH * GRID_HEIGHT  # 1600
-BITMAP_BYTES = TOTAL_PIXELS // 4  # 400 — four pixels per byte, two bits each
+BITMAP_BYTES = TOTAL_PIXELS // 8  # 200 — eight pixels per byte, one bit each
 
-# Tones. 0 background, 3 full ink. A pixel is "lit" when non-zero.
-TONE_BG, TONE_LIGHT, TONE_MID, TONE_INK = 0, 1, 2, 3
+# Reserve four final pixels above the portrait while keeping the shoulders anchored to
+# the bottom edge. The source is reduced to 36×36, centered horizontally, and placed
+# at y=4 on the 40×40 canvas.
+PORTRAIT_SIZE = 36
+PORTRAIT_TOP = 4
 
-# Where the background ends. Swept per image to land density in the target band.
-BG_CUT_RANGE = (120, 246)
-
-# How lit pixels split across the three ink levels, by percentile of their own
-# distribution rather than by fixed grey values. Fixed cut points break on any source
-# whose contrast differs from what you assumed; percentiles guarantee a full tonal
-# range, which is what stops the contract's FLAT_TONE warning.
-TONE_SPLIT = (0.32, 0.68)  # darkest 32% -> ink, next 36% -> mid, rest -> light
-
-# Two-stage downscale. LANCZOS to here, then a BOX area filter to 40x40 — an area
-# filter last is what keeps features from ringing into speckle.
-INTERMEDIATE = GRID_WIDTH * 8  # 320
+# RAO's fixed binary threshold. Values <=128 are foreground.
+THRESHOLD = 128
 
 # ---------------------------------------------------------------- contract limits
 
@@ -46,18 +31,12 @@ DENSITY_MAX = 1120  # 70%
 WARN_SYMMETRY = 10  # of 32 comparable signature bits
 WARN_CORNER_PCT = 25  # lit share of either 8x8 top corner
 WARN_ISOLATED_PCT = 15  # share of lit pixels with no lit orthogonal neighbour
-WARN_FULLINK_PCT = 30  # minimum share of lit pixels at tone 3
-
-# What to aim for while sweeping. Comfortably inside the hard band, and about what a
-# head-and-shoulders bust actually occupies.
-TARGET_DENSITY = (420, 780)
 
 # ---------------------------------------------------------------- generation
 
-# Production art is agent-native: an image-capable IDE agent generates a raster source,
-# runs it through `build`, visually inspects the reduced preview, and redraws the same
-# persistent draft until it passes. The pipeline deliberately contains no image API key
-# or generator; orchestration belongs to the owner's agent session.
+# Production art is agent-native: an image-capable IDE agent generates a normal,
+# high-contrast portrait source, runs it through `build`, visually inspects the reduced
+# 1-bit preview, and redraws the same persistent draft until it passes.
 #
 # Script and SVG sources are excluded from the mint path. They made useful deployment
 # smoke tests, but they are not the collection's production art workflow.

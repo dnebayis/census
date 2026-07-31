@@ -8,37 +8,29 @@ import {LibString} from "solady/utils/LibString.sol";
 import {Base64} from "solady/utils/Base64.sol";
 
 /// @title Art
-/// @notice Renders a 40x40 two-bit entry to SVG entirely onchain, with no external host.
-/// @dev Row-scan run-length encoding: each row emits one rect per run of equal non-zero
-///      tone. Background pixels are never drawn — the single backdrop rect covers them.
+/// @notice Renders a 40x40 one-bit entry to SVG entirely onchain, with no external host.
+/// @dev The bitmap geometry matches the RAO/Basies 1-bit style. Only the Census palette
+///      differs: charcoal #34343A foreground on warm pastel #E9DDC7.
 library Art {
     using DynamicBufferLib for DynamicBufferLib.DynamicBuffer;
-
-    /// @dev A four-step ramp on white. Tone 0 is the backdrop and is never emitted.
-    function toneColor(uint256 tone) internal pure returns (string memory) {
-        if (tone == 1) return "#D4D4D4";
-        if (tone == 2) return "#7A7A7A";
-        return "#141414";
-    }
 
     function svg(bytes memory bm) internal pure returns (string memory) {
         DynamicBufferLib.DynamicBuffer memory buf;
         buf.p(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="640" height="640" '
-            'shape-rendering="crispEdges"><rect width="40" height="40" fill="#FFFFFF"/>'
+            'shape-rendering="crispEdges"><rect width="40" height="40" fill="#E9DDC7"/>'
         );
 
         unchecked {
             for (uint256 r = 0; r < Bitmap.DIM; ++r) {
                 uint256 c;
                 while (c < Bitmap.DIM) {
-                    uint256 tone = Bitmap.pixelAtRC(bm, r, c);
-                    if (tone == 0) {
+                    if (Bitmap.pixelAtRC(bm, r, c) == 0) {
                         ++c;
                         continue;
                     }
                     uint256 start = c;
-                    while (c < Bitmap.DIM && Bitmap.pixelAtRC(bm, r, c) == tone) {
+                    while (c < Bitmap.DIM && Bitmap.pixelAtRC(bm, r, c) == 1) {
                         ++c;
                     }
                     buf.p(
@@ -50,9 +42,7 @@ library Art {
                                 LibString.toString(r),
                                 '" width="',
                                 LibString.toString(c - start),
-                                '" height="1" fill="',
-                                toneColor(tone),
-                                '"/>'
+                                '" height="1" fill="#34343A"/>'
                             )
                         )
                     );

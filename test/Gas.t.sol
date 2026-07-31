@@ -14,24 +14,23 @@ abstract contract BitmapFixture is Test {
 
     function _setPixel(bytes memory bm, uint256 r, uint256 c, uint256 tone) internal pure {
         uint256 idx = r * 40 + c;
-        uint256 b = idx >> 2;
-        uint256 shift = 6 - ((idx & 3) << 1);
-        uint8 cur = uint8(bm[b]);
-        bm[b] = bytes1(uint8((cur & ~(uint8(3) << uint8(shift))) | (uint8(tone) << uint8(shift))));
+        uint256 b = idx >> 3;
+        uint256 shift = 7 - (idx & 7);
+        if (tone != 0) bm[b] = bytes1(uint8(uint8(bm[b]) | (uint8(1) << uint8(shift))));
     }
 
     function _bitmap(uint256 seed) internal pure returns (bytes memory bm) {
-        bm = new bytes(400);
+        bm = new bytes(200);
         for (uint256 r = 8; r < 36; ++r) {
             for (uint256 c = 10; c < 30; ++c) {
-                _setPixel(bm, r, c, (r < 12 || c < 13 || c >= 27) ? 2 : 3);
+                _setPixel(bm, r, c, 1);
             }
         }
         for (uint256 i = 0; i < 8; ++i) {
             if ((seed >> i) & 1 == 0) continue;
             for (uint256 r = 0; r < 5; ++r) {
                 for (uint256 c = 0; c < 5; ++c) {
-                    _setPixel(bm, r, i * 5 + c, 3);
+                    _setPixel(bm, r, i * 5 + c, 1);
                 }
             }
         }
@@ -58,11 +57,11 @@ contract GasTest is BitmapFixture {
         g = gasleft();
         address p = SSTORE2.write(record);
         used = g - gasleft();
-        console2.log("SSTORE2.write (409B)  :", used);
+        console2.log("SSTORE2.write (209B)  :", used);
         sink = uint160(p);
 
         g = gasleft();
-        bytes memory back = SSTORE2.read(p, 0, 400);
+        bytes memory back = SSTORE2.read(p, 0, 200);
         used = g - gasleft();
         console2.log("SSTORE2.read bitmap   :", used);
         sink = back.length;

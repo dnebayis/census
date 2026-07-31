@@ -1,13 +1,14 @@
 # Census overview
 
-Census records 10,000 faces and what each one does. A token contains a 40×40 four-tone
+Census records 10,000 faces and what each one does. A token contains a 40×40 one-bit
 portrait, one onchain-assigned skill and class, nine pipeline-assigned visual traits,
 and an ERC-8004 identity.
 
-Active Sepolia Census is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`.
-Registration is served from `https://census-registration.vercel.app`; adapter and
+Active Sepolia Census is `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`.
+Registration is served from `https://census-registration-v2.vercel.app`; adapter and
 Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
-`0x8004a818bfb912233c491871b3d84c89a494bd9e`. Minting is open.
+`0x8004a818bfb912233c491871b3d84c89a494bd9e`. Minting remains closed pending the
+reviewed first-entry launch gate.
 
 ## What exists in this phase
 
@@ -15,10 +16,10 @@ Minting is the product boundary:
 
 1. A draft receives a secure persistent seed and nine visual traits.
 2. An image-capable IDE agent generates a raster portrait from those locked traits.
-3. The agent inspects the source and exact four-tone 40×40 preview, redraws the same
+3. The agent inspects the source and exact one-bit 40×40 preview, redraws the same
    draft on any warning, and the pipeline checks duplicates, wallet allowance, and exact
    transaction behavior.
-4. Census writes a single 409-byte immutable art record, draws a capped skill, registers
+4. Census writes a single 209-byte immutable art record, draws a capped skill, registers
    an ERC-8004 identity, and transfers the NFT to the minter in one transaction.
 5. A read-only service publishes the current ERC-8004 registration JSON.
 
@@ -42,7 +43,7 @@ An owner who wants to stop using the shared registration service can call the ad
 
 Immutable:
 
-- 400-byte bitmap
+- 200-byte one-bit bitmap
 - nine trait indices and vocabulary interpretation
 - skill and class
 - canonical registration host

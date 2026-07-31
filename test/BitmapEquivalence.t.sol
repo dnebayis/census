@@ -21,8 +21,8 @@ contract BitmapEquivalenceTest is Test {
                 for (uint256 r = 0; r < 5; ++r) {
                     for (uint256 c = 0; c < 5; ++c) {
                         uint256 idx = (br * 5 + r) * 40 + (bc * 5 + c);
-                        uint256 b = uint8(bm[idx >> 2]);
-                        if (((b >> (6 - ((idx & 3) << 1))) & 3) != 0) ++n;
+                        uint256 b = uint8(bm[idx >> 3]);
+                        if (((b >> (7 - (idx & 7))) & 1) != 0) ++n;
                     }
                 }
                 lit += n;
@@ -32,8 +32,8 @@ contract BitmapEquivalenceTest is Test {
     }
 
     function _pad(bytes memory seedBytes) internal pure returns (bytes memory bm) {
-        bm = new bytes(400);
-        for (uint256 i; i < 400; ++i) {
+        bm = new bytes(200);
+        for (uint256 i; i < 200; ++i) {
             bm[i] = seedBytes.length == 0 ? bytes1(0) : seedBytes[i % seedBytes.length];
         }
     }
@@ -49,8 +49,8 @@ contract BitmapEquivalenceTest is Test {
     }
 
     function testFuzz_MatchesOnPseudorandomBitmaps(uint256 seed) public pure {
-        bytes memory bm = new bytes(400);
-        for (uint256 i; i < 400; ++i) {
+        bytes memory bm = new bytes(200);
+        for (uint256 i; i < 200; ++i) {
             bm[i] = bytes1(uint8(uint256(keccak256(abi.encode(seed, i)))));
         }
 
@@ -62,15 +62,15 @@ contract BitmapEquivalenceTest is Test {
     }
 
     function test_AllZero() public pure {
-        bytes memory bm = new bytes(400);
+        bytes memory bm = new bytes(200);
         (uint256 lit, uint64 sig) = Bitmap.analyze(bm);
         assertEq(lit, 0);
         assertEq(sig, 0);
     }
 
     function test_AllFull() public pure {
-        bytes memory bm = new bytes(400);
-        for (uint256 i; i < 400; ++i) {
+        bytes memory bm = new bytes(200);
+        for (uint256 i; i < 200; ++i) {
             bm[i] = 0xFF;
         }
         (uint256 lit, uint64 sig) = Bitmap.analyze(bm);
@@ -78,34 +78,16 @@ contract BitmapEquivalenceTest is Test {
         assertEq(sig, type(uint64).max, "every block must be set");
     }
 
-    /// @dev Tone 1 and tone 2 are non-zero, so they must count as lit exactly like tone 3.
-    ///      The word-level trick collapses a 2-bit field with `(x | x >> 1)`; if that were
-    ///      wrong, tone 2 (binary 10) would be the case that breaks.
-    function test_MidTonesCountAsLit() public pure {
-        bytes memory bm = new bytes(400);
-        for (uint256 i; i < 400; ++i) {
-            bm[i] = 0xAA; // 10 10 10 10 — every pixel is tone 2
-        }
-        (uint256 lit,) = Bitmap.analyze(bm);
-        assertEq(lit, 1600);
-
-        for (uint256 i; i < 400; ++i) {
-            bm[i] = 0x55; // 01 01 01 01 — every pixel is tone 1
-        }
-        (lit,) = Bitmap.analyze(bm);
-        assertEq(lit, 1600);
-    }
-
     /// @dev The block-majority boundary is 13 of 25. Off-by-one here would reshape every
     ///      signature in the collection.
     function test_MajorityBoundaryIsThirteen() public pure {
-        bytes memory bm = new bytes(400);
+        bytes memory bm = new bytes(200);
         // light exactly 12 pixels of block (0,0) — must stay unset
         _light(bm, 12);
         (, uint64 sig) = Bitmap.analyze(bm);
         assertEq(sig & 1, 0, "12 of 25 must not set the block bit");
 
-        bm = new bytes(400);
+        bm = new bytes(200);
         _light(bm, 13);
         (, sig) = Bitmap.analyze(bm);
         assertEq(sig & 1, 1, "13 of 25 must set the block bit");
@@ -116,9 +98,9 @@ contract BitmapEquivalenceTest is Test {
         for (uint256 r = 0; r < 5 && done < count; ++r) {
             for (uint256 c = 0; c < 5 && done < count; ++c) {
                 uint256 idx = r * 40 + c;
-                uint256 b = idx >> 2;
-                uint256 shift = 6 - ((idx & 3) << 1);
-                bm[b] = bytes1(uint8(uint8(bm[b]) | (uint8(3) << uint8(shift))));
+                uint256 b = idx >> 3;
+                uint256 shift = 7 - (idx & 7);
+                bm[b] = bytes1(uint8(uint8(bm[b]) | (uint8(1) << uint8(shift))));
                 ++done;
             }
         }

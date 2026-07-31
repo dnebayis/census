@@ -30,24 +30,20 @@ contract CensusTest is Test {
 
     function _setPixel(bytes memory bm, uint256 r, uint256 c, uint256 tone) internal pure {
         uint256 idx = r * 40 + c;
-        uint256 b = idx >> 2;
-        uint256 shift = 6 - ((idx & 3) << 1);
-        uint8 cur = uint8(bm[b]);
-        cur = uint8((cur & ~(uint8(3) << uint8(shift))) | (uint8(tone) << uint8(shift)));
-        bm[b] = bytes1(cur);
+        uint256 b = idx >> 3;
+        uint256 shift = 7 - (idx & 7);
+        if (tone != 0) bm[b] = bytes1(uint8(uint8(bm[b]) | (uint8(1) << uint8(shift))));
     }
 
     /// @dev A body that always lands inside the density band, plus 8 seed-controlled blocks
     ///      in the top signature row so every seed yields a distinct 8x8 signature.
     function _bitmap(uint256 seed) internal pure returns (bytes memory bm) {
-        bm = new bytes(400);
+        bm = new bytes(200);
 
         // torso + head mass: rows 8-35, cols 10-29 => 560 lit
         for (uint256 r = 8; r < 36; ++r) {
             for (uint256 c = 10; c < 30; ++c) {
-                // vary tone so the full-ink share stays healthy
-                uint256 tone = (r < 12 || c < 13 || c >= 27) ? 2 : 3;
-                _setPixel(bm, r, c, tone);
+                _setPixel(bm, r, c, 1);
             }
         }
 
@@ -56,7 +52,7 @@ contract CensusTest is Test {
             if ((seed >> i) & 1 == 0) continue;
             for (uint256 r = 0; r < 5; ++r) {
                 for (uint256 c = 0; c < 5; ++c) {
-                    _setPixel(bm, r, i * 5 + c, 3);
+                    _setPixel(bm, r, i * 5 + c, 1);
                 }
             }
         }
@@ -100,20 +96,20 @@ contract CensusTest is Test {
     }
 
     function test_ValidateRejectsWrongLength() public view {
-        (bool ok, uint8 reason,) = census.validate(new bytes(399), TRAITS, alice);
+        (bool ok, uint8 reason,) = census.validate(new bytes(199), TRAITS, alice);
         assertFalse(ok);
         assertEq(reason, census.ERR_LENGTH());
     }
 
     function test_ValidateRejectsBlankCanvas() public view {
-        (bool ok, uint8 reason,) = census.validate(new bytes(400), TRAITS, alice);
+        (bool ok, uint8 reason,) = census.validate(new bytes(200), TRAITS, alice);
         assertFalse(ok);
         assertEq(reason, census.ERR_TOO_SPARSE());
     }
 
     function test_ValidateRejectsSolidBlock() public view {
-        bytes memory bm = new bytes(400);
-        for (uint256 i; i < 400; ++i) {
+        bytes memory bm = new bytes(200);
+        for (uint256 i; i < 200; ++i) {
             bm[i] = 0xFF;
         }
         (bool ok, uint8 reason,) = census.validate(bm, TRAITS, alice);
@@ -144,10 +140,10 @@ contract CensusTest is Test {
 
     function test_SoftWarningsDoNotBlockMint() public {
         // an off-centre blob: asymmetric and noisy, but still mintable
-        bytes memory bm = new bytes(400);
+        bytes memory bm = new bytes(200);
         for (uint256 r = 5; r < 25; ++r) {
             for (uint256 c = 2; c < 20; ++c) {
-                _setPixel(bm, r, c, 3);
+                _setPixel(bm, r, c, 1);
             }
         }
 
@@ -186,7 +182,7 @@ contract CensusTest is Test {
         uint256 id = census.mint(_bitmap(1), traits_, "ctx");
 
         assertEq(census.traitsOf(id), traits_);
-        assertEq(bytes(census.bitmapOf(id)).length, 400);
+        assertEq(bytes(census.bitmapOf(id)).length, 200);
         assertEq(census.traitOf(id, 0), "ape-like humanoid");
         assertEq(census.traitOf(id, 8), "collar tag");
         assertEq(string(census.metadata(id, "trait[hair]")), "wild curly hair");
@@ -459,6 +455,31 @@ contract CensusTest is Test {
         assertGt(bytes(census.tokenURI(id)).length, 2000);
     }
 
+    function test_RenderedSVGUsesOnlyLockedCensusPalette() public pure {
+        string memory rendered = Art.svg(_bitmap(1));
+        assertTrue(_contains(rendered, "#E9DDC7"));
+        assertTrue(_contains(rendered, "#34343A"));
+        assertFalse(_contains(rendered, "#FFFFFF"));
+        assertFalse(_contains(rendered, "#141414"));
+    }
+
+    function _contains(string memory haystack, string memory needle) internal pure returns (bool) {
+        bytes memory h = bytes(haystack);
+        bytes memory n = bytes(needle);
+        if (n.length > h.length) return false;
+        for (uint256 i; i <= h.length - n.length; ++i) {
+            bool match_ = true;
+            for (uint256 j; j < n.length; ++j) {
+                if (h[i + j] != n[j]) {
+                    match_ = false;
+                    break;
+                }
+            }
+            if (match_) return true;
+        }
+        return false;
+    }
+
     function _slice(string memory s, uint256 start, uint256 len) internal pure returns (string memory) {
         bytes memory b = bytes(s);
         bytes memory out = new bytes(len);
@@ -492,16 +513,16 @@ contract CensusOptimisationHazardTest is Test {
 
     function _setPixel(bytes memory bm, uint256 r, uint256 c, uint256 tone) internal pure {
         uint256 idx = r * 40 + c;
-        uint256 b = idx >> 2;
-        uint256 shift = 6 - ((idx & 3) << 1);
-        bm[b] = bytes1(uint8((uint8(bm[b]) & ~(uint8(3) << uint8(shift))) | (uint8(tone) << uint8(shift))));
+        uint256 b = idx >> 3;
+        uint256 shift = 7 - (idx & 7);
+        if (tone != 0) bm[b] = bytes1(uint8(uint8(bm[b]) | (uint8(1) << uint8(shift))));
     }
 
     function _bitmap() internal pure returns (bytes memory bm) {
-        bm = new bytes(400);
+        bm = new bytes(200);
         for (uint256 r = 8; r < 36; ++r) {
             for (uint256 c = 10; c < 30; ++c) {
-                _setPixel(bm, r, c, 3);
+                _setPixel(bm, r, c, 1);
             }
         }
     }
@@ -562,7 +583,7 @@ contract HighIdAdapter is IAdapter8004 {
     {
         if (probe != address(0)) {
             observedSkillPlusOne = uint256(ICensusProbe(probe).skillOf(tid)) + 1;
-            observedBitmapNonZero = ICensusProbe(probe).bitmapOf(tid).length == 400;
+            observedBitmapNonZero = ICensusProbe(probe).bitmapOf(tid).length == 200;
         }
         agentId = nextAgentId++;
         _binding[agentId] = Binding({standard: s, tokenContract: tc, tokenId: tid});

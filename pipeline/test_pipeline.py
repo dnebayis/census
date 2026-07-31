@@ -12,8 +12,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import generate
 from PIL import Image
-from binarize import analyse, unpack_bitmap
-from output import load_existing_traits, load_signature_owners, save_draft_manifest
+from binarize import analyse, pack_bitmap, resize_to_grid, threshold_binarize, unpack_bitmap
+from output import PALETTE, load_existing_traits, load_signature_owners, save_draft_manifest
 from traits import generate_traits, to_indices
 
 
@@ -31,6 +31,29 @@ VALID_TRAITS = {
 
 
 class PipelineTest(unittest.TestCase):
+    def test_one_bit_threshold_packing_and_census_palette(self):
+        gray = Image.new("L", (40, 40), 255)
+        gray.putpixel((0, 0), 128)
+        gray.putpixel((1, 0), 129)
+        pixels = threshold_binarize(gray)
+        bitmap = pack_bitmap(pixels)
+
+        self.assertEqual(len(bitmap), 200)
+        self.assertEqual(bitmap[0], 0x80)
+        self.assertEqual(PALETTE, {0: (233, 221, 199), 1: (52, 52, 58)})
+
+        pixels[2] = 2
+        with self.assertRaisesRegex(ValueError, "0 or 1"):
+            pack_bitmap(pixels)
+
+    def test_portrait_framing_reserves_four_rows_and_anchors_bottom(self):
+        framed = resize_to_grid(Image.new("RGB", (80, 80), "black")).convert("L")
+        self.assertTrue(all(framed.getpixel((x, y)) == 255 for y in range(4) for x in range(40)))
+        self.assertTrue(
+            all(framed.getpixel((x, y)) == 0 for y in range(4, 40) for x in range(2, 38))
+        )
+        self.assertEqual(framed.getpixel((2, 39)), 0, "portrait must reach the bottom")
+
     def test_production_build_inputs_are_agent_rasters(self):
         with tempfile.TemporaryDirectory() as output:
             png = Path(output) / "portrait.png"
@@ -50,11 +73,11 @@ class PipelineTest(unittest.TestCase):
                 "agent:codex-imagegen",
             )
 
-    def test_bitmap_python_matches_naive_reference_with_409_byte_records(self):
+    def test_bitmap_python_matches_naive_reference_with_209_byte_records(self):
         rng = random.Random(80048217)
         for _ in range(256):
-            record = rng.randbytes(400) + rng.randbytes(9)
-            bitmap = record[:400]
+            record = rng.randbytes(200) + rng.randbytes(9)
+            bitmap = record[:200]
             pixels = unpack_bitmap(bitmap)
             stats = analyse(pixels)
 
@@ -107,8 +130,8 @@ class PipelineTest(unittest.TestCase):
 
     def test_signature_owners_are_not_collapsed_to_a_set_bug(self):
         with tempfile.TemporaryDirectory() as output:
-            Path(output, "one.json").write_text('{"signature":"0xabc"}')
-            Path(output, "two.json").write_text('{"signature":"0xabc"}')
+            Path(output, "one.json").write_text('{"bytes":200,"signature":"0xabc"}')
+            Path(output, "two.json").write_text('{"bytes":200,"signature":"0xabc"}')
             self.assertEqual(load_signature_owners(output)["0xabc"], ["one", "two"])
 
     def test_mint_uses_single_or_batch_abi(self):
@@ -133,12 +156,14 @@ class PipelineTest(unittest.TestCase):
 
     def test_warning_requires_explicit_acceptance(self):
         with tempfile.TemporaryDirectory() as output:
-            bitmap = bytes(400)
+            bitmap = bytes(200)
             Path(output, "warn.hex").write_text(bitmap.hex())
             manifest = {
+                "version": generate.PIPELINE_VERSION,
                 "traits": VALID_TRAITS,
                 "traits_hex": "0x000000000000000000",
                 "build": {
+                    "bitmap_format": generate.BITMAP_FORMAT,
                     "generator": "agent:test-imagegen",
                     "bitmap_sha256": generate._sha256(bitmap),
                     "stats": {
@@ -161,18 +186,49 @@ class PipelineTest(unittest.TestCase):
             args.accept_warnings = True
             self.assertEqual(generate._load_mint_drafts(args)[0]["id"], "warn")
 
-    def test_batch_duplicate_stops_before_transaction(self):
+    def test_legacy_two_bit_draft_cannot_enter_mint(self):
         with tempfile.TemporaryDirectory() as output:
             bitmap = bytes(400)
+            Path(output, "legacy.hex").write_text(bitmap.hex())
+            save_draft_manifest(
+                output,
+                "legacy",
+                {
+                    "version": 1,
+                    "traits": VALID_TRAITS,
+                    "traits_hex": "0x000000000000000000",
+                    "build": {
+                        "bitmap_format": "census-2bit-v1",
+                        "generator": "agent:test-imagegen",
+                        "bitmap_sha256": generate._sha256(bitmap),
+                        "stats": {"mintable": True, "warnings": [], "signature": "0x01"},
+                    },
+                },
+            )
+            args = argparse.Namespace(
+                drafts=["legacy"],
+                legacy_ids=None,
+                persona=["context"],
+                output=output,
+                accept_warnings=False,
+            )
+            with self.assertRaisesRegex(ValueError, generate.BITMAP_FORMAT):
+                generate._load_mint_drafts(args)
+
+    def test_batch_duplicate_stops_before_transaction(self):
+        with tempfile.TemporaryDirectory() as output:
+            bitmap = bytes(200)
             for draft_id in ("a", "b"):
                 Path(output, f"{draft_id}.hex").write_text(bitmap.hex())
                 save_draft_manifest(
                     output,
                     draft_id,
                     {
+                        "version": generate.PIPELINE_VERSION,
                         "traits": VALID_TRAITS,
                         "traits_hex": "0x000000000000000000",
                         "build": {
+                            "bitmap_format": generate.BITMAP_FORMAT,
                             "generator": "agent:test-imagegen",
                             "bitmap_sha256": generate._sha256(bitmap),
                             "stats": {
