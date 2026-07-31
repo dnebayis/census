@@ -18,6 +18,12 @@ or external action runs. `/news` never invokes an LLM and never emits a reply. I
 production storage uses Upstash Redis with an atomic bounded queue. Distributed sliding
 window limits protect `/talk`, `/news`, and MCP. No production credentials are committed.
 
+The first report-only engine, Mint Scanner, is implemented locally. It scans bounded
+Sepolia block ranges for standard ERC-721 mint events, groups them by collection, and
+returns transaction/block evidence plus explicit limitations. It is not wired to public
+invocation yet. A local read-only report can be run with `npm run scan:mint` after
+setting `SEPOLIA_RPC_URL`.
+
 Required local environment:
 
 - `RUNTIME_ORIGIN` — stable HTTPS origin, no trailing slash

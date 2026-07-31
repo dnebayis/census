@@ -16,6 +16,11 @@ It is not deployed and must not be advertised in registration JSON yet. Its boun
 news queue and sliding-window limits use Redis, but production credentials and external
 integration/canary tests are still pending.
 
+The local Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
+scans and emits ranked candidates with transaction/block evidence and explicit
+limitations. A live read-only canary passed; it is not connected to public `/talk` or
+MCP invocation yet.
+
 Read, in order:
 
 1. `docs/standards-lock.md`

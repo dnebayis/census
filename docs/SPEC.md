@@ -13,6 +13,8 @@ separate execution wallets are approved but not yet active. Their delivery gates
 The inactive `runtime-service/` shell implements address-routed RESTAP discovery,
 `/talk`, passive `/news`, and MCP without claiming service activation. Registration
 continues to return `active: false`, empty services, and `x402Support: false`.
+Its local Mint Scanner engine is report-only and evidence-backed; it remains unavailable
+through public runtime routes until the Phase 2 integration gates pass.
 
 The normative standards and upstream commits are in `standards-lock.md`.
 

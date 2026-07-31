@@ -65,7 +65,8 @@ Sepolia fork.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented, but their production integration/canary tests are still required.
 2. Implement Mint Scanner end to end without payment, then the other five report-only
-   skill engines. Every result includes evidence and reasoning.
+   skill engines. Its deterministic, bounded Sepolia scan engine is implemented locally
+   with evidence and limitations; public invocation/integration testing remains gated.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
    verify → settle → result flow, replay protection, and idempotent receipts.
 4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend

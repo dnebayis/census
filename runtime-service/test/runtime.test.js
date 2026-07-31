@@ -5,6 +5,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/server";
 import { MissingBindingError, TokenNotFoundError, readAgent } from "../lib/agent.js";
 import { RuntimeBackendConfigurationError, createRuntimeBackends } from "../lib/backends.js";
 import { buildCatalog, buildLlmsText, normalizeOrigin } from "../lib/catalog.js";
+import { ViemMintSource, normalizeMintScannerInput, runMintScanner } from "../lib/engines/mint-scanner.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
 import { applyRateLimit, clientKey } from "../lib/rate-limit.js";
@@ -192,6 +193,76 @@ test("rate limiting hashes the client address and emits retry metadata", async (
   assert.equal(headers.get("X-RateLimit-Limit"), "20");
   assert.equal(headers.get("Retry-After"), "5");
   assert.deepEqual(body, { error: "rate limit exceeded" });
+});
+
+test("Mint Scanner groups standard mint events into evidence-backed candidates", async () => {
+  const now = () => new Date("2026-07-31T12:00:00.000Z");
+  const report = await runMintScanner({
+    now,
+    input: {
+      chains: ["eip155:11155111"],
+      timeWindowHours: 2,
+      filters: { minMints: 2, maxCandidates: 5, maxEvidencePerCandidate: 2 },
+    },
+    sources: {
+      "eip155:11155111": {
+        async scanMints({ requestedSince }) {
+          return {
+            chain: "eip155:11155111",
+            requestedSince: requestedSince.toISOString(),
+            fromBlock: 100n,
+            toBlock: 200n,
+            truncated: false,
+            events: [
+              { collection: census, transactionHash: "0xaaa", blockNumber: 120n, tokenId: 1n, recipient: owner },
+              { collection: census, transactionHash: "0xbbb", blockNumber: 121n, tokenId: 2n, recipient: adapter },
+              { collection: adapter, transactionHash: "0xccc", blockNumber: 122n, tokenId: 1n, recipient: owner },
+            ],
+          };
+        },
+      },
+    },
+  });
+  assert.equal(report.reportOnly, true);
+  assert.equal(report.chains[0].candidates.length, 1);
+  assert.equal(report.chains[0].candidates[0].collection, census);
+  assert.equal(report.chains[0].candidates[0].mintCount, 2);
+  assert.equal(report.chains[0].candidates[0].evidence.length, 2);
+  assert.match(report.chains[0].candidates[0].reasoning[2], /not a safety/);
+});
+
+test("Mint Scanner rejects unsupported filters and chains", async () => {
+  assert.throws(
+    () => normalizeMintScannerInput({ chains: ["eip155:11155111"], timeWindowHours: 1, filters: { maxCandidates: 0 } }),
+    /maxCandidates/,
+  );
+  await assert.rejects(
+    runMintScanner({ input: { chains: ["eip155:1"], timeWindowHours: 1 }, sources: {} }),
+    /unsupported Mint Scanner chain/,
+  );
+});
+
+test("Viem Mint Scanner source bounds old windows and reads newest chunks first", async () => {
+  const ranges = [];
+  const source = new ViemMintSource(
+    {
+      async getBlockNumber() {
+        return 100n;
+      },
+      async getBlock({ blockNumber }) {
+        return { timestamp: blockNumber };
+      },
+      async getLogs({ fromBlock, toBlock }) {
+        ranges.push([fromBlock, toBlock]);
+        return [];
+      },
+    },
+    { chain: "eip155:11155111", maxBlocks: 20, chunkBlocks: 7 },
+  );
+  const scan = await source.scanMints({ requestedSince: new Date(0) });
+  assert.equal(scan.fromBlock, 81n);
+  assert.equal(scan.truncated, true);
+  assert.deepEqual(ranges, [[94n, 100n], [87n, 93n], [81n, 86n]]);
 });
 
 test("MCP exposes the assigned skill but cannot invoke an inactive runtime", async () => {
