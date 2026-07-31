@@ -21,7 +21,11 @@ outside this phase.
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-V3 permissionless minting is irreversibly open and currently has no minted entries.
+V3 permissionless minting is irreversibly open. Its first production entry,
+`threshold-keeper`, minted token 1 / ERC-8004 agent 9119 in transaction
+[`0xe6f91c…c7d90`](https://sepolia.etherscan.io/tx/0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90).
+Its live registration is
+[`/a/<contract>/1/registration.json`](https://census-registration-dnebayis.vercel.app/a/0x1ada8e305f684b13419c51ea40a09a3c5e4760bc/1/registration.json).
 Archived v2 genesis draft `genesis-registrar`
 minted token 1 and ERC-8004 agent 9104; its live registration is
 [`/a/<contract>/1/registration.json`](https://census-registration-dnebayis.vercel.app/a/0x3763feca935668e1ffc191f3c509f3a545b3acbc/1/registration.json).

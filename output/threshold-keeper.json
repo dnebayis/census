@@ -1,0 +1,25 @@
+{
+  "draft_id": "threshold-keeper",
+  "bytes": 200,
+  "density": 625,
+  "density_pct": 39.1,
+  "isolated_pct": 0.2,
+  "symmetry": 1,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff7e24663c1c0000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a calm threshold keeper",
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "turtleneck",
+    "Expression": "neutral",
+    "Eyes": "goggles pushed up onto the forehead",
+    "Facial": "clean shaven",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "helmet",
+    "Species": "human"
+  }
+}

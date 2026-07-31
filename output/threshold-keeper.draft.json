@@ -1,0 +1,71 @@
+{
+  "build": {
+    "bitmap_file": "threshold-keeper.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0xef744c9021d9cdf930295799cb37e9dfce2560f3818bc63ed1544a767d72be7a",
+    "generator": "agent:codex-imagegen",
+    "source_file": "threshold-keeper.agent-v1.png",
+    "source_sha256": "0x788aae52dd6e9988edbe27f17c866909748d6fba9686414f1cbe6e7c90dbdd95",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 625,
+      "density_pct": 39.1,
+      "isolated_pct": 0.2,
+      "mintable": true,
+      "signature": "0xff7e24663c1c0000",
+      "subject": "a calm threshold keeper",
+      "symmetry": 1,
+      "traits": {
+        "Accessory": "none",
+        "Age": "middle-aged",
+        "Attire": "turtleneck",
+        "Expression": "neutral",
+        "Eyes": "goggles pushed up onto the forehead",
+        "Facial": "clean shaven",
+        "Hair": "messy shoulder-length hair",
+        "Headwear": "helmet",
+        "Species": "human"
+      },
+      "warnings": []
+    },
+    "stats_file": "threshold-keeper.json"
+  },
+  "draft_id": "threshold-keeper",
+  "mint": {
+    "agent_id": 9119,
+    "block_number": 11390845,
+    "draft_id": "threshold-keeper",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0xff7e24663c1c0000",
+    "skill": 1,
+    "token_id": 1,
+    "transaction_hash": "0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90"
+  },
+  "seed": "0x1aabccebf3c6a4baf2fd1b5809e2e639",
+  "subject": "a calm threshold keeper",
+  "trait_indices": [
+    0,
+    1,
+    2,
+    9,
+    0,
+    0,
+    11,
+    4,
+    0
+  ],
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "turtleneck",
+    "Expression": "neutral",
+    "Eyes": "goggles pushed up onto the forehead",
+    "Facial": "clean shaven",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "helmet",
+    "Species": "human"
+  },
+  "traits_hex": "0x0001020900000b0400",
+  "version": 2
+}

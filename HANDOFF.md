@@ -30,7 +30,11 @@ V3 minting is irreversibly open. Deploy transaction:
 `0x6d5ec0e686997f513a151c099aa7703885a2fc56defb20b60959e5bb0fa9f945`;
 open transaction:
 `0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094`.
-It uses the broad 1%–95% density band and currently has no minted entries.
+It uses the broad 1%–95% density band. Its first production entry is
+`threshold-keeper`, token 1 / ERC-8004 agent 9119, minted in transaction
+`0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
+at block `11390845`. Its verified registration URI is
+`https://census-registration-dnebayis.vercel.app/a/0x1ada8e305f684b13419c51ea40a09a3c5e4760bc/1/registration.json`.
 
 Archived v2 genesis draft `genesis-registrar` is token 1 / ERC-8004 agent 9104; mint transaction:
 `0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4`.

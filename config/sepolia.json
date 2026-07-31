@@ -12,10 +12,16 @@
   "mintingOpen": true,
   "deploymentTransaction": "0x6d5ec0e686997f513a151c099aa7703885a2fc56defb20b60959e5bb0fa9f945",
   "openMintTransaction": "0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094",
-  "rolloutTokenId": null,
-  "rolloutAgentId": null,
-  "rolloutTransaction": null,
-  "productionBatches": [],
+  "rolloutTokenId": 1,
+  "rolloutAgentId": 9119,
+  "rolloutTransaction": "0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90",
+  "productionBatches": [
+    {
+      "transaction": "0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90",
+      "blockNumber": 11390845,
+      "drafts": ["threshold-keeper"]
+    }
+  ],
   "archivedCensus": [
     {
       "address": "0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC",

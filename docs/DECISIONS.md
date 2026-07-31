@@ -111,7 +111,9 @@ ERC-8217 binding instead of relying on one mutable `CENSUS_ADDRESS` environment 
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - minting: irreversibly open
-- rollout token/agent: none yet
+- rollout token/agent: `1 / 9119` (`threshold-keeper`)
+- rollout transaction:
+  `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains available through the permanent address-routed host.

@@ -186,7 +186,9 @@ Active rollout:
 - Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - minting: irreversibly open
-- rollout token/agent: none yet
+- rollout token/agent: `1 / 9119` (`threshold-keeper`)
+- rollout transaction:
+  `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
 
 Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`; its tokens 1–4
 remain registered through the permanent address-routed service.

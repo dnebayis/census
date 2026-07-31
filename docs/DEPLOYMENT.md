@@ -21,7 +21,9 @@
 - density hard band: 16–1520 lit pixels (1%–95%); art warnings are informational
 - bitmap/art record: 200-byte one-bit bitmap / 209-byte SSTORE2 record
 - palette: `#34343A` foreground / `#E9DDC7` background
-- rollout token/agent: none yet
+- rollout token/agent: `1 / 9119` (`threshold-keeper`)
+- rollout transaction:
+  `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
 
 The permanent route is:
 

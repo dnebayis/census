@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "turtleneck",
+    "Expression": "neutral",
+    "Eyes": "goggles pushed up onto the forehead",
+    "Facial": "clean shaven",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "helmet",
+    "Species": "human"
+  },
+  "indices": [
+    0,
+    1,
+    2,
+    9,
+    0,
+    0,
+    11,
+    4,
+    0
+  ]
+}
