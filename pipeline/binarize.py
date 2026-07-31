@@ -22,6 +22,7 @@ from config import (
     THRESHOLD,
     TOTAL_PIXELS,
     WARN_CORNER_PCT,
+    WARN_DENSITY_HIGH_PCT,
     WARN_ISOLATED_PCT,
     WARN_SYMMETRY,
 )
@@ -149,6 +150,8 @@ def analyse(pixels) -> dict:
         "mintable": DENSITY_MIN <= lit <= DENSITY_MAX,
     }
     warnings = []
+    if stats["density_pct"] > WARN_DENSITY_HIGH_PCT:
+        warnings.append("dense — facial detail may merge")
     if stats["isolated_pct"] > WARN_ISOLATED_PCT:
         warnings.append("noisy — isolated pixels")
     if stats["symmetry"] > WARN_SYMMETRY:

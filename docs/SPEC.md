@@ -50,8 +50,9 @@ Hair, Eyes, Facial, Expression, Headwear, Attire, and Accessory.
 
 Invalid bitmap length, effectively blank/solid density, duplicate signature, closed
 minting, sold out supply, wallet cap, and invalid traits are hard failures. The density
-band is deliberately broad at 1%–95%. Informational warnings cover asymmetry, crowded
-corners, and isolated noise.
+band is deliberately broad at 1%–95%. Informational warnings cover density above 35%,
+asymmetry, crowded corners, and isolated noise. The dense-art warning requires one
+visual preview check but no CLI approval flag and never blocks by itself.
 
 ### 2.2 Identity
 

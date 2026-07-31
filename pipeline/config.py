@@ -32,6 +32,7 @@ DENSITY_MAX = 1520  # 95%
 WARN_SYMMETRY = 10  # of 32 comparable signature bits
 WARN_CORNER_PCT = 25  # lit share of either 8x8 top corner
 WARN_ISOLATED_PCT = 15  # share of lit pixels with no lit orthogonal neighbour
+WARN_DENSITY_HIGH_PCT = 35  # advisory readability risk; never blocks minting
 
 # ---------------------------------------------------------------- generation
 

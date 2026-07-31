@@ -62,6 +62,14 @@ class PipelineTest(unittest.TestCase):
         left, top, right, bottom = foreground.getbbox()
         self.assertLessEqual(abs((right - left) - (bottom - top)), 1)
 
+    def test_dense_portrait_gets_nonblocking_readability_warning(self):
+        pixels = [0] * 1600
+        pixels[24 * 40 :] = [1] * (16 * 40)
+        stats = analyse(pixels)
+        self.assertEqual(stats["density_pct"], 40.0)
+        self.assertIn("dense — facial detail may merge", stats["warnings"])
+        self.assertTrue(stats["mintable"])
+
     def test_build_accepts_rasters_with_optional_provenance(self):
         with tempfile.TemporaryDirectory() as output:
             png = Path(output) / "portrait.png"

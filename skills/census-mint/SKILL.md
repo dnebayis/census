@@ -69,11 +69,14 @@ viewer. Also read `<draftId>.json`.
 
 Redraw the same draft only when:
 
-- `mintable` is false;
+- `mintable` is false; or
+- the non-blocking dense-art warning is present and the agent's one visual inspection
+  confirms that the face, eyes, mouth, or primary traits have merged into a dark mass.
 
 The deliberately broad density band rejects only effectively blank or solid output.
-All advisory warnings and secondary-trait losses are informational; do not start an
-automatic retry loop. Duplicate checks, wallet limits, invalid traits, and failed exact
+All advisory warnings and secondary-trait losses are informational. A warning requires
+one look at the actual palette preview, not a CLI confirmation flag or an automatic
+retry loop. Duplicate checks, wallet limits, invalid traits, and failed exact
 simulation remain hard failures.
 
 ## Mint only on explicit instruction

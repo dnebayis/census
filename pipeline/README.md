@@ -81,7 +81,7 @@ The pipeline:
 - hash-checks built artifacts;
 - checks duplicates against existing artifacts and separately inside a batch;
 - refuses only effectively blank or solid drafts;
-- reports advisory warnings without blocking;
+- reports advisory warnings without blocking, including a >35% density readability risk;
 - derives the sender locally from `PRIVATE_KEY`;
 - simulates the exact `mint` or `mintBatch` call with that sender;
 - broadcasts only after simulation succeeds.

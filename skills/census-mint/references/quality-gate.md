@@ -38,6 +38,10 @@ The following are quality suggestions, not mint requirements:
 5. Only foreground and background exist; there are no grey pixels or simulated shading.
 6. The result looks intentionally illustrated, not procedurally filled.
 
+Density above 35% emits a non-blocking readability warning. When it appears, inspect
+the palette-exact 40×40 preview once. Redraw only if the dark regions actually merge
+the face, eyes, mouth, or primary traits; do not treat the number alone as a failure.
+
 ## Retry order
 
 Correct only the most important failure each attempt:
@@ -50,4 +54,5 @@ Correct only the most important failure each attempt:
 
 Do not change the subject, seed, or traits during a retry. Pipeline warnings are
 informational and require no CLI override. Retry only when the output is effectively
-blank/solid or when the user explicitly asks for an art revision.
+blank/solid, the dense preview is visibly unreadable, or the user explicitly asks for
+an art revision.

@@ -89,6 +89,10 @@ Python, SVG, ASCII, and procedural rollout smoke art are not production sources.
 effectively blank or solid output is a visual hard failure; all composition metrics are
 informational. Chain-safety failures remain non-bypassable.
 
+Density above 35% is an informational readability warning. The agent checks the actual
+40×40 preview once and redraws only when facial or primary-trait shapes visibly merge;
+the warning has no confirmation flag and is not a mint blocker by itself.
+
 ### D15 — One-bit framing and palette are collection constants
 
 The source is aspect-preserving cover-cropped once to 40×36 and placed at y=4 on the
