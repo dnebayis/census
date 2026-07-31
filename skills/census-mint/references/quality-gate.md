@@ -8,7 +8,7 @@ not sufficient if its important forms disappear after reduction.
 Match the RAO/Basies final visual language, but generate a normal source illustration
 before reduction. Require:
 
-- square close-up portrait headshot, directly front-facing;
+- exact square close-up portrait headshot, directly front-facing;
 - the head is centered with clean space above the hair and shoulders reaching the
   bottom;
 - a high-resolution vintage ink/woodcut source, not source pixel art;
@@ -20,8 +20,8 @@ before reduction. Require:
 - no final grey levels, gradients, antialiasing, dithering, text, watermark, border or
   scenery.
 
-The image generator renders a normal high-resolution portrait. The pipeline alone owns
-the one reduction to 36×36, placement at y=4 on a 40×40 canvas, threshold, 1-bit
+The image generator renders a normal high-resolution square portrait. The pipeline alone owns
+the one aspect-preserving cover crop to 40×36, placement at y=4 on a 40×40 canvas, threshold, 1-bit
 packing, and palette application.
 
 ## Visual guidance

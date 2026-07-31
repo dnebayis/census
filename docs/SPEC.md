@@ -114,8 +114,8 @@ provenance. Python, SVG, ASCII, procedural smoke art, and the rollout artifact a
 excluded from the production mint path.
 
 The agent creates a normal high-contrast portrait, then inspects the original,
-side-by-side comparison, and exact one-bit 40×40 PNG. The pipeline reduces the source
-once to 36×36, places it at y=4 on a 40×40 canvas, thresholds at 128, and packs the
+side-by-side comparison, and exact one-bit 40×40 PNG. The pipeline cover-crops the source
+without distortion once to 40×36, places it at y=4 on a 40×40 canvas, thresholds at 128, and packs the
 result into 200 bytes. The locked render palette is charcoal `#34343A` on warm pastel
 `#E9DDC7`.
 Only output outside the broad 1%–95% density band requires regeneration. Advisory
@@ -189,6 +189,8 @@ Active rollout:
 - rollout token/agent: `1 / 9119` (`threshold-keeper`)
 - rollout transaction:
   `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
+- first v3 batch: tokens `2–5`, agents `9121–9124`, transaction
+  `0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
 
 Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`; its tokens 1–4
 remain registered through the permanent address-routed service.

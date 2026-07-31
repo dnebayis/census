@@ -1,0 +1,38 @@
+{
+  "transaction_hash": "0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45",
+  "block_number": 11390925,
+  "entries": [
+    {
+      "draft_id": "dawn-cartographer",
+      "token_id": 2,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 0,
+      "signature": "0x7eff7e3c3c180000",
+      "agent_id": 9121
+    },
+    {
+      "draft_id": "quiet-machinist",
+      "token_id": 3,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 1,
+      "signature": "0xe73430343c180000",
+      "agent_id": 9122
+    },
+    {
+      "draft_id": "memory-diver",
+      "token_id": 4,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 3,
+      "signature": "0xe734202400180000",
+      "agent_id": 9123
+    },
+    {
+      "draft_id": "pastel-sentinel",
+      "token_id": 5,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 1,
+      "signature": "0xeb5a000000000000",
+      "agent_id": 9124
+    }
+  ]
+}

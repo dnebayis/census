@@ -1,0 +1,25 @@
+{
+  "draft_id": "pastel-sentinel",
+  "bytes": 200,
+  "density": 291,
+  "density_pct": 18.2,
+  "isolated_pct": 3.8,
+  "symmetry": 2,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xeb5a000000000000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a pastel sentinel",
+  "traits": {
+    "Accessory": "neck tattoo",
+    "Age": "young",
+    "Attire": "scarf wrapped high",
+    "Expression": "grim set jaw",
+    "Eyes": "round spectacles",
+    "Facial": "gaunt hollow cheeks",
+    "Hair": "mohawk",
+    "Headwear": "bare head",
+    "Species": "human"
+  }
+}

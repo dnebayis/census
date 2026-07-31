@@ -24,6 +24,8 @@
 - rollout token/agent: `1 / 9119` (`threshold-keeper`)
 - rollout transaction:
   `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
+- first v3 batch: tokens `2–5`, agents `9121–9124`, transaction
+  `0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
 
 The permanent route is:
 

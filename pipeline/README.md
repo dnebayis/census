@@ -6,7 +6,7 @@ and simulates the exact transaction before minting. It is not an image generator
 
 Active Sepolia Census is `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`; its
 registration origin is `https://census-registration-dnebayis.vercel.app`. Minting is
-irreversibly open and the deployment currently has no entries. The adapter is
+irreversibly open and the deployment has tokens 1–5. The adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
 and ERC-8217 only.
 
@@ -97,8 +97,9 @@ non-bypassable.
 
 ## Bitmap and traits
 
-The source portrait is reduced once to 36×36 and placed at y=4 on a 40×40 canvas,
-leaving four empty rows above the head while keeping the shoulders at the bottom. A
+The source portrait is aspect-preserving cover-cropped once to 40×36 and placed at y=4
+on the 40×40 canvas, leaving four empty rows above the head while keeping the shoulders
+at the bottom and both side edges. A
 fixed threshold of 128 produces a row-major, MSB-first, one-bit bitmap of exactly 200
 bytes. Signature and density calculations mirror `src/lib/Bitmap.sol`. The preview and
 onchain SVG use charcoal `#34343A` on warm pastel `#E9DDC7`.

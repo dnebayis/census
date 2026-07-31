@@ -38,8 +38,8 @@ TRAITS — assigned once for this draft; draw all of them
   {trait_lines}
 
 COMPOSITION
-  - Close-up headshot, directly front-facing, with clean space above the hair.
-  - Keep shoulders reaching the bottom edge.
+  - Exact 1:1 square canvas; close-up headshot, directly front-facing, with clean space above the hair.
+  - Keep shoulders reaching the bottom and both side edges.
   - Broad ink shapes and controlled facial detail that survive at 40x40.
   - Pale clean background with clearly separated light and dark masses.
 

@@ -1,0 +1,25 @@
+{
+  "draft_id": "dawn-cartographer",
+  "bytes": 200,
+  "density": 658,
+  "density_pct": 41.1,
+  "isolated_pct": 0.2,
+  "symmetry": 0,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0x7eff7e3c3c180000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a dawn cartographer",
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "bare shoulders",
+    "Expression": "smirk",
+    "Eyes": "round spectacles",
+    "Facial": "stubble",
+    "Hair": "long straight hair",
+    "Headwear": "hood up",
+    "Species": "ape-like humanoid"
+  }
+}

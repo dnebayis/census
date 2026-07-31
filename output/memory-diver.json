@@ -1,0 +1,25 @@
+{
+  "draft_id": "memory-diver",
+  "bytes": 200,
+  "density": 429,
+  "density_pct": 26.8,
+  "isolated_pct": 0.7,
+  "symmetry": 2,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xe734202400180000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a memory diver",
+  "traits": {
+    "Accessory": "earring",
+    "Age": "young",
+    "Attire": "suit and tie",
+    "Expression": "slight frown",
+    "Eyes": "wide staring eyes",
+    "Facial": "thick moustache",
+    "Hair": "mohawk",
+    "Headwear": "bare head",
+    "Species": "ape-like humanoid"
+  }
+}

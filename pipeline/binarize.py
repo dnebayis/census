@@ -1,8 +1,8 @@
 """RAO-compatible image processing for Census: 40×40, one bit per pixel.
 
-The conversion is deliberately small and exact: one LANCZOS reduction to 36×36,
-placement at y=4 on a 40×40 canvas, grayscale, one fixed threshold, and MSB-first
-row-major packing. Quality analysis mirrors
+The conversion is deliberately small and exact: one aspect-preserving LANCZOS cover
+crop to 40×36, placement at y=4 on a 40×40 canvas, grayscale, one fixed threshold,
+and MSB-first row-major packing. Quality analysis mirrors
 ``src/lib/Bitmap.sol`` and does not mutate the generated pixel art.
 """
 
@@ -39,12 +39,21 @@ def load_image(source) -> Image.Image:
 
 
 def resize_to_grid(image: Image.Image) -> Image.Image:
-    """Reduce once, reserving a four-pixel top margin and anchoring the bottom."""
+    """Cover-crop once, reserving four top rows and filling the full width.
+
+    A direct resize to 36×36 distorted portrait-oriented generator output and also
+    guaranteed two blank columns on both sides. ``ImageOps.fit`` preserves aspect
+    ratio; the high vertical focus retains intended headroom when tall inputs crop.
+    """
     image = image.convert("RGB")
-    portrait = image.resize((PORTRAIT_SIZE, PORTRAIT_SIZE), Image.Resampling.LANCZOS)
+    portrait = ImageOps.fit(
+        image,
+        (GRID_WIDTH, PORTRAIT_SIZE),
+        method=Image.Resampling.LANCZOS,
+        centering=(0.5, 0.35),
+    )
     canvas = Image.new("RGB", (GRID_WIDTH, GRID_HEIGHT), "white")
-    left = (GRID_WIDTH - PORTRAIT_SIZE) // 2
-    canvas.paste(portrait, (left, PORTRAIT_TOP))
+    canvas.paste(portrait, (0, PORTRAIT_TOP))
     return canvas
 
 
@@ -151,7 +160,7 @@ def analyse(pixels) -> dict:
 
 
 def binarize_image(source):
-    """Load → direct resize → grayscale → fixed threshold → pack."""
+    """Load → aspect-preserving cover crop → grayscale → fixed threshold → pack."""
     resized = resize_to_grid(load_image(source)).convert("L")
     pixels = threshold_binarize(resized)
     bitmap = pack_bitmap(pixels)

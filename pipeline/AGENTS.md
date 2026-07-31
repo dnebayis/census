@@ -46,7 +46,7 @@ transaction, and they can never be overridden.
 ## Drawing constraints
 
 Generate a normal high-contrast portrait source, not source pixel art. The pipeline
-reduces it once to 36×36, places it at y=4 on a 40×40 canvas, and converts it to one
+cover-crops it once without distortion to 40×36, places it at y=4 on a 40×40 canvas, and converts it to one
 bit. Fine detail, gradients, dithering, halftone, thin lines, text, and watermarks
 collapse or create noise.
 

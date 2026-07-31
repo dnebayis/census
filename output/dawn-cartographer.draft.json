@@ -1,0 +1,71 @@
+{
+  "build": {
+    "bitmap_file": "dawn-cartographer.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0xf72e57bf6aca89617c94e5ec1a73a88609e98264dbde578897fd551d37b38c1c",
+    "generator": "agent:codex-imagegen",
+    "source_file": "dawn-cartographer.agent-v1.png",
+    "source_sha256": "0x88ef2e3357a841957e79b050d02b7a2821826876a9837fe0e8f3363261e62d94",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 658,
+      "density_pct": 41.1,
+      "isolated_pct": 0.2,
+      "mintable": true,
+      "signature": "0x7eff7e3c3c180000",
+      "subject": "a dawn cartographer",
+      "symmetry": 0,
+      "traits": {
+        "Accessory": "none",
+        "Age": "middle-aged",
+        "Attire": "bare shoulders",
+        "Expression": "smirk",
+        "Eyes": "round spectacles",
+        "Facial": "stubble",
+        "Hair": "long straight hair",
+        "Headwear": "hood up",
+        "Species": "ape-like humanoid"
+      },
+      "warnings": []
+    },
+    "stats_file": "dawn-cartographer.json"
+  },
+  "draft_id": "dawn-cartographer",
+  "mint": {
+    "agent_id": 9121,
+    "block_number": 11390925,
+    "draft_id": "dawn-cartographer",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0x7eff7e3c3c180000",
+    "skill": 0,
+    "token_id": 2,
+    "transaction_hash": "0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45"
+  },
+  "seed": "0xaf3d5e34477fba0401b18ad0b509d072",
+  "subject": "a dawn cartographer",
+  "trait_indices": [
+    9,
+    1,
+    3,
+    5,
+    2,
+    7,
+    6,
+    8,
+    0
+  ],
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "bare shoulders",
+    "Expression": "smirk",
+    "Eyes": "round spectacles",
+    "Facial": "stubble",
+    "Hair": "long straight hair",
+    "Headwear": "hood up",
+    "Species": "ape-like humanoid"
+  },
+  "traits_hex": "0x090103050207060800",
+  "version": 2
+}

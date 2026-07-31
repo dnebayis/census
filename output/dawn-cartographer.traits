@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "bare shoulders",
+    "Expression": "smirk",
+    "Eyes": "round spectacles",
+    "Facial": "stubble",
+    "Hair": "long straight hair",
+    "Headwear": "hood up",
+    "Species": "ape-like humanoid"
+  },
+  "indices": [
+    9,
+    1,
+    3,
+    5,
+    2,
+    7,
+    6,
+    8,
+    0
+  ]
+}

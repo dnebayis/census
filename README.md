@@ -26,6 +26,9 @@ V3 permissionless minting is irreversibly open. Its first production entry,
 [`0xe6f91c…c7d90`](https://sepolia.etherscan.io/tx/0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90).
 Its live registration is
 [`/a/<contract>/1/registration.json`](https://census-registration-dnebayis.vercel.app/a/0x1ada8e305f684b13419c51ea40a09a3c5e4760bc/1/registration.json).
+The first v3 batch minted `dawn-cartographer`, `quiet-machinist`, `memory-diver`, and
+`pastel-sentinel` as tokens 2–5 / agents 9121–9124 in transaction
+[`0x8117fb…ace45`](https://sepolia.etherscan.io/tx/0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45).
 Archived v2 genesis draft `genesis-registrar`
 minted token 1 and ERC-8004 agent 9104; its live registration is
 [`/a/<contract>/1/registration.json`](https://census-registration-dnebayis.vercel.app/a/0x3763feca935668e1ffc191f3c509f3a545b3acbc/1/registration.json).
@@ -37,7 +40,9 @@ deployments are historical only; scripts and examples must not use them as activ
 addresses.
 
 Production art remains agent-native by default, while any PNG, JPEG, or WebP upload is
-also accepted. [`census-mint`](skills/census-mint/SKILL.md) generates the one-bit 40×40
+also accepted. [`census-mint`](skills/census-mint/SKILL.md) uses an aspect-preserving
+40×36 cover crop on the 40×40 canvas so portrait sources are not squeezed and shoulders
+can reach both side edges, then generates the one-bit 40×40
 result and reports visual statistics without forcing iterative redraws. Procedural
 Python/SVG smoke art is not a production input.
 

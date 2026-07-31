@@ -91,8 +91,9 @@ informational. Chain-safety failures remain non-bypassable.
 
 ### D15 — One-bit framing and palette are collection constants
 
-The source is reduced once to 36×36 and placed at y=4 on the 40×40 canvas. This keeps a
-four-pixel top margin while anchoring shoulders to the bottom. Threshold 128 produces a
+The source is aspect-preserving cover-cropped once to 40×36 and placed at y=4 on the
+40×40 canvas. This keeps a four-pixel top margin while anchoring shoulders to the
+bottom and both sides. Threshold 128 produces a
 200-byte MSB-first bitmap. The onchain renderer uses only charcoal `#34343A` and warm
 pastel `#E9DDC7`.
 
@@ -114,6 +115,8 @@ ERC-8217 binding instead of relying on one mutable `CENSUS_ADDRESS` environment 
 - rollout token/agent: `1 / 9119` (`threshold-keeper`)
 - rollout transaction:
   `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
+- first v3 batch: tokens `2–5`, agents `9121–9124`, transaction
+  `0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains available through the permanent address-routed host.

@@ -50,9 +50,17 @@ class PipelineTest(unittest.TestCase):
         framed = resize_to_grid(Image.new("RGB", (80, 80), "black")).convert("L")
         self.assertTrue(all(framed.getpixel((x, y)) == 255 for y in range(4) for x in range(40)))
         self.assertTrue(
-            all(framed.getpixel((x, y)) == 0 for y in range(4, 40) for x in range(2, 38))
+            all(framed.getpixel((x, y)) == 0 for y in range(4, 40) for x in range(40))
         )
         self.assertEqual(framed.getpixel((2, 39)), 0, "portrait must reach the bottom")
+
+    def test_portrait_cover_crop_preserves_tall_source_proportions(self):
+        source = Image.new("RGB", (100, 200), "white")
+        source.paste("black", (40, 60, 60, 80))
+        framed = resize_to_grid(source).convert("L")
+        foreground = framed.point(lambda value: 255 if value <= 128 else 0)
+        left, top, right, bottom = foreground.getbbox()
+        self.assertLessEqual(abs((right - left) - (bottom - top)), 1)
 
     def test_build_accepts_rasters_with_optional_provenance(self):
         with tempfile.TemporaryDirectory() as output:

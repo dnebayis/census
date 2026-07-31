@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "young",
+    "Attire": "suit and tie",
+    "Expression": "faint smile",
+    "Eyes": "heavy-lidded tired eyes",
+    "Facial": "stubble",
+    "Hair": "buzz cut",
+    "Headwear": "flat cap",
+    "Species": "reptilian humanoid"
+  },
+  "indices": [
+    8,
+    0,
+    5,
+    3,
+    2,
+    3,
+    3,
+    3,
+    0
+  ]
+}

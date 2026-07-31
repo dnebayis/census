@@ -36,6 +36,18 @@ It uses the broad 1%–95% density band. Its first production entry is
 at block `11390845`. Its verified registration URI is
 `https://census-registration-dnebayis.vercel.app/a/0x1ada8e305f684b13419c51ea40a09a3c5e4760bc/1/registration.json`.
 
+The first v3 batch transaction is
+`0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
+at block `11390925`:
+
+- `dawn-cartographer`: token 2 / agent 9121
+- `quiet-machinist`: token 3 / agent 9122
+- `memory-diver`: token 4 / agent 9123
+- `pastel-sentinel`: token 5 / agent 9124
+
+All four registration URLs returned HTTP 200 with `no-store`; each adapter binding and
+Identity Registry URI matched.
+
 Archived v2 genesis draft `genesis-registrar` is token 1 / ERC-8004 agent 9104; mint transaction:
 `0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4`.
 Its verified registration URI is

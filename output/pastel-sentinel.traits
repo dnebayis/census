@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "neck tattoo",
+    "Age": "young",
+    "Attire": "scarf wrapped high",
+    "Expression": "grim set jaw",
+    "Eyes": "round spectacles",
+    "Facial": "gaunt hollow cheeks",
+    "Hair": "mohawk",
+    "Headwear": "bare head",
+    "Species": "human"
+  },
+  "indices": [
+    0,
+    0,
+    7,
+    5,
+    10,
+    4,
+    0,
+    9,
+    7
+  ]
+}

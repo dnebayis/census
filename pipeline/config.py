@@ -1,7 +1,7 @@
 """Configuration for the Census 1-bit art pipeline.
 
-Geometry and thresholding intentionally match the RAO/Basies pipeline: 40×40,
-MSB-first, one bit per pixel, one direct LANCZOS resize, and threshold 128. Census
+Geometry and thresholding use a 40×40 canvas, MSB-first packing, one bit per pixel,
+one aspect-preserving LANCZOS cover crop, and threshold 128. Census
 changes the source workflow, rendered palette, and persistent nine-trait assignment.
 """
 
@@ -12,8 +12,8 @@ TOTAL_PIXELS = GRID_WIDTH * GRID_HEIGHT  # 1600
 BITMAP_BYTES = TOTAL_PIXELS // 8  # 200 — eight pixels per byte, one bit each
 
 # Reserve four final pixels above the portrait while keeping the shoulders anchored to
-# the bottom edge. The source is reduced to 36×36, centered horizontally, and placed
-# at y=4 on the 40×40 canvas.
+# the bottom and both side edges. The source is cover-cropped without distortion to
+# 40×36 and placed at y=4 on the 40×40 canvas.
 PORTRAIT_SIZE = 36
 PORTRAIT_TOP = 4
 
