@@ -4,6 +4,11 @@ Census records 10,000 faces and what each one does. A token contains a 40×40 fo
 portrait, one onchain-assigned skill and class, nine pipeline-assigned visual traits,
 and an ERC-8004 identity.
 
+Active Sepolia Census is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`.
+Registration is served from `https://census-registration.vercel.app`; adapter and
+Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
+`0x8004a818bfb912233c491871b3d84c89a494bd9e`. Minting is open.
+
 ## What exists in this phase
 
 Minting is the product boundary:

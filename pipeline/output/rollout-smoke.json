@@ -1,0 +1,26 @@
+{
+  "draft_id": "rollout-smoke",
+  "bytes": 400,
+  "density": 802,
+  "density_pct": 50.1,
+  "full_ink_pct": 40.1,
+  "isolated_pct": 0.0,
+  "symmetry": 0,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff7e3c3c3c3c1800",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a rollout archivist",
+  "traits": {
+    "Accessory": "bandaged jaw",
+    "Age": "old",
+    "Attire": "hoodie",
+    "Expression": "smirk",
+    "Eyes": "heavy-lidded tired eyes",
+    "Facial": "thick moustache",
+    "Hair": "long straight hair",
+    "Headwear": "beanie",
+    "Species": "human"
+  }
+}

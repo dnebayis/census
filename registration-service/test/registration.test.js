@@ -6,6 +6,7 @@ import {
   buildRegistration,
   readRegistration,
 } from "../lib/registration.js";
+import handler from "../api/registration.js";
 
 const census = "0x1111111111111111111111111111111111111111";
 const adapter = "0x2222222222222222222222222222222222222222";
@@ -23,10 +24,31 @@ function fakeClient(overrides = {}) {
       if (functionName === "agentIdOf") return 42n;
       if (functionName === "metadata") return "0x6b6565707320746865206c6564676572";
       if (functionName === "tokenURI") return tokenUri;
-      if (functionName === "bindingOf") return [0, census, 7n];
+      if (functionName === "bindingOf") {
+        return { standard: 0, tokenContract: census, tokenId: 7n };
+      }
       throw new Error(`unexpected ${functionName}`);
     },
     ...overrides,
+  };
+}
+
+function fakeResponse() {
+  return {
+    headers: {},
+    statusCode: null,
+    body: null,
+    setHeader(name, value) {
+      this.headers[name] = value;
+    },
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(body) {
+      this.body = body;
+      return this;
+    },
   };
 }
 
@@ -100,7 +122,9 @@ test("rejects a mismatched binding", async () => {
       if (functionName === "agentIdOf") return 42n;
       if (functionName === "metadata") return "0x";
       if (functionName === "tokenURI") return tokenUri;
-      if (functionName === "bindingOf") return [0, registry, 7n];
+      if (functionName === "bindingOf") {
+        return { standard: 0, tokenContract: registry, tokenId: 7n };
+      }
       throw new Error("unexpected");
     },
   });
@@ -134,4 +158,27 @@ test("does not misclassify an RPC outage as a 404", async () => {
     }),
     /upstream unavailable/,
   );
+});
+
+test("HTTP handler returns uncached 404 for an invalid token path", async () => {
+  const response = fakeResponse();
+  await handler({ query: { tokenId: "-1" } }, response);
+  assert.equal(response.statusCode, 404);
+  assert.equal(response.headers["Cache-Control"], "no-store, max-age=0");
+});
+
+test("HTTP handler returns 502 when chain configuration is absent", async () => {
+  const response = fakeResponse();
+  const originalRpc = process.env.SEPOLIA_RPC_URL;
+  delete process.env.SEPOLIA_RPC_URL;
+  const originalError = console.error;
+  console.error = () => {};
+  try {
+    await handler({ query: { tokenId: "1" } }, response);
+  } finally {
+    console.error = originalError;
+    if (originalRpc !== undefined) process.env.SEPOLIA_RPC_URL = originalRpc;
+  }
+  assert.equal(response.statusCode, 502);
+  assert.equal(response.body.error, "chain data unavailable");
 });

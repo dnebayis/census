@@ -1,5 +1,6 @@
 import argparse
 import json
+import random
 import sys
 import tempfile
 import unittest
@@ -9,6 +10,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parent))
 
 import generate
+from binarize import analyse, unpack_bitmap
 from output import load_existing_traits, load_signature_owners, save_draft_manifest
 from traits import generate_traits, to_indices
 
@@ -27,6 +29,29 @@ VALID_TRAITS = {
 
 
 class PipelineTest(unittest.TestCase):
+    def test_bitmap_python_matches_naive_reference_with_409_byte_records(self):
+        rng = random.Random(80048217)
+        for _ in range(256):
+            record = rng.randbytes(400) + rng.randbytes(9)
+            bitmap = record[:400]
+            pixels = unpack_bitmap(bitmap)
+            stats = analyse(pixels)
+
+            lit = sum(tone != 0 for tone in pixels)
+            signature = 0
+            for block_row in range(8):
+                for block_col in range(8):
+                    count = 0
+                    for row in range(5):
+                        for col in range(5):
+                            index = (block_row * 5 + row) * 40 + block_col * 5 + col
+                            count += pixels[index] != 0
+                    if count >= 13:
+                        signature |= 1 << (block_row * 8 + block_col)
+
+            self.assertEqual(stats["density"], lit)
+            self.assertEqual(stats["signature"], f"0x{signature:016x}")
+
     def test_brief_persists_seed_and_assignment(self):
         with tempfile.TemporaryDirectory() as output:
             args = argparse.Namespace(

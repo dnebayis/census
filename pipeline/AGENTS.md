@@ -3,6 +3,10 @@
 You create the portrait; this CLI assigns persistent traits, reduces the drawing to the
 onchain format, and safely submits it.
 
+Active Sepolia Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`.
+Canonical host: `https://census-registration.vercel.app`. This release implements
+ERC-8004 + ERC-8048 + ERC-8217; do not assume ERC-8257, MCP, RESTAP, or x402 runtime.
+
 ## Required sequence
 
 ```sh

@@ -3,6 +3,11 @@
 The pipeline assigns persistent visual traits, converts artwork into the exact onchain
 bitmap, and simulates the exact transaction before minting.
 
+Active Sepolia Census is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
+registration origin is `https://census-registration.vercel.app`. The adapter is
+`0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
+and ERC-8217 only.
+
 ## Setup
 
 ```sh
@@ -31,6 +36,9 @@ PRIVATE_KEY=… python3 generate.py mint \
 
 For multiple drafts, repeat `--draft` and `--persona` in matching order. The CLI
 automatically uses `mintBatch`.
+
+The Foundry mock comparison is about 829k gas per separate mint and 458k per entry in a
+four-entry batch. It is a directional batch measurement, not a live fee quote.
 
 ```sh
 PRIVATE_KEY=… python3 generate.py mint \

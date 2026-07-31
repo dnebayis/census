@@ -9,6 +9,7 @@ keystore/
 cache/
 out/
 broadcast/*/dry-run/
+broadcast/**/dry-run/
 
 # Node
 node_modules/

@@ -20,13 +20,16 @@ Read, in order:
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
+- Active Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
+- Canonical registration origin: `https://census-registration.vercel.app`
 - Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`
 
-The active Census address is intentionally unset until the Vercel production project
-URL exists. That URL is constructor state, so a preview or placeholder must never be
-used.
+Minting is open. Rollout token 1 is ERC-8004 agent 9100. Its Identity Registry URI is
+`https://census-registration.vercel.app/a/1/registration.json`.
 
 ## Safety-critical rollout order
+
+The initial rollout completed in this order:
 
 1. Push the reviewed source and deploy the registration service to preview.
 2. Run its unit/schema/404/chain-read tests.
@@ -38,8 +41,8 @@ used.
    real token.
 7. Only then call the irreversible `openMinting()`.
 
-If Vercel ownership or environment access is unavailable, stop before step 4. Never
-deploy with a temporary immutable host.
+Future redeployments must preserve this order. Never deploy with a temporary immutable
+host.
 
 ## Verification
 

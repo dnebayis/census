@@ -167,12 +167,21 @@ Fixed Sepolia infrastructure:
 - adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - Identity Registry: `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 
-The active Census address and canonical Vercel URL remain unset until production
-rollout. Archived prototype:
-`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`.
+Active rollout:
+
+- Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
+- canonical host: `https://census-registration.vercel.app`
+- minting: open
+- rollout token 1 / ERC-8004 agent 9100
+
+Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`.
 
 Deployment order is preview service → production URL → closed Census → production
 environment addresses → live endpoint/binding verification → `openMinting`.
+
+The local mock comparison is approximately 829k gas per separate mint and 458k per
+entry in a four-entry batch. It measures batching directionally and does not model the
+live adapter's exact gas.
 
 ## 6. Acceptance
 

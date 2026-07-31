@@ -81,6 +81,19 @@ live responses are verified.
 `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5` demonstrates the earlier design. It is
 never an active pipeline or README address.
 
+## Active Sepolia record
+
+- Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
+- canonical host: `https://census-registration.vercel.app`
+- ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
+- ERC-8004 Identity Registry:
+  `0x8004a818bfb912233c491871b3d84c89a494bd9e`
+- minting: irreversibly open
+- rollout token/agent: `1 / 9100`
+
+Gas figures in project documents are Foundry mock comparisons: about 829k per separate
+mint and 458k per entry in a four-entry batch. They are not live adapter estimates.
+
 ## Collection constants retained
 
 - supply 10,000

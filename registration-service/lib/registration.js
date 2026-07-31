@@ -143,7 +143,12 @@ export async function readRegistration({
     functionName: "bindingOf",
     args: [agentId],
   });
-  const [, boundContract, boundTokenId] = binding;
+  const boundContract = Array.isArray(binding)
+    ? binding[1]
+    : binding.tokenContract;
+  const boundTokenId = Array.isArray(binding)
+    ? binding[2]
+    : binding.tokenId;
   if (
     agentId === 0n ||
     boundContract.toLowerCase() !== censusAddress.toLowerCase() ||

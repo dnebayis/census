@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "bandaged jaw",
+    "Age": "old",
+    "Attire": "hoodie",
+    "Expression": "smirk",
+    "Eyes": "heavy-lidded tired eyes",
+    "Facial": "thick moustache",
+    "Hair": "long straight hair",
+    "Headwear": "beanie",
+    "Species": "human"
+  },
+  "indices": [
+    0,
+    2,
+    3,
+    3,
+    5,
+    7,
+    4,
+    2,
+    8
+  ]
+}
