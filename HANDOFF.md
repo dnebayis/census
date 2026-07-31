@@ -106,7 +106,7 @@ automatic token IDs.
 `skills/census-mint/scripts/verify_registration.py` reproduces the external 200/404,
 cache, live adapter binding, and Identity Registry URI checks.
 
-Production registration deploys are owned by
-`.github/workflows/deploy-registration.yml`. The workflow uses repository secrets
-for the `dnebayis` Vercel token, org ID, and permanent registration project ID; it runs service tests and audit before
-deploying the complete `registration-service` directory.
+Production registration deploys use the native Vercel GitHub connection from
+`dnebayis/census` `main` to the permanent `census-registration-dnebayis` project. Its
+Root Directory is `registration-service`; no duplicate GitHub Actions deployment is
+used.

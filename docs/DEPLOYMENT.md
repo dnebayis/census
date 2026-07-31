@@ -12,7 +12,8 @@
 - registration project: `dnebayis` account / `0xshawtys-projects` scope /
   `census-registration-dnebayis`
 - Vercel production deployment: `dpl_6Q8hVkh2jCS8gEpsUrfg3nhtPNfn`
-- repeatable deployment: `.github/workflows/deploy-registration.yml`
+- repeatable deployment: native Vercel GitHub connection, production branch `main`,
+  Root Directory `registration-service`
 - open-mint transaction:
   `0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094`
 - open-mint block: `11389684`
