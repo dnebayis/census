@@ -1,7 +1,9 @@
-# Census art pipeline
+# Census agent-native art pipeline
 
-The pipeline assigns persistent visual traits, converts artwork into the exact onchain
-bitmap, and simulates the exact transaction before minting.
+The IDE agent generates the artwork, visually reviews the reduced portrait, and drives
+this pipeline. The CLI assigns persistent visual traits, converts raster art into the
+exact onchain bitmap, and simulates the exact transaction before minting. It is not an
+image generator.
 
 Active Sepolia Census is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 registration origin is `https://census-registration.vercel.app`. The adapter is
@@ -22,10 +24,11 @@ python3 generate.py brief \
   --draft tired-bureaucrat \
   --subject "a tired bureaucrat"
 
-# Draw from the printed brief, then:
+# The IDE agent generates a raster from the printed brief, then:
 python3 generate.py build \
   --draft tired-bureaucrat \
-  --file drawing.png
+  --file output/tired-bureaucrat.agent-v1.png \
+  --generator agent:codex-imagegen
 
 PRIVATE_KEY=… python3 generate.py mint \
   --draft tired-bureaucrat \
@@ -49,6 +52,13 @@ PRIVATE_KEY=… python3 generate.py mint \
 
 `--id` remains a deprecated alias and prints a warning. It does not mean token ID.
 
+For Codex and compatible IDE agents, use the repo skill at
+`skills/census-mint/SKILL.md`. It creates the prompt from the immutable draft manifest,
+uses the IDE's image generation, opens the source and 40×40 previews for visual review,
+and redraws the same draft on any warning. Production build inputs are raster-only:
+PNG, JPEG, or WebP. Python drawings, SVG, ASCII, and the historical rollout smoke image
+are not accepted as production art.
+
 ## Persistent assignment
 
 The first `brief` uses a cryptographically secure 128-bit seed. It writes
@@ -61,6 +71,7 @@ The manifest contains:
 - draft ID and subject
 - seed
 - readable traits, nine indices, and packed `bytes9`
+- image-capable agent provenance
 - source file hash
 - bitmap hash
 - density/signature/quality statistics
@@ -71,6 +82,7 @@ The manifest contains:
 The pipeline:
 
 - hash-checks built artifacts;
+- requires declarative `agent:*` provenance for each raster build;
 - checks duplicates against existing artifacts and separately inside a batch;
 - refuses non-mintable drafts;
 - requires `--accept-warnings` when advisory warnings exist;
@@ -83,6 +95,10 @@ The key is passed only to the transaction tool. It is not logged or written.
 After success, the pipeline decodes `EntryMinted` events and writes
 `output/mints/<transactionHash>.json` with each `draftId`, actual `tokenId`, `agentId`,
 transaction hash, and block number.
+
+The agent-native skill never uses `--accept-warnings`: it redraws, visually checks the
+palette-exact preview, and stops without minting if it cannot reach a clean result in
+four attempts.
 
 ## Bitmap and traits
 
@@ -118,6 +134,11 @@ The contract appends these nine bytes to the bitmap in one 409-byte SSTORE2 reco
 
 Old numbered files 7–9 are legacy artifacts. Their names are not token IDs and they are
 not considered minted without a receipt record.
+
+The active chain coordinates are machine-readable in `config/sepolia.json`. After a
+receipt, the skill's `verify_registration.py` independently checks the production 200,
+missing-token 404, cache policy, ERC-8004 agent ID, adapter binding, and Identity
+Registry URI.
 
 ## Tests
 

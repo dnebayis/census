@@ -81,6 +81,14 @@ live responses are verified.
 `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5` demonstrates the earlier design. It is
 never an active pipeline or README address.
 
+### D14 — Production art is agent-native raster
+
+An image-capable IDE agent generates the source, then sees both the source and exact
+four-tone 40×40 result before minting. Production builds accept PNG, JPEG, or WebP and
+record `agent:*` provenance. Python, SVG, ASCII, and procedural rollout smoke art are
+not production sources. The agent redraws the same locked draft on every advisory and
+does not use the manual `--accept-warnings` escape hatch.
+
 ## Active Sepolia record
 
 - Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`

@@ -1,0 +1,8 @@
+{
+  "chainId": 11155111,
+  "census": "0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4",
+  "adapter": "0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92",
+  "identityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
+  "canonicalHost": "https://census-registration.vercel.app",
+  "publicRpc": "https://ethereum-sepolia-rpc.publicnode.com"
+}

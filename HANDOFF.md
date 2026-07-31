@@ -27,6 +27,11 @@ Read, in order:
 Minting is open. Rollout token 1 is ERC-8004 agent 9100. Its Identity Registry URI is
 `https://census-registration.vercel.app/a/1/registration.json`.
 
+Production creation now starts at `skills/census-mint/SKILL.md`. The IDE agent must use
+real raster image generation, inspect the source/comparison/palette preview, and redraw
+the same persistent draft on any warning. Python/SVG smoke drawings are archive proof,
+not collection art.
+
 ## Safety-critical rollout order
 
 The initial rollout completed in this order:
@@ -65,9 +70,14 @@ follows ownership.
 
 `draftId` is the stable local identity. A secure seed and trait assignment are written
 once to `<draftId>.draft.json`; reopening does not reroll. Build records source and
-bitmap SHA-256 hashes and stats. Mint derives the sender from `PRIVATE_KEY`, simulates
-the exact call, requires `--accept-warnings` for advisories, batches multiple drafts,
-and writes real receipt token/agent IDs under `output/mints/`.
+bitmap SHA-256 hashes, `agent:*` provenance, and stats. The agent-native path redraws on
+advisories instead of accepting them. Mint derives the sender from `PRIVATE_KEY`,
+simulates the exact call, batches multiple drafts, and writes real receipt token/agent
+IDs under `output/mints/`.
 
 Files `output/7`, `8`, and `9` are legacy artifacts, not proof of minting and not
 automatic token IDs.
+
+`config/sepolia.json` is the machine-readable active deployment record.
+`skills/census-mint/scripts/verify_registration.py` reproduces the external 200/404,
+cache, live adapter binding, and Identity Registry URI checks.

@@ -1,7 +1,8 @@
 # Instructions for an agent using the Census pipeline
 
-You create the portrait; this CLI assigns persistent traits, reduces the drawing to the
-onchain format, and safely submits it.
+You create the portrait with the IDE's image generator; this CLI assigns persistent
+traits, reduces the raster image to the onchain format, and safely submits it. Use the
+repo skill at `skills/census-mint/SKILL.md` for the complete autonomous loop.
 
 Active Sepolia Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`.
 Canonical host: `https://census-registration.vercel.app`. This release implements
@@ -16,11 +17,12 @@ python3 generate.py brief \
   --draft <stable-draft-id> \
   --subject "<subject>"
 
-# Draw the printed traits as a front-facing, high-contrast stencil portrait.
+# Generate a raster image from the printed traits with the IDE's image-capable agent.
 
 python3 generate.py build \
   --draft <same-draft-id> \
-  --file <drawing.png>
+  --file <drawing.png> \
+  --generator agent:codex-imagegen
 
 PRIVATE_KEY=… python3 generate.py mint \
   --draft <same-draft-id> \
@@ -29,8 +31,8 @@ PRIVATE_KEY=… python3 generate.py mint \
   --rpc "$RPC"
 ```
 
-Use `--accept-warnings` only after looking at the actual 40×40 preview and consciously
-accepting every advisory. Hard failures can never be overridden.
+The agent-native path redraws on every advisory and never passes `--accept-warnings`.
+That flag remains a manual escape hatch only. Hard failures can never be overridden.
 
 ## Rules
 
@@ -38,6 +40,8 @@ accepting every advisory. Hard failures can never be overridden.
 - Never delete or edit the stored seed to obtain other traits. Create a new draft.
 - Never print, paste into a document, or persist `PRIVATE_KEY`.
 - Never infer token or agent IDs from filenames or counters.
+- Never use Python, SVG, ASCII, or procedural smoke art as a production source.
+- Inspect both the comparison sheet and palette-exact PNG with an image viewer.
 - For more than one draft, repeat `--draft` and `--persona`; let the CLI use
   `mintBatch`.
 - If exact simulation fails, stop. Do not bypass it with a manual send.
@@ -57,8 +61,9 @@ Prefer:
 - solid eyes, brows, and mouth;
 - shoulders cut by the bottom edge.
 
-`build` prints the exact reduced portrait. Inspect it. Redraw until the silhouette and
-assigned traits survive.
+`build` prints and saves the exact reduced portrait. Inspect the PNG, not only the text
+preview. Redraw the same draft until the silhouette and assigned traits survive with no
+warning.
 
 ## Contract checks
 

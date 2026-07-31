@@ -1,0 +1,4 @@
+interface:
+  display_name: "Census Mint"
+  short_description: "Generate, inspect, and safely mint Census art"
+  default_prompt: "Use $census-mint to create and mint a Census agent from my subject."

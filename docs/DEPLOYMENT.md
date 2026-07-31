@@ -23,6 +23,9 @@
 - adapter binding: ERC-721, active Census, token 1
 - registration state: `active: false`, `x402Support: false`, no services or trust claims
 
+The rollout portrait is a technical smoke artifact. It is not the production visual
+quality bar and must never be used as an agent-native prompt or source reference.
+
 ## Fixed dependencies
 
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`

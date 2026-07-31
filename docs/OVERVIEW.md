@@ -14,12 +14,16 @@ Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
 Minting is the product boundary:
 
 1. A draft receives a secure persistent seed and nine visual traits.
-2. An agent draws the portrait; the pipeline reduces it to a 400-byte bitmap.
-3. The pipeline checks quality, duplicates, wallet allowance, and exact transaction
-   behavior.
+2. An image-capable IDE agent generates a raster portrait from those locked traits.
+3. The agent inspects the source and exact four-tone 40×40 preview, redraws the same
+   draft on any warning, and the pipeline checks duplicates, wallet allowance, and exact
+   transaction behavior.
 4. Census writes a single 409-byte immutable art record, draws a capped skill, registers
    an ERC-8004 identity, and transfers the NFT to the minter in one transaction.
 5. A read-only service publishes the current ERC-8004 registration JSON.
+
+The shipped `census-mint` skill orchestrates this loop. Procedural Python/SVG deployment
+smoke art is deliberately outside the production path.
 
 The registration JSON starts with `active: false`, `x402Support: false`, empty
 `services`, and empty `supportedTrust`. This is deliberate: an identity is not evidence

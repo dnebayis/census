@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from binarize import analyse, binarize_image, preview
+from binarize import binarize_image, preview
 from config import ACCEPTED_INPUTS, TRAIT_CATEGORIES
 from output import (
     load_draft_manifest,
@@ -21,13 +21,14 @@ from output import (
     save_draft_manifest,
     save_token,
 )
-from traits import describe, generate_traits, to_indices
+from traits import generate_traits, to_indices
 
 
 BRIEF = """\
 Draw this portrait. Save it as a PNG, then run:
 
-    python generate.py build --draft {draft_id} --file <your file>
+    python generate.py build --draft {draft_id} --file <your file> \\
+      --generator agent:codex-imagegen
 
 SUBJECT
   {subject}
@@ -126,36 +127,25 @@ def _read_drawing(path: str):
     ext = os.path.splitext(path)[1].lower()
     if ext not in ACCEPTED_INPUTS:
         raise ValueError(f"unsupported input {ext}; accepted: {', '.join(ACCEPTED_INPUTS)}")
-    if ext == ".py":
-        import draw
+    return Path(path).read_bytes()
 
-        return None, draw.run(path)
-    raw = Path(path).read_bytes()
-    if ext == ".svg" or (ext == ".txt" and b"<svg" in raw[:400]):
-        from io import BytesIO
 
-        import svgraster
-
-        buf = BytesIO()
-        svgraster.render(raw.decode(), size=1024).save(buf, format="PNG")
-        return buf.getvalue(), None
-    return raw, None
+def _agent_generator(value: str) -> str:
+    if not re.fullmatch(r"agent:[a-z0-9][a-z0-9._-]{1,63}", value or ""):
+        raise ValueError(
+            "--generator must identify an image-capable IDE agent, "
+            "for example agent:codex-imagegen"
+        )
+    return value
 
 
 def cmd_build(args):
     draft_id = _draft_id(args)
     manifest = load_draft_manifest(args.output, draft_id)
-    source, px = _read_drawing(args.file)
-
-    if px is not None:
-        from binarize import pack_bitmap
-
-        bitmap, stats = pack_bitmap(px), analyse(px)
-        source_bytes = Path(args.file).read_bytes()
-        print("  drawn at native 40x40 — no downsample, nothing quantised\n")
-    else:
-        bitmap, px, stats = binarize_image(source)
-        source_bytes = source
+    generator = _agent_generator(args.generator)
+    source = _read_drawing(args.file)
+    bitmap, px, stats = binarize_image(source)
+    source_bytes = source
 
     owners = [owner for owner in load_signature_owners(args.output).get(stats["signature"], []) if owner != draft_id]
     if owners:
@@ -186,6 +176,7 @@ def cmd_build(args):
     save_token(args.output, draft_id, bitmap, px, manifest["traits"], stats, source_image=source)
 
     manifest["build"] = {
+        "generator": generator,
         "source_file": os.path.basename(args.file),
         "source_sha256": _sha256(source_bytes),
         "bitmap_sha256": _sha256(bitmap),
@@ -221,6 +212,7 @@ def _load_mint_drafts(args):
         build = manifest.get("build")
         if not build:
             raise ValueError(f"draft {draft_id!r} has not been built")
+        _agent_generator(build.get("generator"))
         bitmap = bytes.fromhex((Path(args.output) / f"{draft_id}.hex").read_text().strip())
         if _sha256(bitmap) != build["bitmap_sha256"]:
             raise ValueError(f"draft {draft_id!r} bitmap changed after build")
@@ -398,6 +390,11 @@ def main():
     build = sub.add_parser("build", help="binarize and inspect a draft drawing")
     _add_draft_arg(build)
     build.add_argument("--file", required=True)
+    build.add_argument(
+        "--generator",
+        required=True,
+        help="agent provenance, for example agent:codex-imagegen",
+    )
     build.set_defaults(fn=cmd_build)
 
     mint = sub.add_parser("mint", help="simulate then mint one or more drafts")

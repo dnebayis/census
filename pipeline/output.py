@@ -108,7 +108,7 @@ def save_token(
       {tokenId}.png      — 640×640 nearest-neighbour preview
       {tokenId}.traits   — trait names and indices, JSON
       {tokenId}.json     — density, signature, warnings
-      {tokenId}.src.png  — what the LLM drew, before binarising (when generated)
+      {draftId}.src.png  — what the IDE agent drew, before binarising
 
     Raises:
         ValueError: if the bitmap is the wrong length or the traits are not legal.
@@ -133,8 +133,7 @@ def save_token(
         json.dump({"draft_id": draft_id, "bytes": len(bitmap), **stats}, f, indent=2)
 
     if source_image:
-        with open(base + ".src.png", "wb") as f:
-            f.write(source_image)
+        Image.open(BytesIO(source_image)).convert("RGB").save(base + ".src.png")
         try:
             save_comparison(pixels, source_image, base + ".compare.png")
         except Exception:

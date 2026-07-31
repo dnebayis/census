@@ -1,4 +1,5 @@
 import argparse
+import io
 import json
 import random
 import sys
@@ -10,6 +11,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parent))
 
 import generate
+from PIL import Image
 from binarize import analyse, unpack_bitmap
 from output import load_existing_traits, load_signature_owners, save_draft_manifest
 from traits import generate_traits, to_indices
@@ -29,6 +31,25 @@ VALID_TRAITS = {
 
 
 class PipelineTest(unittest.TestCase):
+    def test_production_build_inputs_are_agent_rasters(self):
+        with tempfile.TemporaryDirectory() as output:
+            png = Path(output) / "portrait.png"
+            buffer = io.BytesIO()
+            Image.new("RGB", (64, 64), "white").save(buffer, format="PNG")
+            png.write_bytes(buffer.getvalue())
+            self.assertEqual(generate._read_drawing(str(png)), buffer.getvalue())
+
+            svg = Path(output) / "portrait.svg"
+            svg.write_text("<svg/>")
+            with self.assertRaisesRegex(ValueError, "unsupported input"):
+                generate._read_drawing(str(svg))
+            with self.assertRaisesRegex(ValueError, "--generator"):
+                generate._agent_generator("manual")
+            self.assertEqual(
+                generate._agent_generator("agent:codex-imagegen"),
+                "agent:codex-imagegen",
+            )
+
     def test_bitmap_python_matches_naive_reference_with_409_byte_records(self):
         rng = random.Random(80048217)
         for _ in range(256):
@@ -118,6 +139,7 @@ class PipelineTest(unittest.TestCase):
                 "traits": VALID_TRAITS,
                 "traits_hex": "0x000000000000000000",
                 "build": {
+                    "generator": "agent:test-imagegen",
                     "bitmap_sha256": generate._sha256(bitmap),
                     "stats": {
                         "mintable": True,
@@ -151,6 +173,7 @@ class PipelineTest(unittest.TestCase):
                         "traits": VALID_TRAITS,
                         "traits_hex": "0x000000000000000000",
                         "build": {
+                            "generator": "agent:test-imagegen",
                             "bitmap_sha256": generate._sha256(bitmap),
                             "stats": {
                                 "mintable": True,

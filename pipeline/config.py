@@ -54,36 +54,19 @@ TARGET_DENSITY = (420, 780)
 
 # ---------------------------------------------------------------- generation
 
-# There is no image API here, and no API key anywhere in this pipeline.
+# Production art is agent-native: an image-capable IDE agent generates a raster source,
+# runs it through `build`, visually inspects the reduced preview, and redraws the same
+# persistent draft until it passes. The pipeline deliberately contains no image API key
+# or generator; orchestration belongs to the owner's agent session.
 #
-# The owner talks to their own agent — Codex, or any agent with real image generation —
-# and that agent draws the portrait during the conversation. This is the point of the
-# project, not an implementation detail: the art is made by the owner's agent, in the
-# owner's session.
-#
-# Claude is deliberately not a supported route. It has no image generation, so its only
-# option is writing SVG or a drawing script, and neither produced art good enough at
-# 40x40. Both input formats are still accepted — they are provider-neutral and they work
-# — but nothing here is built around them.
-#
-# So what ships is a tool surface, not a generator:
-#
-#   brief   assign traits, print the drawing brief for the agent
-#           ... the agent draws, however it can ...
-#   build   take the file back, binarize, check, preview
-#   mint    send the transaction
-#
-# That loop is also the answer to quality. A one-shot API call cannot see that its
-# output turned to mud at 40x40; an agent in a chat runs `build`, reads the ASCII
-# preview and the warnings, and draws again. Iteration is what a key could never buy.
+# Script and SVG sources are excluded from the mint path. They made useful deployment
+# smoke tests, but they are not the collection's production art workflow.
 
 MAX_RETRIES = 3
 MAX_SUPPLY = 10_000
 
-# Accepted inputs from the agent.
-# `.py` is the native route: a script that draws straight onto the 40x40 grid,
-# with no render-and-discard stage in between.
-ACCEPTED_INPUTS = (".py", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".txt")
+# Accepted production inputs from an image-capable agent.
+ACCEPTED_INPUTS = (".png", ".jpg", ".jpeg", ".webp")
 
 # ---------------------------------------------------------------- traits
 #

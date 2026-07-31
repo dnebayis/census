@@ -22,6 +22,12 @@ outside this phase.
 Rollout entry 1 is bound to ERC-8004 agent 9100. The prototype is historical only;
 scripts and examples must not use it as an active address.
 
+Production art is agent-native. An image-capable IDE agent uses
+[`census-mint`](skills/census-mint/SKILL.md) to generate a raster portrait, inspect the
+actual four-tone 40×40 result, redraw the same persistent draft until it is clean, and
+only then run the simulated mint path. Procedural Python/SVG smoke art is not a
+production input.
+
 ## Mint invariants
 
 - Deployment starts with minting closed. The owner can call `openMinting()` exactly
@@ -58,4 +64,5 @@ adapter and are comparison figures, not a prediction of production transaction c
 - [Standards lock](docs/standards-lock.md)
 - [Sepolia deployment record](docs/DEPLOYMENT.md)
 - [Pipeline guide](pipeline/README.md)
+- [Agent-native mint skill](skills/census-mint/SKILL.md)
 - [Handoff](HANDOFF.md)
