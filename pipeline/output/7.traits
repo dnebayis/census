@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Species": "human",
+    "Age": "old",
+    "Hair": "twin braids",
+    "Eyes": "dark sunglasses",
+    "Facial": "a scar across one cheek",
+    "Expression": "faint smile",
+    "Headwear": "headphones",
+    "Attire": "bare shoulders",
+    "Accessory": "nose ring"
+  },
+  "indices": [
+    0,
+    2,
+    9,
+    7,
+    7,
+    3,
+    8,
+    8,
+    6
+  ]
+}

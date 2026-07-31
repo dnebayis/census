@@ -1,0 +1,26 @@
+{
+  "token_id": 7,
+  "bytes": 400,
+  "density": 682,
+  "density_pct": 42.6,
+  "full_ink_pct": 36.1,
+  "isolated_pct": 0.0,
+  "symmetry": 0,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff7e18243c003c18",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a tired bureaucrat",
+  "traits": {
+    "Species": "human",
+    "Age": "old",
+    "Hair": "twin braids",
+    "Eyes": "dark sunglasses",
+    "Facial": "a scar across one cheek",
+    "Expression": "faint smile",
+    "Headwear": "headphones",
+    "Attire": "bare shoulders",
+    "Accessory": "nose ring"
+  }
+}

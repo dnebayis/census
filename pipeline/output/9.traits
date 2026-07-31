@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Species": "human",
+    "Age": "young",
+    "Hair": "long straight hair",
+    "Eyes": "heavy-lidded tired eyes",
+    "Facial": "gaunt hollow cheeks",
+    "Expression": "smirk",
+    "Headwear": "flat cap",
+    "Attire": "armoured shoulders",
+    "Accessory": "monocle"
+  },
+  "indices": [
+    0,
+    0,
+    3,
+    3,
+    10,
+    7,
+    3,
+    6,
+    9
+  ]
+}

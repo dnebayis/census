@@ -1,0 +1,26 @@
+{
+  "token_id": 9,
+  "bytes": 400,
+  "density": 1046,
+  "density_pct": 65.4,
+  "full_ink_pct": 67.3,
+  "isolated_pct": 0.0,
+  "symmetry": 0,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff7e7e7e7e3c3c18",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a hooded figure",
+  "traits": {
+    "Species": "human",
+    "Age": "young",
+    "Hair": "long straight hair",
+    "Eyes": "heavy-lidded tired eyes",
+    "Facial": "gaunt hollow cheeks",
+    "Expression": "smirk",
+    "Headwear": "flat cap",
+    "Attire": "armoured shoulders",
+    "Accessory": "monocle"
+  }
+}

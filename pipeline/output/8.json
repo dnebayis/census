@@ -1,0 +1,26 @@
+{
+  "token_id": 8,
+  "bytes": 400,
+  "density": 600,
+  "density_pct": 37.5,
+  "full_ink_pct": 31.7,
+  "isolated_pct": 0.0,
+  "symmetry": 0,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0x7e7e7e18003c0000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "",
+  "traits": {
+    "Species": "skull-faced figure",
+    "Age": "middle-aged",
+    "Hair": "high ponytail",
+    "Eyes": "narrow eyes",
+    "Facial": "full beard",
+    "Expression": "wide-eyed alarm",
+    "Headwear": "headphones",
+    "Attire": "plain collar",
+    "Accessory": "breathing mask"
+  }
+}
