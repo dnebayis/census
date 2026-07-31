@@ -6,8 +6,9 @@ Implemented: ERC-721 collection, ERC-8048 metadata, ERC-8217 adapter binding to 
 ERC-8004 identity, immutable artwork and traits, safe local pipeline, read-only
 registration service, Sepolia rollout.
 
-Deferred: ERC-8257, RESTAP, MCP, x402, seven skill runtimes, Executor authorization,
-frontend, separate agent wallet.
+Phase 2: ERC-8257, RESTAP, MCP, x402, seven skill runtimes, Executor authorization, and
+separate execution wallets are approved but not yet active. Their delivery gates are in
+`RUNTIME-PLAN.md`. A frontend remains outside the product direction.
 
 The normative standards and upstream commits are in `standards-lock.md`.
 

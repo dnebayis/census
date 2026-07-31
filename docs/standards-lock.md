@@ -1,8 +1,8 @@
 # Standards lock
 
-Census targets only the standards required by the mint core. The deployed ABI does not
-silently follow moving Draft specifications. Upstream changes are reported by CI and
-reviewed before any new deployment.
+Census locks the mint-core standards and the ERC-8257 runtime discovery surface. The
+deployed ABI does not silently follow moving Draft specifications. Upstream changes are
+reported by CI and reviewed before any new deployment.
 
 Snapshot date: **2026-07-31**
 
@@ -11,9 +11,10 @@ Snapshot date: **2026-07-31**
 | ERC-8004 | Agent identity and registration file | [`503591a6e80e6e1affdd6403341e25269141f046`](https://github.com/ethereum/ERCs/commit/503591a6e80e6e1affdd6403341e25269141f046) |
 | ERC-8048 | Onchain token metadata | [`3173bbe1ad99fdc1f14cc7e54548e83e5e6da3fc`](https://github.com/ethereum/ERCs/commit/3173bbe1ad99fdc1f14cc7e54548e83e5e6da3fc) |
 | ERC-8217 | NFT-bound agent control | [`6ca6a3a3a5230c0a5ec30c21c3c3b9eba5ba8e29`](https://github.com/ethereum/ERCs/commit/6ca6a3a3a5230c0a5ec30c21c3c3b9eba5ba8e29) |
+| ERC-8257 | Agent tool discovery and manifests | [`1b1b3f854f5c1b8b2b8380211d01db68e94dcf0d`](https://github.com/ethereum/ERCs/commit/1b1b3f854f5c1b8b2b8380211d01db68e94dcf0d) |
 
-ERC-8257 is deliberately not part of the mint core. It will be reconsidered only when a
-real RESTAP runtime and canonical tool manifests exist.
+ERC-8257 is not part of deployed Census v3. It is locked for the runtime phase and will
+be activated only with real RESTAP endpoints and canonical tool manifests.
 
 ## Upgrade policy
 

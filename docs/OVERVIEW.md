@@ -35,8 +35,9 @@ that a runtime exists.
 ## Ownership and identity
 
 The current NFT owner controls the adapter-bound agent identity. Ownership transfer
-therefore transfers control. Census creates no separate agent wallet. If a future
-runtime earns revenue, the current NFT owner is the intended recipient.
+therefore transfers control. Census v3 creates no wallet. Phase 2 lazily provisions a
+separate execution wallet whose recovery and spending policy remain owner-controlled;
+runtime revenue goes to the current NFT owner.
 
 An owner who wants to stop using the shared registration service can call the adapter's
 `setAgentURI` and point the identity to another valid registration file.
@@ -57,9 +58,9 @@ Owner-writable:
 - any other ERC-8048 metadata key except `skill`, `class`, and `trait[...]`
 - the adapter-level `agentURI`, which provides full opt-out
 
-## Deferred systems
+## Runtime phase
 
-The seven skill names and quotas remain collection taxonomy, but their runtimes do not
-exist in this phase. RESTAP, MCP, x402, Executor permissions, ERC-8257 tool registration,
-frontend work, reputation UX, and separate wallets require their own design and threat
-model before activation.
+The seven skill names and quotas become working services in Phase 2. The approved shape
+is a shared RESTAP host, MCP access, ERC-8257 discovery, x402 rentals, and separate
+execution wallets whose recovery and spending policy remain owner-controlled. None is
+active yet; implementation and activation follow `RUNTIME-PLAN.md`. Executor ships last.

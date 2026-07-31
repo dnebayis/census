@@ -10,11 +10,12 @@ evidence changes its premise.
 ERC-8004, ERC-8048, and ERC-8217 are locked to the upstream commits in
 `standards-lock.md`. Weekly CI reports drift but never edits an ABI or deployment.
 
-### D2 — Runtime standards are deferred
+### D2 — Runtime is a separate phase, not removed
 
 ERC-8257, RESTAP, MCP, x402, the seven skill runtimes, and Executor authorization are
-not required for an NFT to be born as an ERC-8004 agent. They are removed from v1 code
-and reconsidered only when real runtime manifests and authorization rules exist.
+not required for an NFT to be born as an ERC-8004 agent, so they remain outside the
+mint-core deployment. The original shared-runtime economy is restored as Phase 2 and
+is specified in `RUNTIME-PLAN.md`.
 
 ### D3 — One-transaction identity binding
 
@@ -46,11 +47,13 @@ overstated.
 owner can write other ERC-8048 keys. The ERC-8048 event follows the locked four-field
 form with the indexed key duplicated in readable form.
 
-### D8 — The NFT owner is the controller and recipient
+### D8 — Owner control plus a separate execution wallet
 
-No separate agent wallet is created. ERC-8217 control follows NFT ownership. Future
-runtime revenue is intended for the current NFT owner. The owner can fully opt out of
-the shared registration host through adapter `setAgentURI`.
+ERC-8217 control and runtime revenue follow NFT ownership. Phase 2 also gives every
+entry a separate, lazily provisioned execution wallet for agent-to-agent payments and
+authorized actions. That wallet is not the identity or controller; recovery, transfer
+rotation, and spending policy remain owner-controlled. The owner can fully opt out of
+the shared host through adapter `setAgentURI` and owner-writable endpoint metadata.
 
 ### D9 — Draft IDs and receipts are different identities
 
@@ -139,13 +142,14 @@ estimates.
 - 40×40, one bit, 200 bitmap bytes
 - exact skill quotas: 3000, 3000, 1500, 1000, 700, 500, 300
 
-## Rejected for this phase
+## Rejected for the mint-core deployment
 
 - automatic ABI upgrades after upstream drift
 - mutable canonical host
 - admin pause after launch
 - a placeholder deployment host
-- a separate agent wallet
+- creating or funding a separate agent wallet before the Phase 2 custody and spending
+  model passes Sepolia tests
 - treating identity registration as a claim that runtime services are active
 - automatic migration of legacy output filenames to token IDs
 - owner mutation of skill, class, or visual traits

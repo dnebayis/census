@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 
 LOCK = Path(__file__).resolve().parents[1] / "docs" / "standards-lock.md"
-STANDARDS = (8004, 8048, 8217)
+STANDARDS = (8004, 8048, 8217, 8257)
 
 
 def locked_shas() -> dict[int, str]:

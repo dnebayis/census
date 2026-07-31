@@ -4,9 +4,10 @@ Repository: `https://github.com/dnebayis/census`
 
 ## Current phase
 
-Only the hardened mint core and read-only ERC-8004 registration API are in scope.
-ERC-8257, RESTAP, MCP, x402, seven skill implementations, Executor authorization,
-frontend work, and separate agent wallets are deferred.
+The hardened mint core and read-only ERC-8004 registration API are live. Phase 2 now
+restores the shared RESTAP/MCP/x402 runtime, ERC-8257 discovery, seven skill
+implementations, and separate owner-controlled execution wallets. Nothing is active
+until the gates in `docs/RUNTIME-PLAN.md` pass; Executor remains last.
 
 Read, in order:
 
@@ -14,6 +15,7 @@ Read, in order:
 2. `docs/DECISIONS.md`
 3. `docs/SPEC.md`
 4. `pipeline/AGENTS.md`
+5. `docs/RUNTIME-PLAN.md`
 
 ## Fixed infrastructure
 

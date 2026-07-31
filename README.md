@@ -4,10 +4,10 @@ Census is a capped collection of 10,000 fully-onchain 40×40 portraits. Every to
 created together with an ERC-8004 identity through the ERC-8217 adapter. The portrait,
 skill, class, and nine trait indices are immutable.
 
-This repository currently delivers the hardened mint core and a read-only ERC-8004
-registration service. RESTAP, MCP, x402, the seven skill runtimes, Executor
-authorization, ERC-8257, a frontend, and a separate agent wallet are intentionally
-outside this phase.
+This repository delivers the hardened mint core and a read-only ERC-8004 registration
+service. Phase 2 restores the original shared-agent economy: RESTAP, MCP, x402,
+ERC-8257 discovery, seven skill runtimes, and owner-controlled execution wallets. They
+are approved but not active; see [`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
 
 ## Deployment status
 
@@ -67,8 +67,9 @@ entry.
 - `bitmapOf` exposes only the bitmap. `traitsOf` and `traitOf` read the suffix.
 - `skill`, `class`, and every `trait[...]` key are immutable. The current NFT owner can
   write other ERC-8048 keys.
-- Agent control and the economic recipient are the current NFT owner. Census does not
-  create a separate agent wallet.
+- Agent control and the economic recipient are the current NFT owner. Census v3 does
+  not create a wallet; Phase 2 provisions a separate execution wallet lazily under
+  owner recovery and spending policy.
 
 ## Development
 
