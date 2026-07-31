@@ -32,6 +32,18 @@
 - production verification: HTTP 200, `no-store`, missing-token 404, binding back to
   active Census token 1, and Identity Registry URI exact match
 
+## First production batch
+
+- transaction:
+  `0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428`
+- block: `11389367`
+- `night-ledger`: token 2 / ERC-8004 agent 9106
+- `signal-auditor`: token 3 / ERC-8004 agent 9107
+- `archive-courier`: token 4 / ERC-8004 agent 9108
+- production verification: every token returned HTTP 200 with `no-store`; the
+  missing-token probe returned 404; adapter bindings and Identity Registry URIs
+  matched the corresponding v2 registration URL
+
 ## Fixed dependencies
 
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`

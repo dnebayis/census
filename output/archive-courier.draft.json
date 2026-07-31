@@ -1,0 +1,71 @@
+{
+  "build": {
+    "bitmap_file": "archive-courier.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0x8fc007374ca6b22e75a95e61f28c1ee40a5392f74ee87c96028c3ad3da443ede",
+    "generator": "agent:codex-imagegen",
+    "source_file": "archive-courier.agent-v2.png",
+    "source_sha256": "0x2c1e921afaee120884663620a42c0cb4f325eae5e5d4161c272c46789e655e6b",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 317,
+      "density_pct": 19.8,
+      "isolated_pct": 1.9,
+      "mintable": true,
+      "signature": "0x7e3c000000180000",
+      "subject": "a quiet archive courier",
+      "symmetry": 0,
+      "traits": {
+        "Accessory": "earring",
+        "Age": "young",
+        "Attire": "high collar coat",
+        "Expression": "slight frown",
+        "Eyes": "eyepatch",
+        "Facial": "goatee",
+        "Hair": "buzz cut",
+        "Headwear": "bare head",
+        "Species": "human"
+      },
+      "warnings": []
+    },
+    "stats_file": "archive-courier.json"
+  },
+  "draft_id": "archive-courier",
+  "mint": {
+    "agent_id": 9108,
+    "block_number": 11389367,
+    "draft_id": "archive-courier",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0x7e3c000000180000",
+    "skill": 0,
+    "token_id": 4,
+    "transaction_hash": "0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428"
+  },
+  "seed": "0xd43ee1574239841f71fa284f07febdbe",
+  "subject": "a quiet archive courier",
+  "trait_indices": [
+    0,
+    0,
+    5,
+    11,
+    4,
+    2,
+    0,
+    1,
+    5
+  ],
+  "traits": {
+    "Accessory": "earring",
+    "Age": "young",
+    "Attire": "high collar coat",
+    "Expression": "slight frown",
+    "Eyes": "eyepatch",
+    "Facial": "goatee",
+    "Hair": "buzz cut",
+    "Headwear": "bare head",
+    "Species": "human"
+  },
+  "traits_hex": "0x0000050b0402000105",
+  "version": 2
+}

@@ -86,8 +86,10 @@ never an active pipeline or README address.
 An image-capable IDE agent generates a normal high-contrast portrait source, then sees
 both the source and exact one-bit 40×40 result before minting. Production builds accept
 PNG, JPEG, or WebP and record `agent:*` provenance. Python, SVG, ASCII, and procedural
-rollout smoke art are not production sources. The agent redraws the same locked draft
-on every advisory and does not use the manual `--accept-warnings` escape hatch.
+rollout smoke art are not production sources. Structural failures and materially
+unreadable art are redrawn. Advisory art metrics receive one visual review and may use
+the existing explicit `--accept-warnings` path only when the user has selected the
+less-strict art gate; chain-safety failures remain non-bypassable.
 
 ### D15 — One-bit framing and palette are collection constants
 

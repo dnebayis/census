@@ -1,0 +1,30 @@
+{
+  "transaction_hash": "0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428",
+  "block_number": 11389367,
+  "entries": [
+    {
+      "draft_id": "night-ledger",
+      "token_id": 2,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 4,
+      "signature": "0xff7c7e7e6e3c1800",
+      "agent_id": 9106
+    },
+    {
+      "draft_id": "signal-auditor",
+      "token_id": 3,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 0,
+      "signature": "0x000c080804000000",
+      "agent_id": 9107
+    },
+    {
+      "draft_id": "archive-courier",
+      "token_id": 4,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 0,
+      "signature": "0x7e3c000000180000",
+      "agent_id": 9108
+    }
+  ]
+}

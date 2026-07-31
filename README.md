@@ -23,6 +23,9 @@ outside this phase.
 V2 permissionless minting is irreversibly open. Genesis draft `genesis-registrar`
 minted token 1 and ERC-8004 agent 9104; its live registration is
 [`/a/1/registration.json`](https://census-registration-v2.vercel.app/a/1/registration.json).
+The first production batch minted `night-ledger`, `signal-auditor`, and
+`archive-courier` as tokens 2–4 / agents 9106–9108 in transaction
+[`0x7db94f…b3428`](https://sepolia.etherscan.io/tx/0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428).
 V1 rollout entry 1 remains bound to ERC-8004 agent 9100 at its original host. Archived
 deployments are historical only; scripts and examples must not use them as active
 addresses.

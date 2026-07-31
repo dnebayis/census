@@ -1,0 +1,25 @@
+{
+  "draft_id": "night-ledger",
+  "bytes": 200,
+  "density": 796,
+  "density_pct": 49.8,
+  "isolated_pct": 0.8,
+  "symmetry": 2,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff7c7e7e6e3c1800",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a night-shift ledger keeper",
+  "traits": {
+    "Accessory": "nose ring",
+    "Age": "middle-aged",
+    "Attire": "armoured shoulders",
+    "Expression": "neutral",
+    "Eyes": "eyepatch",
+    "Facial": "stubble",
+    "Hair": "wild curly hair",
+    "Headwear": "beanie",
+    "Species": "skull-faced figure"
+  }
+}

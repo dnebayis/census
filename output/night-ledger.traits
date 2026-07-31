@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "nose ring",
+    "Age": "middle-aged",
+    "Attire": "armoured shoulders",
+    "Expression": "neutral",
+    "Eyes": "eyepatch",
+    "Facial": "stubble",
+    "Hair": "wild curly hair",
+    "Headwear": "beanie",
+    "Species": "skull-faced figure"
+  },
+  "indices": [
+    7,
+    1,
+    12,
+    11,
+    2,
+    0,
+    4,
+    6,
+    6
+  ]
+}

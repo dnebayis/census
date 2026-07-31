@@ -31,12 +31,24 @@ Genesis draft `genesis-registrar` is token 1 / ERC-8004 agent 9104; mint transac
 `0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4`.
 Its verified registration URI is
 `https://census-registration-v2.vercel.app/a/1/registration.json`.
+The first production batch transaction is
+`0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428`
+at block `11389367`:
+
+- `night-ledger`: token 2 / agent 9106
+- `signal-auditor`: token 3 / agent 9107
+- `archive-courier`: token 4 / agent 9108
+
+All three production registration URLs returned HTTP 200 with `no-store`; the missing
+token probe returned 404, and each live adapter binding and Identity Registry URI
+matched.
 The archived v1 rollout token 1 remains ERC-8004 agent 9100 at
 `https://census-registration.vercel.app/a/1/registration.json`.
 
 Production creation now starts at `skills/census-mint/SKILL.md`. The IDE agent must use
-real raster image generation, inspect the source/comparison/palette preview, and redraw
-the same persistent draft on any warning. Python/SVG smoke drawings are archive proof,
+real raster image generation and inspect the source/comparison/palette preview.
+Structural failures still stop minting. Art metrics remain advisory and may be
+explicitly accepted after visual review; Python/SVG smoke drawings are archive proof,
 not collection art.
 
 ## Safety-critical rollout order
@@ -77,8 +89,7 @@ follows ownership.
 
 `draftId` is the stable local identity. A secure seed and trait assignment are written
 once to `<draftId>.draft.json`; reopening does not reroll. Build records source and
-bitmap SHA-256 hashes, `agent:*` provenance, and stats. The agent-native path redraws on
-advisories instead of accepting them. Mint derives the sender from `PRIVATE_KEY`,
+bitmap SHA-256 hashes, `agent:*` provenance, and stats. Mint derives the sender from `PRIVATE_KEY`,
 simulates the exact call, batches multiple drafts, and writes real receipt token/agent
 IDs under `output/mints/`.
 

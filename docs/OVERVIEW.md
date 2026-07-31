@@ -16,9 +16,9 @@ Minting is the product boundary:
 
 1. A draft receives a secure persistent seed and nine visual traits.
 2. An image-capable IDE agent generates a raster portrait from those locked traits.
-3. The agent inspects the source and exact one-bit 40×40 preview, redraws the same
-   draft on any warning, and the pipeline checks duplicates, wallet allowance, and exact
-   transaction behavior.
+3. The agent inspects the source and exact one-bit 40×40 preview, redraws structural
+   failures or materially unreadable art, and reviews advisory metrics once. The
+   pipeline checks duplicates, wallet allowance, and exact transaction behavior.
 4. Census writes a single 209-byte immutable art record, draws a capped skill, registers
    an ERC-8004 identity, and transfers the NFT to the minter in one transaction.
 5. A read-only service publishes the current ERC-8004 registration JSON.

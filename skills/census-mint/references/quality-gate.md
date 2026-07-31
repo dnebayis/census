@@ -28,8 +28,10 @@ packing, and palette application.
 
 The reduced preview passes only when all are true:
 
-1. The species, head shape, eyes, expression, headwear/hair, attire, and accessory can
-   be recognized without consulting the source.
+1. The species, head shape, eyes, expression, and overall silhouette can be recognized
+   without consulting the source. Secondary traits should remain visible when the
+   reduction allows it, but a small lost detail is advisory rather than a structural
+   failure.
 2. Eyes and mouth remain distinct; the face is not a single dark mass.
 3. The outer silhouette is continuous and the shoulders anchor the bottom edge.
 4. The top corners are empty and there is no accidental frame.
@@ -46,5 +48,6 @@ Correct only the most important failure each attempt:
 4. missing assigned trait;
 5. stray detail or tonal noise.
 
-Do not change the subject, seed, or traits during retries. If the pipeline emits any
-warning, treat it as a redraw request in the agent-native workflow.
+Do not change the subject, seed, or traits during retries. Pipeline warnings trigger a
+visual review. They require explicit CLI acceptance before minting, but do not require
+repeated redraws when the user has chosen the less-strict art gate.

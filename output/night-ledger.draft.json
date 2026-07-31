@@ -1,0 +1,71 @@
+{
+  "build": {
+    "bitmap_file": "night-ledger.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0x33f04dcc40cab81daa65381be2dfa7f9fc5d440a8fccd6ed71780bdc09322e13",
+    "generator": "agent:codex-imagegen",
+    "source_file": "night-ledger.agent-v1.png",
+    "source_sha256": "0xa29a6bb87d2ad71d4afc95016d555680a2a6e4807c7a12c64e1cb6f72d0eccc3",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 796,
+      "density_pct": 49.8,
+      "isolated_pct": 0.8,
+      "mintable": true,
+      "signature": "0xff7c7e7e6e3c1800",
+      "subject": "a night-shift ledger keeper",
+      "symmetry": 2,
+      "traits": {
+        "Accessory": "nose ring",
+        "Age": "middle-aged",
+        "Attire": "armoured shoulders",
+        "Expression": "neutral",
+        "Eyes": "eyepatch",
+        "Facial": "stubble",
+        "Hair": "wild curly hair",
+        "Headwear": "beanie",
+        "Species": "skull-faced figure"
+      },
+      "warnings": []
+    },
+    "stats_file": "night-ledger.json"
+  },
+  "draft_id": "night-ledger",
+  "mint": {
+    "agent_id": 9106,
+    "block_number": 11389367,
+    "draft_id": "night-ledger",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0xff7c7e7e6e3c1800",
+    "skill": 4,
+    "token_id": 2,
+    "transaction_hash": "0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428"
+  },
+  "seed": "0xe9497781d688463ca633894d0eae7640",
+  "subject": "a night-shift ledger keeper",
+  "trait_indices": [
+    7,
+    1,
+    12,
+    11,
+    2,
+    0,
+    4,
+    6,
+    6
+  ],
+  "traits": {
+    "Accessory": "nose ring",
+    "Age": "middle-aged",
+    "Attire": "armoured shoulders",
+    "Expression": "neutral",
+    "Eyes": "eyepatch",
+    "Facial": "stubble",
+    "Hair": "wild curly hair",
+    "Headwear": "beanie",
+    "Species": "skull-faced figure"
+  },
+  "traits_hex": "0x07010c0b0200040606",
+  "version": 2
+}

@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "old",
+    "Attire": "robe",
+    "Expression": "exhausted",
+    "Eyes": "one eye scarred shut",
+    "Facial": "thick moustache",
+    "Hair": "short cropped hair",
+    "Headwear": "bare head",
+    "Species": "human"
+  },
+  "indices": [
+    0,
+    2,
+    1,
+    4,
+    5,
+    6,
+    0,
+    7,
+    0
+  ]
+}

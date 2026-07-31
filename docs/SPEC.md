@@ -117,8 +117,10 @@ side-by-side comparison, and exact one-bit 40×40 PNG. The pipeline reduces the 
 once to 36×36, places it at y=4 on a 40×40 canvas, thresholds at 128, and packs the
 result into 200 bytes. The locked render palette is charcoal `#34343A` on warm pastel
 `#E9DDC7`.
-It redraws the same draft on any hard failure, advisory, lost trait, or muddy silhouette;
-the agent-native path never uses `--accept-warnings`. Build records generator, source
+It redraws the same draft on any hard failure or materially muddy silhouette. Advisory
+metrics and small secondary-trait losses receive one visual review; when the user has
+explicitly selected the less-strict art gate, the agent may use `--accept-warnings`.
+Build records generator, source
 filename and SHA-256, bitmap SHA-256, bitmap/stats filenames, all analysis statistics,
 signature, warnings, and mintability. Existing artifacts and same-batch signatures are
 checked separately.
@@ -206,8 +208,8 @@ measures batching directionally and does not model the live adapter's exact gas.
 - nine traits round-trip and reject bad indices;
 - immutable namespaces and tokenURI attributes are covered;
 - batch receipts map every draft to distinct token/agent IDs;
-- warnings, duplicates, cap failures, trait failures, and simulation reverts stop before
-  broadcast;
+- unaccepted warnings, duplicates, cap failures, trait failures, and simulation reverts
+  stop before broadcast;
 - Sepolia fork verifies real adapter registration, URI, binding, and ownership control;
 - production registration JSON matches `registration-v1`;
 - no pause/close authority exists after launch.

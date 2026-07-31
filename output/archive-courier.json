@@ -1,0 +1,25 @@
+{
+  "draft_id": "archive-courier",
+  "bytes": 200,
+  "density": 317,
+  "density_pct": 19.8,
+  "isolated_pct": 1.9,
+  "symmetry": 0,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0x7e3c000000180000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a quiet archive courier",
+  "traits": {
+    "Accessory": "earring",
+    "Age": "young",
+    "Attire": "high collar coat",
+    "Expression": "slight frown",
+    "Eyes": "eyepatch",
+    "Facial": "goatee",
+    "Hair": "buzz cut",
+    "Headwear": "bare head",
+    "Species": "human"
+  }
+}

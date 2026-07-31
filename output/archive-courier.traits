@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "earring",
+    "Age": "young",
+    "Attire": "high collar coat",
+    "Expression": "slight frown",
+    "Eyes": "eyepatch",
+    "Facial": "goatee",
+    "Hair": "buzz cut",
+    "Headwear": "bare head",
+    "Species": "human"
+  },
+  "indices": [
+    0,
+    0,
+    5,
+    11,
+    4,
+    2,
+    0,
+    1,
+    5
+  ]
+}

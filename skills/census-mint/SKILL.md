@@ -69,17 +69,18 @@ Use the actual agent identifier when another image-capable IDE agent generated i
 Inspect both `<draftId>.compare.png` and the palette-exact 1-bit `<draftId>.png` with an image
 viewer. Also read `<draftId>.json`.
 
-Redraw the same draft when:
+Always redraw the same draft when:
 
 - `mintable` is false;
-- any advisory warning exists;
-- a required trait is not visibly represented;
 - the face, expression, or silhouette is muddy at 40×40;
 - the result looks like generic deployment smoke art.
 
-Make one targeted prompt correction per retry. Use at most four attempts. Do not use
-`--accept-warnings` in this agent-native path. If four attempts do not produce a clean,
-recognizable result, stop without minting and report the remaining visual failure.
+Treat advisory warnings and small secondary-trait losses as visual-review prompts, not
+automatic redraw loops. Make at most one targeted correction when it materially
+improves the portrait. After visual review, `--accept-warnings` may be used only when
+the user has explicitly asked for a less strict art gate. It never bypasses
+`mintable: false`, duplicate checks, wallet limits, invalid traits, or failed exact
+simulation.
 
 ## Mint only on explicit instruction
 

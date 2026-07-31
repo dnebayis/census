@@ -1,0 +1,25 @@
+{
+  "draft_id": "signal-auditor",
+  "bytes": 200,
+  "density": 279,
+  "density_pct": 17.4,
+  "isolated_pct": 6.1,
+  "symmetry": 5,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0x000c080804000000",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a frontier signal auditor",
+  "traits": {
+    "Accessory": "none",
+    "Age": "old",
+    "Attire": "robe",
+    "Expression": "exhausted",
+    "Eyes": "one eye scarred shut",
+    "Facial": "thick moustache",
+    "Hair": "short cropped hair",
+    "Headwear": "bare head",
+    "Species": "human"
+  }
+}

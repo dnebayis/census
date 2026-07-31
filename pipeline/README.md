@@ -56,7 +56,9 @@ PRIVATE_KEY=… python3 generate.py mint \
 For Codex and compatible IDE agents, use the repo skill at
 `skills/census-mint/SKILL.md`. It creates the prompt from the immutable draft manifest,
 uses the IDE's image generation, opens the source and 40×40 previews for visual review,
-and redraws the same draft on any warning. Production build inputs are raster-only:
+and redraws structural failures or materially unreadable art. Advisory metrics are
+reviewed once and can be explicitly accepted under the user-selected less-strict art
+gate. Production build inputs are raster-only:
 PNG, JPEG, or WebP. Python drawings, SVG, ASCII, and the historical rollout smoke image
 are not accepted as production art.
 
@@ -97,9 +99,9 @@ After success, the pipeline decodes `EntryMinted` events and writes
 `output/mints/<transactionHash>.json` with each `draftId`, actual `tokenId`, `agentId`,
 transaction hash, and block number.
 
-The agent-native skill never uses `--accept-warnings`: it redraws, visually checks the
-palette-exact preview, and stops without minting if it cannot reach a clean result in
-four attempts.
+The agent-native skill visually checks the palette-exact preview. It may use
+`--accept-warnings` only after explicit user direction to relax the art gate; hard
+mintability, duplicate, wallet, trait, and simulation failures remain non-bypassable.
 
 ## Bitmap and traits
 
