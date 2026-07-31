@@ -6,8 +6,8 @@ exact onchain bitmap, and simulates the exact transaction before minting. It is 
 image generator.
 
 Active Sepolia Census is `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`; its
-registration origin is `https://census-registration-v2.vercel.app`. Minting remains
-closed until a reviewed first entry can complete the one-way launch gate. The adapter is
+registration origin is `https://census-registration-v2.vercel.app`. Minting is
+irreversibly open; no v2 entry has been minted yet. The adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
 and ERC-8217 only.
 

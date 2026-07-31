@@ -13,16 +13,17 @@ outside this phase.
 
 | Component | Sepolia |
 |---|---|
-| Census v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — mint closed |
+| Census v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — mint open |
 | Registration v2 | [`https://census-registration-v2.vercel.app`](https://census-registration-v2.vercel.app) |
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — original endpoint preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-V2 has no minted entries yet and remains safely closed. V1 rollout entry 1 remains
-bound to ERC-8004 agent 9100 at its original host. Archived deployments are historical
-only; scripts and examples must not use them as active addresses.
+V2 permissionless minting is irreversibly open, but it has no minted entries yet. V1
+rollout entry 1 remains bound to ERC-8004 agent 9100 at its original host. Archived
+deployments are historical only; scripts and examples must not use them as active
+addresses.
 
 Production art is agent-native. An image-capable IDE agent uses
 [`census-mint`](skills/census-mint/SKILL.md) to generate a raster portrait, inspect the

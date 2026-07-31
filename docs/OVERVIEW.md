@@ -7,8 +7,8 @@ and an ERC-8004 identity.
 Active Sepolia Census is `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`.
 Registration is served from `https://census-registration-v2.vercel.app`; adapter and
 Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
-`0x8004a818bfb912233c491871b3d84c89a494bd9e`. Minting remains closed pending the
-reviewed first-entry launch gate.
+`0x8004a818bfb912233c491871b3d84c89a494bd9e`. Permissionless minting is irreversibly
+open; no v2 token has been minted yet.
 
 ## What exists in this phase
 

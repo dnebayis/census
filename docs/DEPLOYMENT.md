@@ -10,16 +10,18 @@
 - canonical host: `https://census-registration-v2.vercel.app`
 - Vercel preview deployment: `dpl_DCPJYQ5LAE7u99M3F8U2UfSc9oqQ`
 - Vercel production deployment: `dpl_CMrqGWAX6BSP6Fv71ivnXTxShu2v`
-- mint status: closed; no `openMinting()` transaction has been sent
+- open-mint transaction:
+  `0x097fe1b72a541b2df6d0c98ab181e945d0dae26f458bf3ebc403962dda7148ab`
+- mint status: irreversibly open; there is no pause or close function
 - bitmap/art record: 200-byte one-bit bitmap / 209-byte SSTORE2 record
 - palette: `#34343A` foreground / `#E9DDC7` background
 
-## Pending launch gate
+## Launch state
 
 - no v2 token or agent ID exists yet
 - production service is configured against v2 and returns 404 for missing tokens
-- minting remains closed until the reviewed first entry can be minted, its binding and
-  registration URI verified, and the one-way launch explicitly approved
+- the one-way launch was explicitly approved and executed on Sepolia
+- the first real mint still requires its own reviewed draft and explicit mint request
 
 ## Fixed dependencies
 

@@ -5,8 +5,8 @@ traits, reduces the raster image to the onchain format, and safely submits it. U
 repo skill at `skills/census-mint/SKILL.md` for the complete autonomous loop.
 
 Active Sepolia Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`.
-Canonical host: `https://census-registration-v2.vercel.app`. Minting is currently
-closed. This release implements
+Canonical host: `https://census-registration-v2.vercel.app`. Minting is irreversibly
+open. This release implements
 ERC-8004 + ERC-8048 + ERC-8217; do not assume ERC-8257, MCP, RESTAP, or x402 runtime.
 
 ## Required sequence

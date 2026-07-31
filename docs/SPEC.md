@@ -183,7 +183,7 @@ Active rollout:
 
 - Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
 - canonical host: `https://census-registration-v2.vercel.app`
-- minting: closed
+- minting: irreversibly open
 - rollout token/agent: none yet
 
 Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`, whose token 1

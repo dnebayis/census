@@ -25,8 +25,9 @@ Read, in order:
 - Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
 - Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`
 
-V2 minting is closed and no v2 token exists yet. The archived v1 rollout token 1 remains
-ERC-8004 agent 9100 at
+V2 minting is irreversibly open and no v2 token exists yet. The open transaction is
+`0x097fe1b72a541b2df6d0c98ab181e945d0dae26f458bf3ebc403962dda7148ab`.
+The archived v1 rollout token 1 remains ERC-8004 agent 9100 at
 `https://census-registration.vercel.app/a/1/registration.json`.
 
 Production creation now starts at `skills/census-mint/SKILL.md`. The IDE agent must use
