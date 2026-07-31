@@ -4,8 +4,9 @@ You create the portrait with the IDE's image generator; this CLI assigns persist
 traits, reduces the raster image to the onchain format, and safely submits it. Use the
 repo skill at `skills/census-mint/SKILL.md` for the complete autonomous loop.
 
-Active Sepolia Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`.
-Canonical host: `https://census-registration.vercel.app`. This release implements
+Active Sepolia Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`.
+Canonical host: `https://census-registration-v2.vercel.app`. Minting is irreversibly
+open. This release implements
 ERC-8004 + ERC-8048 + ERC-8217; do not assume ERC-8257, MCP, RESTAP, or x402 runtime.
 
 ## Required sequence
@@ -49,14 +50,16 @@ That flag remains a manual escape hatch only. Hard failures can never be overrid
 
 ## Drawing constraints
 
-The target is 40×40 with four tones. Fine detail, gradients, dithering, halftone, thin
-lines, text, and watermarks collapse or create noise.
+Generate a normal high-contrast portrait source, not source pixel art. The pipeline
+reduces it once to 36×36, places it at y=4 on a 40×40 canvas, and converts it to one
+bit. Fine detail, gradients, dithering, halftone, thin lines, text, and watermarks
+collapse or create noise.
 
 Prefer:
 
 - head and shoulders, directly forward;
 - strong left/right symmetry;
-- empty top corners and white background;
+- empty top corners and a pale clean background;
 - large flat stencil/screen-print regions;
 - solid eyes, brows, and mouth;
 - shoulders cut by the bottom edge.
@@ -69,7 +72,7 @@ warning.
 
 Hard failures include:
 
-- bitmap length other than 400;
+- bitmap length other than 200;
 - invalid trait index;
 - minting closed;
 - density outside 128–1120 lit pixels;
@@ -78,8 +81,8 @@ Hard failures include:
 - five-token wallet cap;
 - mismatched or empty batch arrays.
 
-Advisories cover asymmetry, crowded corners, isolated noise, and insufficient full ink.
+Advisories cover asymmetry, crowded corners, and isolated noise.
 
-The contract stores the 400 bitmap bytes and nine trait bytes together, but
-`bitmapOf()` still returns exactly 400 bytes. The pipeline must keep its bitmap analysis
+The contract stores the 200 bitmap bytes and nine trait bytes together, but
+`bitmapOf()` still returns exactly 200 bytes. The pipeline must keep its bitmap analysis
 equivalent to `src/lib/Bitmap.sol`.

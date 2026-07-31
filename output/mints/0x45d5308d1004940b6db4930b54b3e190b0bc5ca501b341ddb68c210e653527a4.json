@@ -1,0 +1,14 @@
+{
+  "transaction_hash": "0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4",
+  "block_number": 11389267,
+  "entries": [
+    {
+      "draft_id": "genesis-registrar",
+      "token_id": 1,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 3,
+      "signature": "0xff3e04263c040000",
+      "agent_id": 9104
+    }
+  ]
+}

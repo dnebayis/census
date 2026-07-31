@@ -33,7 +33,6 @@ contract Census is ERC721, Ownable, IERC8048 {
     uint256 internal constant WARN_SYMMETRY = 10; // of 32 comparable signature bits
     uint256 internal constant WARN_CORNER_PCT = 25; // of 64 pixels per corner
     uint256 internal constant WARN_ISOLATED_PCT = 15; // of lit pixels
-    uint256 internal constant WARN_FULLINK_PCT = 30; // of lit pixels, warns when below
 
     // hard failure codes returned by `validate`
     uint8 public constant OK = 0;
@@ -50,7 +49,6 @@ contract Census is ERC721, Ownable, IERC8048 {
     uint8 public constant WARN_ASYMMETRIC = 1;
     uint8 public constant WARN_CROWDED_CORNER = 2;
     uint8 public constant WARN_NOISY = 3;
-    uint8 public constant WARN_FLAT_TONE = 4;
 
     // ---------------------------------------------------------------- errors
 
@@ -207,7 +205,7 @@ contract Census is ERC721, Ownable, IERC8048 {
     }
 
     function _softWarnings(bytes memory bm, uint256 lit, uint64 sig) internal pure returns (uint8[] memory out) {
-        uint8[] memory tmp = new uint8[](4);
+        uint8[] memory tmp = new uint8[](3);
         uint256 n;
 
         if (Bitmap.symmetryDistance(sig) > WARN_SYMMETRY) tmp[n++] = WARN_ASYMMETRIC;
@@ -216,8 +214,6 @@ contract Census is ERC721, Ownable, IERC8048 {
         if (tl * 100 > 64 * WARN_CORNER_PCT || tr * 100 > 64 * WARN_CORNER_PCT) tmp[n++] = WARN_CROWDED_CORNER;
 
         if (Bitmap.isolationCount(bm) * 100 > lit * WARN_ISOLATED_PCT) tmp[n++] = WARN_NOISY;
-
-        if (Bitmap.fullInkCount(bm) * 100 < lit * WARN_FULLINK_PCT) tmp[n++] = WARN_FLAT_TONE;
 
         out = new uint8[](n);
         for (uint256 i; i < n; ++i) {

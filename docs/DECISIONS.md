@@ -28,9 +28,9 @@ The Vercel production project URL is constructor state. It must be HTTPS with no
 trailing slash. Deployment starts closed. `openMinting()` is owner-only and one-way;
 there is no admin pause or close power.
 
-### D5 — One 409-byte immutable art record
+### D5 — One 209-byte immutable art record
 
-The first 400 bytes are the two-bit bitmap; the final nine bytes are trait indices in
+The first 200 bytes are the one-bit bitmap; the final nine bytes are trait indices in
 pipeline category order. Signature and density calculations see only the bitmap.
 
 ### D6 — Trait assignment is a pipeline rule
@@ -83,24 +83,35 @@ never an active pipeline or README address.
 
 ### D14 — Production art is agent-native raster
 
-An image-capable IDE agent generates the source, then sees both the source and exact
-four-tone 40×40 result before minting. Production builds accept PNG, JPEG, or WebP and
-record `agent:*` provenance. Python, SVG, ASCII, and procedural rollout smoke art are
-not production sources. The agent redraws the same locked draft on every advisory and
-does not use the manual `--accept-warnings` escape hatch.
+An image-capable IDE agent generates a normal high-contrast portrait source, then sees
+both the source and exact one-bit 40×40 result before minting. Production builds accept
+PNG, JPEG, or WebP and record `agent:*` provenance. Python, SVG, ASCII, and procedural
+rollout smoke art are not production sources. The agent redraws the same locked draft
+on every advisory and does not use the manual `--accept-warnings` escape hatch.
+
+### D15 — One-bit framing and palette are collection constants
+
+The source is reduced once to 36×36 and placed at y=4 on the 40×40 canvas. This keeps a
+four-pixel top margin while anchoring shoulders to the bottom. Threshold 128 produces a
+200-byte MSB-first bitmap. The onchain renderer uses only charcoal `#34343A` and warm
+pastel `#E9DDC7`.
 
 ## Active Sepolia record
 
-- Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
-- canonical host: `https://census-registration.vercel.app`
+- Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
+- canonical host: `https://census-registration-v2.vercel.app`
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - minting: irreversibly open
-- rollout token/agent: `1 / 9100`
+- rollout token/agent: `1 / 9104`
 
-Gas figures in project documents are Foundry mock comparisons: about 829k per separate
-mint and 458k per entry in a four-entry batch. They are not live adapter estimates.
+The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
+token/agent `1 / 9100` remains at `https://census-registration.vercel.app`.
+
+Gas figures in project documents are Foundry mock comparisons: about 685k per separate
+mint and 404k per entry in a four-entry batch, a 42% saving. They are not live adapter
+estimates.
 
 ## Collection constants retained
 
@@ -109,7 +120,7 @@ mint and 458k per entry in a four-entry batch. They are not live adapter estimat
 - free mint apart from gas
 - one capped skill per token
 - immutable onchain artwork
-- 40×40, four tones, 400 bitmap bytes
+- 40×40, one bit, 200 bitmap bytes
 - exact skill quotas: 3000, 3000, 1500, 1000, 700, 500, 300
 
 ## Rejected for this phase

@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "old",
+    "Attire": "armoured shoulders",
+    "Expression": "faint smile",
+    "Eyes": "dark sunglasses",
+    "Facial": "face tattoo",
+    "Hair": "receding hairline",
+    "Headwear": "headphones",
+    "Species": "android with visible seams"
+  },
+  "indices": [
+    6,
+    2,
+    11,
+    7,
+    8,
+    3,
+    8,
+    6,
+    0
+  ]
+}

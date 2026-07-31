@@ -5,8 +5,9 @@ this pipeline. The CLI assigns persistent visual traits, converts raster art int
 exact onchain bitmap, and simulates the exact transaction before minting. It is not an
 image generator.
 
-Active Sepolia Census is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
-registration origin is `https://census-registration.vercel.app`. The adapter is
+Active Sepolia Census is `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`; its
+registration origin is `https://census-registration-v2.vercel.app`. Minting is
+irreversibly open; genesis draft `genesis-registrar` is token 1 / agent 9104. The adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
 and ERC-8217 only.
 
@@ -40,8 +41,8 @@ PRIVATE_KEY=… python3 generate.py mint \
 For multiple drafts, repeat `--draft` and `--persona` in matching order. The CLI
 automatically uses `mintBatch`.
 
-The Foundry mock comparison is about 829k gas per separate mint and 458k per entry in a
-four-entry batch. It is a directional batch measurement, not a live fee quote.
+The Foundry mock comparison is about 685k gas per separate mint and 404k per entry in a
+four-entry batch, a 42% saving. It is directional, not a live fee quote.
 
 ```sh
 PRIVATE_KEY=… python3 generate.py mint \
@@ -102,8 +103,11 @@ four attempts.
 
 ## Bitmap and traits
 
-The bitmap is 40×40, row-major, four tones, two bits per pixel, exactly 400 bytes.
-Signature and density calculations mirror `src/lib/Bitmap.sol`.
+The source portrait is reduced once to 36×36 and placed at y=4 on a 40×40 canvas,
+leaving four empty rows above the head while keeping the shoulders at the bottom. A
+fixed threshold of 128 produces a row-major, MSB-first, one-bit bitmap of exactly 200
+bytes. Signature and density calculations mirror `src/lib/Bitmap.sol`. The preview and
+onchain SVG use charcoal `#34343A` on warm pastel `#E9DDC7`.
 
 Nine category indices are packed as `bytes9` in this order:
 
@@ -117,14 +121,14 @@ Nine category indices are packed as `bytes9` in this order:
 8. Attire
 9. Accessory
 
-The contract appends these nine bytes to the bitmap in one 409-byte SSTORE2 record.
+The contract appends these nine bytes to the bitmap in one 209-byte SSTORE2 record.
 
 ## Output files
 
 | File | Meaning |
 |---|---|
 | `<draftId>.draft.json` | persistent draft, build, and receipt mapping |
-| `<draftId>.hex` | 400-byte bitmap calldata |
+| `<draftId>.hex` | 200-byte one-bit bitmap calldata |
 | `<draftId>.traits` | readable traits and packed indices |
 | `<draftId>.json` | build statistics and warnings |
 | `<draftId>.png` | palette-exact preview |

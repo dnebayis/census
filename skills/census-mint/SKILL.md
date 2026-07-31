@@ -49,7 +49,10 @@ Read [quality-gate.md](references/quality-gate.md) before generating.
 ## Generate and inspect
 
 Use the installed `imagegen` skill and its built-in image-generation path. Produce a
-square raster illustration and copy the chosen output into the project as
+normal high-resolution, high-contrast portrait source; do not ask the generator for
+pixel art. The pipeline performs the only 36×36 reduction, places it at y=4 on the
+40×40 canvas, and applies the exact
+RAO/Basies 1-bit geometry with the Census two-color palette. Copy the chosen output into the project as
 `<output>/<draftId>.agent-v<attempt>.png`. Do not substitute Python, SVG, ASCII art, a
 procedural placeholder, or the historical rollout-smoke image.
 
@@ -63,7 +66,7 @@ python3 generate.py build \
 ```
 
 Use the actual agent identifier when another image-capable IDE agent generated it.
-Inspect both `<draftId>.compare.png` and the palette-exact `<draftId>.png` with an image
+Inspect both `<draftId>.compare.png` and the palette-exact 1-bit `<draftId>.png` with an image
 viewer. Also read `<draftId>.json`.
 
 Redraw the same draft when:

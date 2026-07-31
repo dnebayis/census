@@ -42,13 +42,13 @@ contract SepoliaForkTest is Test {
     }
 
     function _bitmap() internal pure returns (bytes memory bm) {
-        bm = new bytes(400);
+        bm = new bytes(200);
         for (uint256 row = 8; row < 36; ++row) {
             for (uint256 col = 10; col < 30; ++col) {
                 uint256 flat = row * 40 + col;
-                uint256 byteIndex = flat >> 2;
-                uint256 shift = 6 - ((flat & 3) << 1);
-                bm[byteIndex] = bytes1(uint8(uint8(bm[byteIndex]) | (uint8(3) << uint8(shift))));
+                uint256 byteIndex = flat >> 3;
+                uint256 shift = 7 - (flat & 7);
+                bm[byteIndex] = bytes1(uint8(uint8(bm[byteIndex]) | (uint8(1) << uint8(shift))));
             }
         }
     }

@@ -21,7 +21,7 @@ from config import BITMAP_BYTES, GRID_WIDTH, GRID_HEIGHT
 from traits import to_indices, validate_traits
 
 # Tone -> RGB, matching Art.sol's palette so the preview looks like what the chain renders.
-PALETTE = {0: (255, 255, 255), 1: (212, 212, 212), 2: (122, 122, 122), 3: (20, 20, 20)}
+PALETTE = {0: (233, 221, 199), 1: (52, 52, 58)}
 
 
 def to_image(pixels, scale: int = 16) -> Image.Image:
@@ -47,7 +47,7 @@ def save_comparison(pixels, source_image: bytes, path: str, scale: int = 12) -> 
 
     src = Image.open(BytesIO(source_image)).convert("RGB")
     src.thumbnail((h, h), Image.Resampling.LANCZOS)
-    left = Image.new("RGB", (h, h), (255, 255, 255))
+    left = Image.new("RGB", (h, h), PALETTE[0])
     left.paste(src, ((h - src.width) // 2, (h - src.height) // 2))
 
     gap = 12
@@ -74,7 +74,10 @@ def save_contact_sheet(output_dir: str, path: str = None, cols: int = 5,
     tiles = []
     for f in files:
         bitmap = bytes.fromhex(f.read_text().strip())
-        tiles.append((f.stem, to_image(unpack_bitmap(bitmap), scale)))
+        if len(bitmap) == BITMAP_BYTES:
+            tiles.append((f.stem, to_image(unpack_bitmap(bitmap), scale)))
+    if not tiles:
+        raise ValueError(f"no active {BITMAP_BYTES}-byte .hex files in {output_dir}")
 
     tw = th = GRID_WIDTH * scale
     rows = (len(tiles) + cols - 1) // cols
@@ -104,7 +107,7 @@ def save_token(
     """Write one entry's files.
 
     Creates:
-      {tokenId}.hex      — 400-byte bitmap as hex, ready as mint calldata
+      {tokenId}.hex      — 200-byte bitmap as hex, ready as mint calldata
       {tokenId}.png      — 640×640 nearest-neighbour preview
       {tokenId}.traits   — trait names and indices, JSON
       {tokenId}.json     — density, signature, warnings
@@ -185,8 +188,9 @@ def load_existing_signatures(output_dir: str) -> set:
 
     for f in path.glob("*.json"):
         try:
-            sig = json.loads(f.read_text()).get("signature")
-            if sig:
+            data = json.loads(f.read_text())
+            sig = data.get("signature")
+            if sig and data.get("bytes") == BITMAP_BYTES:
                 sigs.add(sig)
         except (ValueError, OSError):
             continue
@@ -204,8 +208,9 @@ def load_signature_owners(output_dir: str) -> dict:
         if f.name.endswith(".draft.json"):
             continue
         try:
-            sig = json.loads(f.read_text()).get("signature")
-            if sig:
+            data = json.loads(f.read_text())
+            sig = data.get("signature")
+            if sig and data.get("bytes") == BITMAP_BYTES:
                 owners.setdefault(sig, []).append(f.stem)
         except (ValueError, OSError):
             continue

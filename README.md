@@ -13,20 +13,31 @@ outside this phase.
 
 | Component | Sepolia |
 |---|---|
-| Census v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — mint open |
-| Registration | [`https://census-registration.vercel.app`](https://census-registration.vercel.app) |
+| Census v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — mint open |
+| Registration v2 | [`https://census-registration-v2.vercel.app`](https://census-registration-v2.vercel.app) |
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
+| Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — original endpoint preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-Rollout entry 1 is bound to ERC-8004 agent 9100. The prototype is historical only;
-scripts and examples must not use it as an active address.
+V2 permissionless minting is irreversibly open. Genesis draft `genesis-registrar`
+minted token 1 and ERC-8004 agent 9104; its live registration is
+[`/a/1/registration.json`](https://census-registration-v2.vercel.app/a/1/registration.json).
+V1 rollout entry 1 remains bound to ERC-8004 agent 9100 at its original host. Archived
+deployments are historical only; scripts and examples must not use them as active
+addresses.
 
 Production art is agent-native. An image-capable IDE agent uses
 [`census-mint`](skills/census-mint/SKILL.md) to generate a raster portrait, inspect the
-actual four-tone 40×40 result, redraw the same persistent draft until it is clean, and
+actual one-bit 40×40 result, redraw the same persistent draft until it is clean, and
 only then run the simulated mint path. Procedural Python/SVG smoke art is not a
 production input.
+
+The approved v2 visual fixture is
+[the 40×40 one-bit preview](docs/assets/census-v2-1bit-preview-v2.png), with its
+[source comparison](docs/assets/census-v2-source-vs-1bit-v2.png). It records the locked
+four-pixel top margin and 28.2% example density; it is a quality fixture, not a minted
+entry.
 
 ## Mint invariants
 
@@ -36,7 +47,7 @@ production input.
   in `/`.
 - Every identity URI is
   `https://<canonicalHost>/a/<tokenId>/registration.json`.
-- One SSTORE2 record contains 400 bitmap bytes followed by nine trait-index bytes.
+- One SSTORE2 record contains 200 bitmap bytes followed by nine trait-index bytes.
 - `bitmapOf` exposes only the bitmap. `traitsOf` and `traitOf` read the suffix.
 - `skill`, `class`, and every `trait[...]` key are immutable. The current NFT owner can
   write other ERC-8048 keys.
@@ -52,8 +63,9 @@ python3 -m unittest -v pipeline/test_pipeline.py
 cd registration-service && npm ci && npm test && npm audit --audit-level=high
 ```
 
-The current local Foundry mock measurement is about 829k gas for separate mints and
-458k per entry for a four-entry batch, a 45% saving. These numbers include the mock
+The current local Foundry mock measurement is about 685k gas per separate mint and 404k
+per entry for a four-entry batch, a 42% saving. A single measured mint is about 756k.
+These numbers include the mock
 adapter and are comparison figures, not a prediction of production transaction cost.
 
 ## Documents

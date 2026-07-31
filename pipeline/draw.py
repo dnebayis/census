@@ -1,13 +1,10 @@
-"""Drawing at native 40x40 — the route with no lossy stage at all.
+"""Legacy procedural four-tone drawing helper; excluded from production mint builds.
 
-Every other path renders large and then throws almost all of it away:
+This remains only to inspect historical artifacts. The active v2 format is a 200-byte
+one-bit bitmap built from an IDE agent's normal raster portrait; ``generate.py`` rejects
+Python drawing scripts as production input.
 
-    model or SVG  ->  1024x1024  ->  discard 99.8%  ->  cut to four tones
-
-Here nothing is ever bigger than the target, so nothing is discarded. Every pixel is
-placed deliberately, which is how pixel art has always actually been made.
-
-An agent writes a script defining `draw(c)`:
+The historical helper expected a script defining ``draw(c)``:
 
     def draw(c):
         c.ellipse(14, 20, 11, 10, c.INK)      # head, outer
@@ -15,11 +12,6 @@ An agent writes a script defining `draw(c)`:
         c.mrect(13, 15, 15, 17, c.INK)        # eyes, mirrored
         c.mouth(21, 4, c.INK)
 
-and runs `python generate.py build --draft NAME --file that_script.py`.
-
-Two things here exist because the contract checks them. `mirror` guarantees a symmetry
-score of 0 without the agent having to compute anything, and `outline` produces the
-heavy silhouette that is the difference between a shape reading and dissolving.
 """
 
 GRID = 40

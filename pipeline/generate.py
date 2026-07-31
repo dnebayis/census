@@ -25,7 +25,9 @@ from traits import generate_traits, to_indices
 
 
 BRIEF = """\
-Draw this portrait. Save it as a PNG, then run:
+Generate a normal high-resolution, high-contrast portrait source. Do not generate pixel
+art; the pipeline owns the only 40x40 reduction and 1-bit conversion. Save it as a PNG,
+then run:
 
     python generate.py build --draft {draft_id} --file <your file> \\
       --generator agent:codex-imagegen
@@ -37,21 +39,22 @@ TRAITS — assigned once for this draft; draw all of them
   {trait_lines}
 
 COMPOSITION
-  - Head and shoulders bust, facing directly forward. Not a profile or three-quarter view.
-  - Symmetrical left to right.
-  - Head in the upper middle. Shoulders reach and are cut off by the bottom edge.
-  - Both top corners empty. Plain pure white background.
-  - No border, frame, text, signature, gradient, dithering, halftone or fine detail.
+  - Close-up headshot, directly front-facing, with clean space above the hair.
+  - Keep shoulders reaching the bottom edge.
+  - Broad ink shapes and controlled facial detail that survive at 40x40.
+  - Pale clean background with clearly separated light and dark masses.
 
 STYLE
-  - Large flat stencil or screen-print regions with a heavy solid silhouette.
-  - Eyes, brows and mouth are small solid black shapes, never fine lines.
-  - Use solid mid-grey areas for shading.
+  - Normal vintage ink or woodcut portrait source, not source pixel art.
+  - The final preview uses the locked Census charcoal/pastel two-color palette.
+  - No border, frame, text, signature, watermark or scenery.
 
 `build` prints the real 40x40 result. Redraw when it looks wrong or warns.
 """
 
 ENTRY_EVENT_TOPIC = None
+PIPELINE_VERSION = 2
+BITMAP_FORMAT = "census-1bit-v2"
 
 
 def _run(cmd, *, timeout=120, check=False):
@@ -87,6 +90,10 @@ def cmd_brief(args):
     path = Path(args.output) / f"{draft_id}.draft.json"
     if path.exists():
         manifest = load_draft_manifest(args.output, draft_id)
+        if manifest.get("version") != PIPELINE_VERSION:
+            raise ValueError(
+                f"draft {draft_id!r} uses a legacy bitmap format; create a new v2 draft"
+            )
         if manifest["subject"] != args.subject:
             raise ValueError(
                 f"draft {draft_id!r} already belongs to subject {manifest['subject']!r}; "
@@ -101,7 +108,7 @@ def cmd_brief(args):
             {"Species": args.species} if args.species is not None else None,
         )
         manifest = {
-            "version": 1,
+            "version": PIPELINE_VERSION,
             "draft_id": draft_id,
             "subject": args.subject,
             "seed": f"0x{seed:032x}",
@@ -160,7 +167,6 @@ def cmd_build(args):
     for key in (
         "density",
         "density_pct",
-        "full_ink_pct",
         "isolated_pct",
         "symmetry",
         "corner_tl_pct",
@@ -176,6 +182,7 @@ def cmd_build(args):
     save_token(args.output, draft_id, bitmap, px, manifest["traits"], stats, source_image=source)
 
     manifest["build"] = {
+        "bitmap_format": BITMAP_FORMAT,
         "generator": generator,
         "source_file": os.path.basename(args.file),
         "source_sha256": _sha256(source_bytes),
@@ -212,6 +219,8 @@ def _load_mint_drafts(args):
         build = manifest.get("build")
         if not build:
             raise ValueError(f"draft {draft_id!r} has not been built")
+        if manifest.get("version") != PIPELINE_VERSION or build.get("bitmap_format") != BITMAP_FORMAT:
+            raise ValueError(f"draft {draft_id!r} is not built for {BITMAP_FORMAT}")
         _agent_generator(build.get("generator"))
         bitmap = bytes.fromhex((Path(args.output) / f"{draft_id}.hex").read_text().strip())
         if _sha256(bitmap) != build["bitmap_sha256"]:

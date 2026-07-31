@@ -35,12 +35,13 @@ Asset type: source portrait for an immutable 40×40 onchain Census artwork
 Primary request: Create one distinctive portrait of {subject.strip()}.
 Assigned traits (all are mandatory):
 {trait_lines}
-Scene/backdrop: perfectly plain pure-white background
-Style/medium: refined monochrome editorial stencil and screen-print illustration; high resolution, not pixel art
-Composition/framing: square, centered head-and-shoulders bust, directly front-facing, near bilateral symmetry, shoulders cropped by the bottom edge, generous empty upper corners
-Lighting/mood: graphic and controlled, with large intentional light-grey, mid-grey, and solid-black regions
-Constraints: preserve a readable face and silhouette after reduction to 40×40; express every assigned trait with a large unmistakable shape
-Avoid: profile or three-quarter pose, scenery, border, text, letters, numbers, logo, watermark, gradients, halftone, dithering, fine lines, tiny texture, isolated speckles, photorealistic background
+Scene/backdrop: pale clean background
+Style/medium: a normal high-resolution vintage ink or woodcut portrait prepared for later reduction
+Composition/framing: square close-up portrait headshot, directly front-facing, centered; leave clean space above the hair and keep shoulders at the bottom
+Color: high-contrast grayscale or charcoal source with clearly separated light and dark masses
+Constraints: strong anatomy; broad strokes; rich but controlled facial detail; express every assigned trait with a large unmistakable shape
+Downstream: the pipeline—not the image generator—owns the single 40×40 reduction, thresholding, 1-bit packing, and Census palette
+Avoid: pixel-art source, tiny hairline detail, profile, scenery, border, text, logo, watermark
 {correction}"""
 
 

@@ -38,19 +38,19 @@ pause or close minting afterward.
 
 ### 2.1 Art record
 
-SSTORE2 data is exactly 409 bytes:
+SSTORE2 data is exactly 209 bytes:
 
 | Offset | Length | Meaning |
 |---:|---:|---|
-| 0 | 400 | 40×40 row-major bitmap, two bits per pixel |
-| 400 | 9 | one vocabulary index per trait category |
+| 0 | 200 | 40×40 row-major bitmap, one bit per pixel, MSB-first |
+| 200 | 9 | one vocabulary index per trait category |
 
-Bitmap analysis always uses bytes 0–399. The nine trait categories are Species, Age,
+Bitmap analysis always uses bytes 0–199. The nine trait categories are Species, Age,
 Hair, Eyes, Facial, Expression, Headwear, Attire, and Accessory.
 
 Invalid bitmap length/density, duplicate signature, closed minting, sold out supply,
 wallet cap, and invalid traits are hard failures. Soft warnings cover asymmetry,
-crowded corners, noise, and insufficient full ink.
+crowded corners, and isolated noise.
 
 ### 2.2 Identity
 
@@ -112,7 +112,11 @@ and traits. The accepted source is raster-only (PNG, JPEG, or WebP) and the buil
 `agent:*` generator provenance. Python, SVG, ASCII, procedural smoke art, and the rollout
 artifact are excluded from the production mint path.
 
-The agent inspects the original, side-by-side comparison, and exact four-tone 40×40 PNG.
+The agent creates a normal high-contrast portrait, then inspects the original,
+side-by-side comparison, and exact one-bit 40×40 PNG. The pipeline reduces the source
+once to 36×36, places it at y=4 on a 40×40 canvas, thresholds at 128, and packs the
+result into 200 bytes. The locked render palette is charcoal `#34343A` on warm pastel
+`#E9DDC7`.
 It redraws the same draft on any hard failure, advisory, lost trait, or muddy silhouette;
 the agent-native path never uses `--accept-warnings`. Build records generator, source
 filename and SHA-256, bitmap SHA-256, bitmap/stats filenames, all analysis statistics,
@@ -177,25 +181,28 @@ Fixed Sepolia infrastructure:
 
 Active rollout:
 
-- Census: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
-- canonical host: `https://census-registration.vercel.app`
-- minting: open
-- rollout token 1 / ERC-8004 agent 9100
+- Census: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
+- canonical host: `https://census-registration-v2.vercel.app`
+- minting: irreversibly open
+- rollout token/agent: `1 / 9104`
+
+Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`, whose token 1
+remains ERC-8004 agent 9100 at `https://census-registration.vercel.app`.
 
 Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`.
 
 Deployment order is preview service → production URL → closed Census → production
 environment addresses → live endpoint/binding verification → `openMinting`.
 
-The local mock comparison is approximately 829k gas per separate mint and 458k per
-entry in a four-entry batch. It measures batching directionally and does not model the
-live adapter's exact gas.
+The local mock comparison is approximately 685k gas per separate mint and 404k per
+entry in a four-entry batch, a 42% saving; a single measured mint is about 756k. It
+measures batching directionally and does not model the live adapter's exact gas.
 
 ## 6. Acceptance
 
 - all Solidity, pipeline, and service suites pass;
 - contract runtime remains below the EIP-170 limit;
-- 400-byte bitmap equivalence still holds with the 409-byte art record;
+- 200-byte bitmap equivalence still holds with the 209-byte art record;
 - nine traits round-trip and reject bad indices;
 - immutable namespaces and tokenURI attributes are covered;
 - batch receipts map every draft to distinct token/agent IDs;
