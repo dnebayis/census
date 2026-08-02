@@ -5,8 +5,8 @@ created together with an ERC-8004 identity through the ERC-8217 adapter. The por
 skill, class, and nine trait indices are immutable.
 
 This repository delivers the hardened mint core, a read-only ERC-8004 registration
-service, and bounded report-only runtime skills over RESTAP and MCP. ERC-8257 discovery
-and Executor authorization remain future work; see
+service, bounded report-only runtime skills over RESTAP and MCP, and six open ERC-8257
+tool registrations on Sepolia. Executor authorization remains future work; see
 [`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
 
 ## Deployment status

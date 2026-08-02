@@ -6,7 +6,9 @@ Repository: `https://github.com/dnebayis/census`
 
 The hardened mint core and read-only ERC-8004 registration API are live. The shared
 RESTAP/MCP runtime now exposes bounded report-only skills for the active v3 collection.
-ERC-8257 discovery and Executor authorization remain future work; Executor remains last.
+Six open ERC-8257 report tools are registered on the Census Sepolia registry. OpenSea
+does not currently index Sepolia tool registries. Executor authorization remains future
+work and remains last.
 
 `runtime-service/` contains the inactive protocol shell: `llms.txt`,
 address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28

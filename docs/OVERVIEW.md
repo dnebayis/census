@@ -60,5 +60,6 @@ Owner-writable:
 ## Runtime phase
 
 The first six skill names are bounded report-only services on the shared RESTAP/MCP
-runtime. ERC-8257 discovery remains future work. Executor ships last and requires
+runtime and are registered as open ERC-8257 tools on the Census Sepolia registry.
+OpenSea search does not currently index Sepolia. Executor ships last and requires
 separate explicit authorization; implementation follows `RUNTIME-PLAN.md`.

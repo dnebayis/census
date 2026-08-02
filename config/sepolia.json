@@ -6,6 +6,38 @@
   "toolRegistry": "0xd61aa597398a83122fce07a94beddb91fce8f42e",
   "toolRegistryVersion": "0.2",
   "toolRegistryDeploymentTransaction": "0x63fbc55a84a1619cc02cf7c3b0107552717b1e96e580e4c8369c52e796cbe5cc",
+  "toolRegistrations": [
+    {
+      "toolId": 1,
+      "slug": "mint-scanner",
+      "transaction": "0x6eae59309e03ab974eccc1d87d547fc46355baa4f4534160cb085c4068af7486"
+    },
+    {
+      "toolId": 2,
+      "slug": "arbitrageur",
+      "transaction": "0xe3509267b2b5fd7db412fd5dddbf58b508c7448d189fbe0af68194c2d2f282de"
+    },
+    {
+      "toolId": 3,
+      "slug": "tracker",
+      "transaction": "0x7477fc873d899a365548dea906a441a0040756efaf86cf80c23fef8c7140861f"
+    },
+    {
+      "toolId": 4,
+      "slug": "token-hunter",
+      "transaction": "0x82657ead6700357cb3a6fa7e2accacebeebd64544a10dfd226683b9619c1ad87"
+    },
+    {
+      "toolId": 5,
+      "slug": "trend-reader",
+      "transaction": "0x1464245158dffdb8b490d140b40f7ac106d74199036609eee99fbde5f8cd1e8c"
+    },
+    {
+      "toolId": 6,
+      "slug": "fraud-detector",
+      "transaction": "0x1fea92b9b0dcd8529c0e18aa0ead3b4ae331c427bd9142a2ca1770e5685d69d9"
+    }
+  ],
   "canonicalHost": "https://census-registration-dnebayis.vercel.app",
   "registrationPath": "/a/{censusAddress}/{tokenId}/registration.json",
   "publicRpc": "https://ethereum-sepolia-rpc.publicnode.com",

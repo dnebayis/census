@@ -13,8 +13,9 @@ ERC-8004, ERC-8048, and ERC-8217 are locked to the upstream commits in
 ### D2 — Runtime is report-only by default
 
 RESTAP, MCP, and the first six skill runtimes are a separate shared service rather than
-part of minting. ERC-8257 discovery and Executor authorization remain future work.
-Payment protocols are permanently outside the Census runtime design.
+part of minting. Six open ERC-8257 tools are registered on the Census Sepolia registry;
+OpenSea discovery waits for upstream Sepolia indexing. Executor authorization remains
+future work. Payment protocols are permanently outside the Census runtime design.
 
 ### D3 — One-transaction identity binding
 

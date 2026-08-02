@@ -11,6 +11,8 @@ Implemented surfaces:
 - `POST /a/<censusAddress>/<tokenId>/talk`
 - `GET|POST /a/<censusAddress>/<tokenId>/news`
 - Streamable HTTP MCP at `/mcp/<censusAddress>/<tokenId>`
+- `GET /.well-known/ai-tool/<skill-slug>.json`
+- `POST /tools/<skill-slug>`
 
 Every per-entry request reads live Census state and verifies the ERC-8217 adapter
 binding. Disabled skills return `runtime_inactive`; no wallet or state-changing action
@@ -87,6 +89,7 @@ Required local environment:
 - `OPENSEA_API_KEY` — required by OpenSea-backed report engines; instant keys expire
   after 30 days and require rotation
 - `ACTIVE_CENSUS_ADDRESS` — the only collection allowed to use report-only engines
+- `ERC8257_CREATOR_ADDRESS` — lowercase creator committed in all tool manifests
 - `REPORT_MINT_SCANNER_ENABLED`, `REPORT_ARBITRAGEUR_ENABLED`,
   `REPORT_TRACKER_ENABLED`, `REPORT_TOKEN_HUNTER_ENABLED`,
   `REPORT_TREND_READER_ENABLED`, and `REPORT_FRAUD_DETECTOR_ENABLED` — independent
@@ -94,6 +97,14 @@ Required local environment:
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)
 - alternatively, `REDIS_URL` from the official Vercel Redis integration
+
+Six ERC-8257 manifests are served from the runtime origin and registered as open tools
+with IDs 1–6 on Sepolia registry
+`0xd61aa597398a83122fce07a94beddb91fce8f42e`. Each invocation still requires a live
+adapter-bound token whose immutable skill matches the tool slug. The manifests contain
+no pricing or access block, and the registry entries use a zero predicate. OpenSea's
+current canonical deployment list does not include Sepolia, so these records are not
+claimed as OpenSea-indexed.
 
 After Redis is connected, run the destructive-safe integration canary against a
 throwaway namespaced key with `RUN_REDIS_INTEGRATION=1 npm test`. The test deletes its

@@ -6,10 +6,10 @@ Implemented: ERC-721 collection, ERC-8048 metadata, ERC-8217 adapter binding to 
 ERC-8004 identity, immutable artwork and traits, safe local pipeline, read-only
 registration service, Sepolia rollout.
 
-Runtime scope: RESTAP, MCP, six report-only skill engines, future ERC-8257 discovery,
-and separately authorized Executor work. Payment protocols and execution wallets are
-out of scope. Delivery gates are in `RUNTIME-PLAN.md`. A frontend remains outside the
-product direction.
+Runtime scope: RESTAP, MCP, six report-only skill engines, six open ERC-8257 Sepolia
+registrations, and separately authorized Executor work. Payment protocols and execution
+wallets are out of scope. OpenSea search awaits upstream Sepolia indexing. Delivery
+gates are in `RUNTIME-PLAN.md`. A frontend remains outside the product direction.
 
 The inactive `runtime-service/` shell implements address-routed RESTAP discovery,
 `/talk`, passive `/news`, and MCP without claiming service activation. Registration

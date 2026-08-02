@@ -80,7 +80,8 @@ Sepolia fork.
    remains outside this activation.
 3. A conformant Sepolia ERC-8257 registry is deployed at
    `0xd61aa597398a83122fce07a94beddb91fce8f42e`; six open report-tool manifests and
-   focused invocation routes are implemented. OpenSea does not currently list Sepolia
+   focused invocation routes are implemented and registered as tool IDs 1–6. OpenSea
+   does not currently list Sepolia
    among its canonical registry chains, so OpenSea search verification remains pending
    upstream network support rather than being falsely claimed.
 4. Add Executor behind explicit capability authorization and transaction simulation.
