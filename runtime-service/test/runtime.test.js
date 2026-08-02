@@ -5,6 +5,12 @@ import { InMemoryTransport } from "@modelcontextprotocol/server";
 import { MissingBindingError, TokenNotFoundError, readAgent } from "../lib/agent.js";
 import { RuntimeBackendConfigurationError, createRuntimeBackends } from "../lib/backends.js";
 import { buildCatalog, buildLlmsText, normalizeOrigin } from "../lib/catalog.js";
+import {
+  ReservoirMarketSource,
+  MarketDataUnavailableError,
+  normalizeArbitrageurInput,
+  runArbitrageur,
+} from "../lib/engines/arbitrageur.js";
 import { ViemMintSource, normalizeMintScannerInput, runMintScanner } from "../lib/engines/mint-scanner.js";
 import { RuntimeInactiveError, canExecuteCanary, executeAgentSkill } from "../lib/execution.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
@@ -27,6 +33,15 @@ const agent = {
   context: "a dawn cartographer",
   skillIndex: 0,
   skill: skillByIndex(0),
+};
+
+const arbitrageurAgent = {
+  ...agent,
+  tokenId: 3n,
+  agentId: 9122n,
+  context: "a quiet machinist",
+  skillIndex: 1,
+  skill: skillByIndex(1),
 };
 
 function fakeClient(overrides = {}) {
@@ -301,6 +316,121 @@ test("Mint Scanner rejects unsupported filters and chains", async () => {
   );
 });
 
+test("Arbitrageur reports only same-currency gross bid-ask crossovers", async () => {
+  const report = await runArbitrageur({
+    now: () => new Date("2026-08-03T00:00:00.000Z"),
+    input: {
+      chain: "eip155:1",
+      collections: [census, census.toUpperCase().replace("0X", "0x")],
+      watchlist: [`${adapter}:7`],
+      minSpreadBps: 1_000,
+    },
+    source: {
+      async snapshot(input) {
+        assert.deepEqual(input.collections, [census]);
+        return [
+          {
+            kind: "collection",
+            id: census,
+            name: "Census fixture",
+            ask: { amountRaw: "100", decimals: 18, currency: "native", orderId: "ask-1" },
+            bid: { amountRaw: "125", decimals: 18, currency: "native", orderId: "bid-1" },
+            sourceUrl: "https://api.reservoir.tools/collections/v7?id=fixture",
+          },
+          { kind: "token", id: `${adapter}:7`, ask: undefined, bid: undefined },
+        ];
+      },
+    },
+  });
+  assert.equal(report.skill, "Arbitrageur");
+  assert.equal(report.reportOnly, true);
+  assert.equal(report.requestedTargets, 2);
+  assert.equal(report.opportunities.length, 1);
+  assert.equal(report.opportunities[0].grossSpreadBps, 2_500);
+  assert.equal(report.opportunities[0].grossDifferenceRaw, "25");
+  assert.equal(report.observations.length, 1);
+  assert.match(report.limitations[0], /not guaranteed/);
+});
+
+test("Arbitrageur validates bounded collection and token targets", () => {
+  assert.throws(
+    () => normalizeArbitrageurInput({ minSpreadBps: 1 }),
+    /at least one collection/,
+  );
+  assert.throws(
+    () => normalizeArbitrageurInput({ collections: ["not-an-address"], minSpreadBps: 1 }),
+    /contract addresses/,
+  );
+  assert.throws(
+    () => normalizeArbitrageurInput({ watchlist: [census], minSpreadBps: 1 }),
+    /contract:tokenId/,
+  );
+});
+
+test("Reservoir adapter sends the API key and maps collection and token quotes", async () => {
+  const requests = [];
+  const source = new ReservoirMarketSource({
+    apiKey: "test-key",
+    async fetchImpl(url, options) {
+      requests.push({ url, options });
+      if (url.pathname === "/collections/v7") {
+        return new Response(JSON.stringify({
+          collections: [{
+            name: "Fixture",
+            floorAsk: {
+              id: "ask-collection",
+              price: { amount: { raw: "100" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
+            },
+            topBid: {
+              id: "bid-collection",
+              price: { amount: { raw: "110" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
+            },
+          }],
+        }), { status: 200, headers: { "content-type": "application/json" } });
+      }
+      return new Response(JSON.stringify({
+        tokens: [{
+          token: { contract: adapter, tokenId: "7", name: "Fixture #7", collection: { id: adapter } },
+          market: {
+            floorAsk: {
+              id: "ask-token",
+              price: { amount: { raw: "200" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
+            },
+            topBid: {
+              id: "bid-token",
+              price: { amount: { raw: "220" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
+            },
+          },
+        }],
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    },
+  });
+  const snapshots = await source.snapshot({
+    chain: "eip155:11155111",
+    collections: [census],
+    watchlist: [`${adapter}:7`],
+  });
+  assert.equal(snapshots.length, 2);
+  assert.equal(snapshots[0].ask.amountRaw, "100");
+  assert.equal(snapshots[1].bid.amountRaw, "220");
+  assert.equal(requests[0].url.origin, "https://api-sepolia.reservoir.tools");
+  assert.equal(requests[0].options.headers["x-api-key"], "test-key");
+  assert.equal(requests[1].url.searchParams.get("includeTopBid"), "true");
+  assert.equal(requests[1].url.searchParams.get("normalizeRoyalties"), "true");
+});
+
+test("Reservoir adapter fails closed when market data is unavailable", async () => {
+  assert.throws(() => new ReservoirMarketSource(), MarketDataUnavailableError);
+  const source = new ReservoirMarketSource({
+    apiKey: "test-key",
+    fetchImpl: async () => new Response("unavailable", { status: 503 }),
+  });
+  await assert.rejects(
+    source.snapshot({ chain: "eip155:1", collections: [census], watchlist: [] }),
+    MarketDataUnavailableError,
+  );
+});
+
 test("only the doubly-gated Mint Scanner canary can execute", async () => {
   const enabledEnv = {
     UNPAID_MINT_SCANNER_ENABLED: "true",
@@ -337,6 +467,35 @@ test("only the doubly-gated Mint Scanner canary can execute", async () => {
   );
   assert.equal(report.skill, "Mint Scanner");
   assert.equal(report.reportOnly, true);
+});
+
+test("Arbitrageur has an independent double-gated canary", async () => {
+  const enabledEnv = {
+    UNPAID_ARBITRAGEUR_ENABLED: "true",
+    CANARY_AGENT_KEYS: `${census}:3`,
+  };
+  assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), true);
+  assert.equal(canExecuteCanary(agent, enabledEnv), false);
+  const report = await executeAgentSkill(
+    arbitrageurAgent,
+    { chain: "eip155:1", collections: [census], minSpreadBps: 100 },
+    {
+      env: enabledEnv,
+      now: () => new Date("2026-08-03T00:00:00.000Z"),
+      source: {
+        async snapshot() {
+          return [{
+            kind: "collection",
+            id: census,
+            ask: { amountRaw: "100", decimals: 18, currency: "native" },
+            bid: { amountRaw: "101", decimals: 18, currency: "native" },
+          }];
+        },
+      },
+    },
+  );
+  assert.equal(report.skill, "Arbitrageur");
+  assert.equal(report.opportunities[0].grossSpreadBps, 100);
 });
 
 test("MCP returns structured canary output through the shared executor", async () => {

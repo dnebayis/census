@@ -36,9 +36,16 @@ returned its live agent 9121 binding and `canary.available: true`; `/talk` and t
 Redis-backed rate-limit headers. The runtime uses the public dRPC Sepolia endpoint;
 registration remains `active: false` with x402 disabled.
 
-Canary invocation is double-gated by `UNPAID_MINT_SCANNER_ENABLED` and exact
+Arbitrageur is implemented as the second report-only engine. It uses fixed Reservoir
+Ethereum/Sepolia origins, a secret-managed API key, at most 25 combined collection or
+token targets, same-currency raw-unit comparisons, and order/source evidence. It never
+builds or submits a transaction and does not claim net profit. Its independent token 3
+production gate remains off until `RESERVOIR_API_KEY` is configured and external checks
+pass.
+
+Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
-inactive even while the production canary is exercised.
+inactive even while a production canary is exercised.
 
 Read, in order:
 

@@ -1,5 +1,6 @@
 import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
+import { ReservoirMarketSource, runArbitrageur } from "./engines/arbitrageur.js";
 import { ViemMintSource, runMintScanner } from "./engines/mint-scanner.js";
 
 export class RuntimeInactiveError extends Error {}
@@ -19,7 +20,11 @@ export function canaryAgentKeys(env = process.env) {
 }
 
 export function canExecuteCanary(agent, env = process.env) {
-  return env.UNPAID_MINT_SCANNER_ENABLED === "true" && canaryAgentKeys(env).has(agentKey(agent));
+  const flag = new Map([
+    [0, "UNPAID_MINT_SCANNER_ENABLED"],
+    [1, "UNPAID_ARBITRAGEUR_ENABLED"],
+  ]).get(agent.skillIndex);
+  return Boolean(flag) && env[flag] === "true" && canaryAgentKeys(env).has(agentKey(agent));
 }
 
 export function createMintScannerSources(env = process.env) {
@@ -30,18 +35,29 @@ export function createMintScannerSources(env = process.env) {
   };
 }
 
+export function createArbitrageurSource(env = process.env) {
+  return new ReservoirMarketSource({ apiKey: env.RESERVOIR_API_KEY });
+}
+
 export async function executeAgentSkill(
   agent,
   input,
-  { env = process.env, sources, now } = {},
+  { env = process.env, sources, source, now } = {},
 ) {
   if (!canExecuteCanary(agent, env)) throw new RuntimeInactiveError("runtime_inactive");
-  if (agent.skillIndex !== 0) {
-    throw new UnsupportedRuntimeSkillError(`skill ${agent.skill.name} is not implemented`);
+  if (agent.skillIndex === 0) {
+    return runMintScanner({
+      input,
+      sources: sources || createMintScannerSources(env),
+      ...(now ? { now } : {}),
+    });
   }
-  return runMintScanner({
-    input,
-    sources: sources || createMintScannerSources(env),
-    ...(now ? { now } : {}),
-  });
+  if (agent.skillIndex === 1) {
+    return runArbitrageur({
+      input,
+      source: source || createArbitrageurSource(env),
+      ...(now ? { now } : {}),
+    });
+  }
+  throw new UnsupportedRuntimeSkillError(`skill ${agent.skill.name} is not implemented`);
 }

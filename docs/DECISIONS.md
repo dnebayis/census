@@ -118,6 +118,16 @@ target their existing permanent production projects directly unless the owner la
 changes this decision. Narrow runtime canaries remain capability-gated even though
 they run on the production host.
 
+### D18 — Reservoir supplies bounded Arbitrageur market observations
+
+OpenSea MCP remains the future tool-discovery integration. Arbitrageur market data uses
+Reservoir's read-only collection and token endpoints because they expose aggregated best
+asks and top bids on Ethereum and Sepolia. The API origin is selected from a fixed
+chain map, the key stays in Vercel secrets, and each call is bounded to 25 combined
+targets. Reports compare raw amounts only when currencies and decimals match. They are
+gross observations, never guaranteed profit or transaction advice; no order is built,
+signed, simulated, or submitted.
+
 ## Active Sepolia record
 
 - Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`

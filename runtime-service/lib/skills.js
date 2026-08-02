@@ -18,8 +18,9 @@ export const SKILLS = [
     slug: "arbitrageur",
     description: "Finds mispricing and below-floor opportunities.",
     inputSchema: z.object({
-      collections: z.array(z.string()).max(100).optional(),
-      watchlist: z.array(z.string()).max(100).optional(),
+      chain: z.enum(["eip155:1", "eip155:11155111"]).default("eip155:1"),
+      collections: z.array(z.string()).max(25).optional(),
+      watchlist: z.array(z.string()).max(25).optional(),
       minSpreadBps: z.number().int().min(0).max(100000),
     }),
   },

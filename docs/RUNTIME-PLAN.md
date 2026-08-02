@@ -74,7 +74,10 @@ Sepolia fork.
 2. Implement Mint Scanner end to end without payment, then the other five report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
    evidence and limitations; unpaid invocation remains double-gated and limited to the
-   exact production canary.
+   exact production canary. Arbitrageur's bounded Reservoir ask/top-bid comparison
+   engine and independent token 3 gate are implemented; production activation awaits a
+   secret-managed API key and external RESTAP/MCP checks. The remaining report-only
+   engines are Tracker, Token Hunter, Trend Reader, and Fraud Detector.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
    verify → settle → result flow, replay protection, and idempotent receipts.
 4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend
