@@ -5,7 +5,7 @@ import { normalizeOrigin } from "./catalog.js";
 import { SKILLS } from "./skills.js";
 
 export const ERC8257_MANIFEST_TYPE = "https://ercs.ethereum.org/ERCS/erc-8257#tool-manifest-v1";
-export const REPORT_TOOLS = SKILLS.slice(0, 6);
+export const REPORT_TOOLS = SKILLS;
 
 const ADDRESS_PATTERN = /^0x[0-9a-f]{40}$/;
 const TOKEN_PATTERN = "^[1-9][0-9]*$";
@@ -41,7 +41,7 @@ export function buildToolManifest(skill, origin, creatorAddress) {
   return {
     type: ERC8257_MANIFEST_TYPE,
     name: `census-${skill.slug}`,
-    description: `${skill.description} Uses the immutable skill of a bound Census v3 token and never submits a transaction.`,
+    description: `${skill.description} Uses the immutable skill of a bound active Census token and never builds, signs, or submits a transaction.`,
     endpoint: `${runtimeOrigin}/tools/${skill.slug}`,
     inputs: {
       type: "object",

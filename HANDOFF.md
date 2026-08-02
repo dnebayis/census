@@ -5,10 +5,9 @@ Repository: `https://github.com/dnebayis/census`
 ## Current phase
 
 The hardened mint core and read-only ERC-8004 registration API are live. The shared
-RESTAP/MCP runtime now exposes bounded report-only skills for the active v3 collection.
-Six open ERC-8257 report tools are registered on the Census Sepolia registry. OpenSea
-does not currently index Sepolia tool registries. Executor authorization remains future
-work and remains last.
+RESTAP/MCP runtime exposes seven bounded report-only skills for the active collection.
+OpenSea does not currently index Sepolia tool registries. The archived v3 Executor has
+no implementation or authorization path; v4 replaces it with report-only Advisor.
 
 `runtime-service/` contains the inactive protocol shell: `llms.txt`,
 address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
@@ -77,13 +76,15 @@ It preserves OpenSea rank, attaches exact interval/total evidence, and leaves un
 intervals null. No current v3 token has skill index 4, so its flag is not configured;
 the archived v2 `night-ledger` is not an active canary.
 
-Fraud Detector completes the six report-only engines. It uses one OpenSea profile call
+Fraud Detector completes the six market-data report engines. It uses one OpenSea profile call
 for wallets or collection metadata plus stats for collections, reports provider flags
-and missing evidence, and never assigns a fraud score or accusation. Production has all
-six report-only flags enabled for the active v3 Census contract. Immutable skills still
+and missing evidence, and never assigns a fraud score or accusation. Advisor is the
+seventh report-only engine and returns suggestions plus source links from supplied
+evidence. Production has all seven report-only flags enabled for the active Census
+contract. Immutable skills still
 prevent absent Tracker, Trend Reader, or Fraud Detector tokens from calling those
-engines; a future matching v3 token works without an environment update. Executor
-remains off.
+engines; a future matching token works without an environment update. No skill builds,
+signs, or submits transactions.
 
 Report-only invocation is gated by `ACTIVE_CENSUS_ADDRESS`, the adapter binding,
 immutable skill assignment, and its skill-specific flag. V3 token 2 is the verified

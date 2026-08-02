@@ -38,6 +38,7 @@ import {
   normalizeFraudDetectorInput,
   runFraudDetector,
 } from "../lib/engines/fraud-detector.js";
+import { normalizeAdvisorInput, runAdvisor } from "../lib/engines/advisor.js";
 import { RuntimeInactiveError, canExecuteCanary, executeAgentSkill } from "../lib/execution.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
@@ -113,6 +114,15 @@ const fraudDetectorAgent = {
   context: "a cautious examiner",
   skillIndex: 5,
   skill: skillByIndex(5),
+};
+
+const advisorAgent = {
+  ...agent,
+  tokenId: 8n,
+  agentId: 9127n,
+  context: "a careful guide",
+  skillIndex: 6,
+  skill: skillByIndex(6),
 };
 
 function fakeClient(overrides = {}) {
@@ -198,21 +208,22 @@ test("builds an inactive address-routed RESTAP catalog", () => {
 test("llms.txt describes every skill without claiming activation", () => {
   const text = buildLlmsText(origin);
   assert.match(text, /Mint Scanner/);
-  assert.match(text, /Executor/);
-  assert.match(text, /not active/);
+  assert.match(text, /Advisor/);
+  assert.match(text, /never build, sign, or submit transactions/);
   assert.match(text, /\/news is passive/);
 });
 
-test("builds six deterministic open ERC-8257 report-tool manifests", () => {
+test("builds seven deterministic open ERC-8257 report-tool manifests", () => {
   const expectedHashes = {
-    "mint-scanner": "0x5e211e00b905a5c36305a917a9d4bd8eb004e74ef2df4d0393b50fdca62dd4fe",
-    arbitrageur: "0xc13cb31bc194b97d5a01c0b3c445dcfdc352444ec5740e89f418d4df50ac877c",
-    tracker: "0x3b1528672023920745363e8cc74fd497ad34701e97ef79c17b26af94d00007aa",
-    "token-hunter": "0x508a5390bd6793cfd8e913eb62f200b80d85adebafcd3798911c7b8a1de7773c",
-    "trend-reader": "0x3b67aba189d11b3305648e8553cea5700adf68afd7ce1ab78900c47ff9a62213",
-    "fraud-detector": "0x2ffb344b5d9345512acfdbe72e506dd780526b64f8f5647b6b5c74a9b049575e",
+    "mint-scanner": "0xff66d3a426770627085d073b1c6a24b0679a5e8fce1cf1a98ccc91ed97e5bb3d",
+    arbitrageur: "0x5af5e833d71d78d1a6d6f59f8a0bc9a436d7ccc16c80f919ea8caa22445830eb",
+    tracker: "0xdf397e400c54e37fb062fe5a1ec580e7cc0de94e702d6bd993c16e2eed7f4677",
+    "token-hunter": "0x0a422c9471798a405bb19d3a90cae5f858d57eb33e235f22b0a71ecccc391f52",
+    "trend-reader": "0x3ef40ce09a71f104139cfe172f9e3e49163036c508283591081975b0141255cf",
+    "fraud-detector": "0x68e1ab29e35eb1c0812159ae3dcfa840b86b79d07db7bc0957863b5e54da6a68",
+    advisor: "0xb139980bdec3ee78dd0552d03c5659874bc9bcfbb560256dd84c0cdf043f125d",
   };
-  assert.equal(REPORT_TOOLS.length, 6);
+  assert.equal(REPORT_TOOLS.length, 7);
   for (const skill of REPORT_TOOLS) {
     const manifest = buildToolManifest(skill, origin, toolCreator);
     assert.equal(manifest.type, ERC8257_MANIFEST_TYPE);
@@ -1041,7 +1052,36 @@ test("Fraud Detector has an independent skill flag", () => {
   assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), false);
 });
 
-test("report-only access rejects invalid active addresses and Executor", () => {
+test("Advisor only returns suggestions and source links", async () => {
+  const input = {
+    goal: "Choose the safest next research step",
+    evidence: [{
+      title: "Primary source",
+      url: "https://example.com/source",
+      summary: "A bounded observation.",
+    }],
+    constraints: ["Do not submit transactions"],
+  };
+  assert.equal(normalizeAdvisorInput(input).riskTolerance, "low");
+  const direct = await runAdvisor({ input, now: () => new Date(0) });
+  assert.equal(direct.skill, "Advisor");
+  assert.equal(direct.sources[0].url, "https://example.com/source");
+  assert.match(direct.limitations.join(" "), /No calldata/);
+
+  const result = await executeAgentSkill(advisorAgent, input, {
+    env: { REPORT_ADVISOR_ENABLED: "true", ACTIVE_CENSUS_ADDRESS: census },
+    now: () => new Date(0),
+  });
+  assert.equal(result.transactionCapability, "none");
+  assert.equal(result.reportOnly, true);
+  assert.equal(JSON.stringify(result).includes("calldata"), true);
+  assert.equal(canExecuteCanary(advisorAgent, {
+    REPORT_ADVISOR_ENABLED: "true",
+    ACTIVE_CENSUS_ADDRESS: census,
+  }), true);
+});
+
+test("report-only access rejects invalid active addresses and mismatched flags", () => {
   const enabledEnv = {
     REPORT_MINT_SCANNER_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: "not-an-address",
@@ -1053,7 +1093,7 @@ test("report-only access rejects invalid active addresses and Executor", () => {
   }), false);
 });
 
-test("MCP returns structured canary output through the shared executor", async () => {
+test("MCP returns structured canary output through the shared report runner", async () => {
   const server = createAgentMcpServer(agent, async () => ({
     skill: "Mint Scanner",
     reportOnly: true,

@@ -36,7 +36,8 @@ runtime exists.
 ## Ownership and identity
 
 The current NFT owner controls the adapter-bound agent identity. Ownership transfer
-therefore transfers control. Census v3 and its shared runtime create no wallet.
+therefore transfers control. Census and its shared runtime create no wallet and never
+build, sign, or submit transactions.
 
 An owner who wants to stop using the shared registration service can call the adapter's
 `setAgentURI` and point the identity to another valid registration file.
@@ -59,7 +60,7 @@ Owner-writable:
 
 ## Runtime phase
 
-The first six skill names are bounded report-only services on the shared RESTAP/MCP
-runtime and are registered as open ERC-8257 tools on the Census Sepolia registry.
-OpenSea search does not currently index Sepolia. Executor ships last and requires
-separate explicit authorization; implementation follows `RUNTIME-PLAN.md`.
+All seven skill names are bounded report-only services on the shared RESTAP/MCP runtime
+and are registered as open ERC-8257 tools on the Census Sepolia registry. `Advisor`
+returns cautious suggestions and source links from supplied evidence. OpenSea search
+does not currently index Sepolia. No skill has an execution path.

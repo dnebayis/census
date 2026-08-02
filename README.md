@@ -5,8 +5,9 @@ created together with an ERC-8004 identity through the ERC-8217 adapter. The por
 skill, class, and nine trait indices are immutable.
 
 This repository delivers the hardened mint core, a read-only ERC-8004 registration
-service, bounded report-only runtime skills over RESTAP and MCP, and six open ERC-8257
-tool registrations on Sepolia. Executor authorization remains future work; see
+service, bounded report-only runtime skills over RESTAP and MCP, and seven open ERC-8257
+tool registrations on Sepolia. Every skill is read-only and limited to observations,
+suggestions, evidence, and links; see
 [`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
 
 ## Deployment status
@@ -69,7 +70,8 @@ entry.
 - `bitmapOf` exposes only the bitmap. `traitsOf` and `traitOf` read the suffix.
 - `skill`, `class`, and every `trait[...]` key are immutable. The current NFT owner can
   write other ERC-8048 keys.
-- Agent control belongs to the current NFT owner. Census v3 does not create a wallet.
+- Agent control belongs to the current NFT owner. Census does not create a wallet,
+  build transactions, request signatures, or submit contract calls.
 
 ## Development
 

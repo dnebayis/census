@@ -13,8 +13,8 @@ Snapshot date: **2026-07-31**
 | ERC-8217 | NFT-bound agent control | [`6ca6a3a3a5230c0a5ec30c21c3c3b9eba5ba8e29`](https://github.com/ethereum/ERCs/commit/6ca6a3a3a5230c0a5ec30c21c3c3b9eba5ba8e29) |
 | ERC-8257 | Agent tool discovery and manifests | [`1b1b3f854f5c1b8b2b8380211d01db68e94dcf0d`](https://github.com/ethereum/ERCs/commit/1b1b3f854f5c1b8b2b8380211d01db68e94dcf0d) |
 
-ERC-8257 does not change the deployed Census v3 contract. The separate Sepolia registry
-and six report-tool registrations use this locked snapshot, real endpoints, canonical
+ERC-8257 does not change the Census mint contract. The separate Sepolia registry
+and seven report-tool registrations use this locked snapshot, real endpoints, canonical
 manifests, and JCS hash commitments.
 
 ## Upgrade policy

@@ -10,12 +10,12 @@ evidence changes its premise.
 ERC-8004, ERC-8048, and ERC-8217 are locked to the upstream commits in
 `standards-lock.md`. Weekly CI reports drift but never edits an ABI or deployment.
 
-### D2 — Runtime is report-only by default
+### D2 — Runtime is permanently report-only
 
-RESTAP, MCP, and the first six skill runtimes are a separate shared service rather than
-part of minting. Six open ERC-8257 tools are registered on the Census Sepolia registry;
-OpenSea discovery waits for upstream Sepolia indexing. Executor authorization remains
-future work. Payment protocols are permanently outside the Census runtime design.
+RESTAP, MCP, and all seven skill runtimes are a separate shared service rather than
+part of minting. Open ERC-8257 tools are registered on the Census Sepolia registry;
+OpenSea discovery waits for upstream Sepolia indexing. Transaction execution and payment
+protocols are permanently outside the Census runtime design.
 
 ### D3 — One-transaction identity binding
 
@@ -167,18 +167,27 @@ No current v3 token has skill index 4, so the engine deploys inactive. The archi
 `night-ledger` identity is not promoted back into the active canary set merely to fill
 the gap. Activation waits for a naturally assigned current-v3 entry.
 
-### D22 — Report-only access is collection-scoped; write capabilities stay exact
+### D22 — Report-only access is collection-scoped
 
-Fraud Detector completes the six report-only engines using bounded OpenSea collection
+Fraud Detector completes the six market-data report engines using bounded OpenSea collection
 metadata/stats or one public account profile. It surfaces provider labels and facts but
 does not calculate a fraud score, infer fraud from non-verification, or accuse a target.
 
-At the owner's direction all six report-only feature flags are enabled in production.
+At the owner's direction all seven report-only feature flags are enabled in production.
 Access is restricted to `ACTIVE_CENSUS_ADDRESS`; the adapter binding and immutable
 onchain skill assignment determine which engine each token can invoke. Future matching
 tokens from the active contract work without manual allowlist maintenance, while
-archived or unrelated deployments remain blocked. Executor is not a report-only engine,
-remains unimplemented and disabled, and will require exact capability authorization.
+archived or unrelated deployments remain blocked.
+
+### D23 — Executor is retired; Advisor is permanently report-only
+
+The archived v3 contract's seventh immutable skill was named Executor. It is not
+implemented and must never be treated as an authorization surface. V4 replaces it with
+Advisor while preserving the 300-entry quota and Skull class. Advisor accepts a goal,
+bounded HTTPS evidence links, constraints, and a risk preference; it returns suggestions,
+limitations, and the same links. Every runtime result is marked `reportOnly: true` and
+`transactionCapability: "none"`. Census never builds calldata, approvals, signature
+requests, trades, transfers, or contract calls.
 
 ## Active Sepolia record
 

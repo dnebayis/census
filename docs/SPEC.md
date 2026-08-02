@@ -6,9 +6,10 @@ Implemented: ERC-721 collection, ERC-8048 metadata, ERC-8217 adapter binding to 
 ERC-8004 identity, immutable artwork and traits, safe local pipeline, read-only
 registration service, Sepolia rollout.
 
-Runtime scope: RESTAP, MCP, six report-only skill engines, six open ERC-8257 Sepolia
-registrations, and separately authorized Executor work. Payment protocols and execution
-wallets are out of scope. OpenSea search awaits upstream Sepolia indexing. Delivery
+Runtime scope: RESTAP, MCP, seven report-only skill engines, and seven open ERC-8257
+Sepolia registrations. `Advisor` replaces `Executor`; all skills are permanently limited
+to observations, suggestions, evidence, and links. Payment protocols, transaction
+construction, signatures, contract calls, and execution wallets are out of scope. OpenSea search awaits upstream Sepolia indexing. Delivery
 gates are in `RUNTIME-PLAN.md`. A frontend remains outside the product direction.
 
 The inactive `runtime-service/` shell implements address-routed RESTAP discovery,
@@ -210,7 +211,7 @@ remains ERC-8004 agent 9100 through the permanent address-routed registration ho
 
 Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`.
 
-Deployment order is preview service → production URL → closed Census → production
+Deployment order is production service → production URL → closed Census → production
 environment addresses → live endpoint/binding verification → `openMinting`.
 
 The local mock comparison is approximately 710k gas per separate mint and 429k per

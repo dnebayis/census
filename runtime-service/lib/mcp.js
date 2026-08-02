@@ -12,9 +12,9 @@ export function createAgentMcpServer(agent, execute) {
       description: `${agent.skill.description} ${execute ? "Report-only execution is enabled." : "Runtime execution is not enabled yet."}`,
       inputSchema: agent.skill.inputSchema,
       annotations: {
-        readOnlyHint: agent.skill.name !== "Executor",
-        destructiveHint: agent.skill.name === "Executor",
-        idempotentHint: agent.skill.name !== "Executor",
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
         openWorldHint: true,
       },
     },

@@ -1,6 +1,6 @@
 # Census runtime phase
 
-Status: six bounded report-only engines implemented; collection-scoped production
+Status: seven bounded report-only engines implemented; collection-scoped production
 runtime deployed to the single permanent project.
 
 Entries are working report agents, not only onchain identities. A single shared host
@@ -16,14 +16,14 @@ the shared host without leaving the collection.
   than a second implementation.
 - OpenSea MCP is the discovery/data integration, including ERC-8257 `search_tools` and
   `get_tool`.
-- The first six skills are report-only. Executor is the only state-changing skill and
-  ships last with allowlists, budget and expiry bounds, exact simulation, idempotency,
-  and owner revocation.
+- All seven skills are report-only. Advisor accepts bounded user-supplied evidence and
+  returns cautious suggestions plus source links.
 - The shared runtime is a default, not a lock-in. `endpoint[restap]`, `endpoint[mcp]`,
   and other non-reserved endpoint metadata remain owner-writable.
 - Runtime activation is truthful and per entry. Registration stays `active: false` with
   empty services until the live endpoints and tool binding pass external checks.
-- Census implements no payment protocol and creates no agent or execution wallet.
+- Census implements no payment protocol, creates no agent or execution wallet, and has
+  no transaction-construction, signature, trade, transfer, or contract-call path.
 
 ## Addressing and discovery
 
@@ -62,7 +62,7 @@ Sepolia fork.
    missing-token, chain-read, and Redis rate-limit checks passed on 2 August 2026.
    This bounded canary does not make the non-persistent free database a durability gate
    for broader activation.
-2. Implement Mint Scanner end to end, then the other five report-only
+2. Implement Mint Scanner end to end, then the other six report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
    evidence and limitations; invocation is collection-scoped and skill-gated.
    Arbitrageur's bounded OpenSea listing/offer comparison
@@ -74,17 +74,17 @@ Sepolia fork.
    Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
    implemented but remain inactive until a current-v3 skill-index-4 token exists. The
    Fraud Detector's bounded provider-label assessment is implemented as the sixth and
-   final report-only engine. All six report-only flags are enabled for the active v3
+   final market-data report engine. Advisor is the seventh report-only engine. All seven report-only flags are enabled for the active
    Census contract. Future matching tokens work automatically after adapter-binding and
-   immutable-skill checks; currently absent skill types remain unreachable. Executor
-   remains outside this activation.
+   immutable-skill checks; currently absent skill types remain unreachable.
 3. A conformant Sepolia ERC-8257 registry is deployed at
    `0xd61aa597398a83122fce07a94beddb91fce8f42e`; six open report-tool manifests and
    focused invocation routes are implemented and registered as tool IDs 1–6. OpenSea
    does not currently list Sepolia
    among its canonical registry chains, so OpenSea search verification remains pending
    upstream network support rather than being falsely claimed.
-4. Add Executor behind explicit capability authorization and transaction simulation.
+4. Keep every skill inside the tested advisory-only boundary; transaction execution is
+   explicitly rejected as a product direction.
 5. Deploy one permanent shared runtime project, activate a small canary set, update
    registration services, then expand only after monitoring proves stable.
 

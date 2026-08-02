@@ -6,6 +6,7 @@ import { OpenSeaTrackerSource, runTracker } from "./engines/tracker.js";
 import { OpenSeaTokenHunterSource, runTokenHunter } from "./engines/token-hunter.js";
 import { OpenSeaTrendReaderSource, runTrendReader } from "./engines/trend-reader.js";
 import { OpenSeaFraudDetectorSource, runFraudDetector } from "./engines/fraud-detector.js";
+import { runAdvisor } from "./engines/advisor.js";
 
 export class RuntimeInactiveError extends Error {}
 export class UnsupportedRuntimeSkillError extends Error {}
@@ -26,6 +27,7 @@ export function canExecuteCanary(agent, env = process.env) {
     [3, "REPORT_TOKEN_HUNTER_ENABLED"],
     [4, "REPORT_TREND_READER_ENABLED"],
     [5, "REPORT_FRAUD_DETECTOR_ENABLED"],
+    [6, "REPORT_ADVISOR_ENABLED"],
   ]).get(agent.skillIndex);
   return Boolean(flag) && env[flag] === "true" && isActiveCensusAgent(agent, env);
 }
@@ -64,47 +66,57 @@ export async function executeAgentSkill(
   { env = process.env, sources, source, now } = {},
 ) {
   if (!canExecuteCanary(agent, env)) throw new RuntimeInactiveError("runtime_inactive");
+  let result;
   if (agent.skillIndex === 0) {
-    return runMintScanner({
+    result = await runMintScanner({
       input,
       sources: sources || createMintScannerSources(env),
       ...(now ? { now } : {}),
     });
   }
   if (agent.skillIndex === 1) {
-    return runArbitrageur({
+    result = await runArbitrageur({
       input,
       source: source || createArbitrageurSource(env),
       ...(now ? { now } : {}),
     });
   }
   if (agent.skillIndex === 2) {
-    return runTracker({
+    result = await runTracker({
       input,
       source: source || createTrackerSource(env),
       ...(now ? { now } : {}),
     });
   }
   if (agent.skillIndex === 3) {
-    return runTokenHunter({
+    result = await runTokenHunter({
       input,
       source: source || createTokenHunterSource(env),
       ...(now ? { now } : {}),
     });
   }
   if (agent.skillIndex === 4) {
-    return runTrendReader({
+    result = await runTrendReader({
       input,
       source: source || createTrendReaderSource(env),
       ...(now ? { now } : {}),
     });
   }
   if (agent.skillIndex === 5) {
-    return runFraudDetector({
+    result = await runFraudDetector({
       input,
       source: source || createFraudDetectorSource(env),
       ...(now ? { now } : {}),
     });
   }
-  throw new UnsupportedRuntimeSkillError(`skill ${agent.skill.name} is not implemented`);
+  if (agent.skillIndex === 6) {
+    result = await runAdvisor({ input, ...(now ? { now } : {}) });
+  }
+  if (!result) throw new UnsupportedRuntimeSkillError(`skill ${agent.skill.name} is not implemented`);
+  return {
+    ...result,
+    reportOnly: true,
+    transactionCapability: "none",
+    safetyBoundary: "Observations, suggestions, evidence, and links only; no transaction construction, signing, or submission.",
+  };
 }

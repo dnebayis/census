@@ -40,7 +40,7 @@ testnet wrapped assets are normalized.
 
 Public report execution requires the skill-specific flag and an
 `ACTIVE_CENSUS_ADDRESS` match. The adapter binding and immutable onchain skill are read
-before execution, so current and future tokens from the active v3 contract need no
+before report generation, so current and future tokens from the active Census contract need no
 manual token allowlist. Archived contracts remain blocked. Registration remains
 `active: false`; these engines are report-only and cannot submit a transaction.
 
@@ -75,10 +75,12 @@ and self-declared-agent fields without assigning a fraud score or making an accu
 Missing profiles and non-verification are explicitly insufficient evidence. No current
 v3 token has skill index 5.
 
-All six report-only feature flags are enabled in production. Every valid token on the
-active v3 Census contract can execute only its immutable skill after the adapter binding
+All seven report-only feature flags are enabled in production. Every valid token on the
+active Census contract can invoke only its immutable report skill after the adapter binding
 check. Tracker, Trend Reader, and Fraud Detector become reachable automatically when a
-matching v3 token is naturally minted. Executor is not implemented or enabled.
+matching token is naturally minted. Advisor is the seventh report-only engine. It turns
+user-supplied evidence into cautious suggestions and source links. No skill builds
+calldata, approvals, signature requests, trades, transfers, or contract calls.
 
 Required local environment:
 

@@ -357,7 +357,7 @@ contract CensusTest is Test {
         assertEq(census.remaining(3), 1000); // Token Hunter
         assertEq(census.remaining(4), 700); // Trend Reader
         assertEq(census.remaining(5), 500); // Fraud Detector
-        assertEq(census.remaining(6), 300); // Executor
+        assertEq(census.remaining(6), 300); // Advisor
         assertEq(census.remainingTotal(), 10_000);
     }
 
@@ -386,7 +386,7 @@ contract CensusTest is Test {
 
         vm.prank(alice);
         vm.expectRevert(Census.ImmutableKey.selector);
-        census.setMetadata(id, "skill", bytes("Executor"));
+        census.setMetadata(id, "skill", bytes("Advisor"));
 
         vm.prank(alice);
         vm.expectRevert(Census.ImmutableKey.selector);

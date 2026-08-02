@@ -76,7 +76,7 @@ contract Census is ERC721, Ownable, IERC8048 {
     /// @dev Remaining slots per skill in indices 0-6, with the running total parked in
     ///      index 7 so all eight share a single slot — the draw reads and writes one word.
     ///      Drawing from a shrinking pool rather than rolling a probability makes the final
-    ///      distribution exact by construction: there will be exactly 300 Executors.
+    ///      distribution exact by construction: there will be exactly 300 Advisors.
     uint16[8] internal _pool = [3000, 3000, 1500, 1000, 700, 500, 300, 10_000];
 
     uint256 public totalMinted;
@@ -158,7 +158,7 @@ contract Census is ERC721, Ownable, IERC8048 {
         if (s == 3) return "Token Hunter";
         if (s == 4) return "Trend Reader";
         if (s == 5) return "Fraud Detector";
-        return "Executor";
+        return "Advisor";
     }
 
     /// @dev Class is implied by skill, never drawn separately. Human 60%, Agent 25%,
@@ -358,7 +358,7 @@ contract Census is ERC721, Ownable, IERC8048 {
 
     /// @notice Update an owner-writable key.
     /// @dev `skill` and `class` are the quota assignment. An owner able to rewrite them could
-    ///      mint a common entry and relabel it as an Executor, making every cap meaningless.
+    ///      mint a common entry and relabel it as an Advisor, making every cap meaningless.
     ///      Other ERC-8048 keys remain under the current NFT owner's control.
     function setMetadata(uint256 tokenId, string calldata key, bytes calldata value) external {
         if (ownerOf(tokenId) != msg.sender) revert NotEntryOwner();

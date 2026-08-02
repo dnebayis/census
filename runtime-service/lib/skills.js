@@ -70,14 +70,18 @@ export const SKILLS = [
     }),
   },
   {
-    name: "Executor",
-    slug: "executor",
-    description: "Executes a bounded action after explicit authorization and simulation.",
+    name: "Advisor",
+    slug: "advisor",
+    description: "Turns supplied evidence into cautious suggestions and source links without preparing or submitting transactions.",
     inputSchema: z.object({
-      condition: z.record(z.string(), z.unknown()),
-      action: z.record(z.string(), z.unknown()),
-      budget: z.record(z.string(), z.unknown()),
-      expiry: z.string().datetime(),
+      goal: z.string().min(1).max(500),
+      evidence: z.array(z.object({
+        title: z.string().min(1).max(200),
+        url: z.string().url().refine((value) => value.startsWith("https://"), "evidence URLs must use https"),
+        summary: z.string().min(1).max(1000),
+      })).min(1).max(20),
+      constraints: z.array(z.string().min(1).max(300)).max(10).default([]),
+      riskTolerance: z.enum(["low", "medium", "high"]).default("low"),
     }),
   },
 ];
