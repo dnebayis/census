@@ -176,10 +176,10 @@ test("builds an inactive address-routed RESTAP catalog", () => {
   assert.equal(catalog.capabilities[0].endpoint, "/talk");
   assert.match(catalog.capabilities[0].description, /invocation remains inactive/);
   const canaryCatalog = buildCatalog(arbitrageurAgent, origin, { canaryAvailable: true });
-  assert.equal(canaryCatalog.capabilities[0].description, "Unpaid Arbitrageur canary; payment remains disabled.");
+  assert.equal(canaryCatalog.capabilities[0].description, "Report-only Arbitrageur execution is enabled.");
   assert.equal(catalog.capabilities[1].endpoint, "/news");
   assert.equal(catalog.protocols.mcp.transport, "streamable-http");
-  assert.equal(catalog.protocols.x402.available, false);
+  assert.deepEqual(Object.keys(catalog.protocols), ["mcp"]);
   assert.throws(() => normalizeOrigin("http://runtime.example"), /https origin/);
   assert.throws(() => normalizeOrigin(`${origin}/path`), /must not include a path/);
 });
@@ -823,7 +823,7 @@ test("OpenSea Fraud Detector fails closed on provider errors", async () => {
 
 test("Mint Scanner accepts every bound agent from the active Census contract", async () => {
   const enabledEnv = {
-    UNPAID_MINT_SCANNER_ENABLED: "true",
+    REPORT_MINT_SCANNER_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(agent, enabledEnv), true);
@@ -862,7 +862,7 @@ test("Mint Scanner accepts every bound agent from the active Census contract", a
 
 test("Arbitrageur has an independent skill flag on the active Census contract", async () => {
   const enabledEnv = {
-    UNPAID_ARBITRAGEUR_ENABLED: "true",
+    REPORT_ARBITRAGEUR_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), true);
@@ -891,7 +891,7 @@ test("Arbitrageur has an independent skill flag on the active Census contract", 
 
 test("Tracker accepts a matching future agent from the active Census contract", () => {
   const enabledEnv = {
-    UNPAID_TRACKER_ENABLED: "true",
+    REPORT_TRACKER_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(trackerAgent, enabledEnv), true);
@@ -901,7 +901,7 @@ test("Tracker accepts a matching future agent from the active Census contract", 
 
 test("Token Hunter has an independent skill flag", () => {
   const enabledEnv = {
-    UNPAID_TOKEN_HUNTER_ENABLED: "true",
+    REPORT_TOKEN_HUNTER_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), true);
@@ -910,7 +910,7 @@ test("Token Hunter has an independent skill flag", () => {
 
 test("Trend Reader accepts a matching future agent from the active Census contract", () => {
   const enabledEnv = {
-    UNPAID_TREND_READER_ENABLED: "true",
+    REPORT_TREND_READER_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(trendReaderAgent, enabledEnv), true);
@@ -920,7 +920,7 @@ test("Trend Reader accepts a matching future agent from the active Census contra
 
 test("Fraud Detector has an independent skill flag", () => {
   const enabledEnv = {
-    UNPAID_FRAUD_DETECTOR_ENABLED: "true",
+    REPORT_FRAUD_DETECTOR_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(fraudDetectorAgent, enabledEnv), true);
@@ -929,7 +929,7 @@ test("Fraud Detector has an independent skill flag", () => {
 
 test("report-only access rejects invalid active addresses and Executor", () => {
   const enabledEnv = {
-    UNPAID_MINT_SCANNER_ENABLED: "true",
+    REPORT_MINT_SCANNER_ENABLED: "true",
     ACTIVE_CENSUS_ADDRESS: "not-an-address",
   };
   assert.equal(canExecuteCanary(agent, enabledEnv), false);

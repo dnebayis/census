@@ -1,7 +1,7 @@
 # Census registration service
 
 This directory is intentionally a read-only ERC-8004 registration API. It has no
-frontend, agent runtime, MCP, RESTAP, x402, executor, or wallet service.
+frontend, agent runtime, MCP, RESTAP, executor, payment, or wallet service.
 
 `GET /a/<censusAddress>/<tokenId>/registration.json` reads Sepolia, verifies that the
 Census token is bound to the expected ERC-8217 adapter agent, and returns the current

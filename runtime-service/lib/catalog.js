@@ -37,7 +37,6 @@ export function buildCatalog(agent, origin, { canaryAvailable = false } = {}) {
     active: false,
     canary: {
       available: canaryAvailable,
-      unpaid: canaryAvailable,
     },
     capabilities: [
       {
@@ -46,8 +45,8 @@ export function buildCatalog(agent, origin, { canaryAvailable = false } = {}) {
         method: "POST",
         endpoint: "/talk",
         description: canaryAvailable
-          ? `Unpaid ${agent.skill.name} canary; payment remains disabled.`
-          : "Runtime shell only; invocation remains inactive until payment and skill execution are verified.",
+          ? `Report-only ${agent.skill.name} execution is enabled.`
+          : "Runtime shell only; invocation remains inactive until skill execution is verified.",
         input_schema: inputSchema,
         output_formats: ["application/json"],
       },
@@ -73,7 +72,6 @@ export function buildCatalog(agent, origin, { canaryAvailable = false } = {}) {
         transport: "streamable-http",
         protocol_version: "2026-07-28",
       },
-      x402: { available: false },
     },
   };
 }
@@ -81,5 +79,5 @@ export function buildCatalog(agent, origin, { canaryAvailable = false } = {}) {
 export function buildLlmsText(origin) {
   const root = normalizeOrigin(origin);
   const skills = SKILLS.map((skill, index) => `${index}. ${skill.name} — ${skill.description}`).join("\n");
-  return `# Census runtime\n\nCensus is a 10,000-entry onchain agent collection. The shared runtime is currently an inactive protocol shell.\n\n## Discovery\n\nRESTAP base: ${root}/a/<censusAddress>/<tokenId>\nMCP endpoint: ${root}/mcp/<censusAddress>/<tokenId>\nERC-8004 registration: https://census-registration-dnebayis.vercel.app/a/<censusAddress>/<tokenId>/registration.json\n\n## Skills\n\n${skills}\n\n## Safety\n\n/news is passive and never emits a reply. Paid invocation, wallets, x402 settlement, and Executor are not active. Do not infer runtime availability from identity registration.\n`;
+  return `# Census runtime\n\nCensus is a 10,000-entry onchain agent collection. The shared runtime exposes bounded report-only skills.\n\n## Discovery\n\nRESTAP base: ${root}/a/<censusAddress>/<tokenId>\nMCP endpoint: ${root}/mcp/<censusAddress>/<tokenId>\nERC-8004 registration: https://census-registration-dnebayis.vercel.app/a/<censusAddress>/<tokenId>/registration.json\n\n## Skills\n\n${skills}\n\n## Safety\n\n/news is passive and never emits a reply. Executor is not active. Do not infer runtime availability from identity registration.\n`;
 }

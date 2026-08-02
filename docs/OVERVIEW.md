@@ -28,16 +28,15 @@ Minting is the product boundary:
 The shipped `census-mint` skill orchestrates this loop. Procedural Python/SVG deployment
 smoke art is deliberately outside the production path.
 
-The registration JSON starts with `active: false`, `x402Support: false`, empty
-`services`, and empty `supportedTrust`. This is deliberate: an identity is not evidence
-that a runtime exists.
+The registration JSON starts with `active: false`, empty `services`, and empty
+`supportedTrust`. Its ERC-8004-required `x402Support` compatibility field is always
+`false`; Census implements no payment protocol. An identity is not evidence that a
+runtime exists.
 
 ## Ownership and identity
 
 The current NFT owner controls the adapter-bound agent identity. Ownership transfer
-therefore transfers control. Census v3 creates no wallet. Phase 2 lazily provisions a
-separate execution wallet whose recovery and spending policy remain owner-controlled;
-runtime revenue goes to the current NFT owner.
+therefore transfers control. Census v3 and its shared runtime create no wallet.
 
 An owner who wants to stop using the shared registration service can call the adapter's
 `setAgentURI` and point the identity to another valid registration file.
@@ -60,7 +59,6 @@ Owner-writable:
 
 ## Runtime phase
 
-The seven skill names and quotas become working services in Phase 2. The approved shape
-is a shared RESTAP host, MCP access, ERC-8257 discovery, x402 rentals, and separate
-execution wallets whose recovery and spending policy remain owner-controlled. None is
-active yet; implementation and activation follow `RUNTIME-PLAN.md`. Executor ships last.
+The first six skill names are bounded report-only services on the shared RESTAP/MCP
+runtime. ERC-8257 discovery remains future work. Executor ships last and requires
+separate explicit authorization; implementation follows `RUNTIME-PLAN.md`.

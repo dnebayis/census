@@ -10,12 +10,11 @@ evidence changes its premise.
 ERC-8004, ERC-8048, and ERC-8217 are locked to the upstream commits in
 `standards-lock.md`. Weekly CI reports drift but never edits an ABI or deployment.
 
-### D2 — Runtime is a separate phase, not removed
+### D2 — Runtime is report-only by default
 
-ERC-8257, RESTAP, MCP, x402, the seven skill runtimes, and Executor authorization are
-not required for an NFT to be born as an ERC-8004 agent, so they remain outside the
-mint-core deployment. The original shared-runtime economy is restored as Phase 2 and
-is specified in `RUNTIME-PLAN.md`.
+RESTAP, MCP, and the first six skill runtimes are a separate shared service rather than
+part of minting. ERC-8257 discovery and Executor authorization remain future work.
+Payment protocols are permanently outside the Census runtime design.
 
 ### D3 — One-transaction identity binding
 
@@ -47,13 +46,11 @@ overstated.
 owner can write other ERC-8048 keys. The ERC-8048 event follows the locked four-field
 form with the indexed key duplicated in readable form.
 
-### D8 — Owner control plus a separate execution wallet
+### D8 — Owner control without an agent wallet
 
-ERC-8217 control and runtime revenue follow NFT ownership. Phase 2 also gives every
-entry a separate, lazily provisioned execution wallet for agent-to-agent payments and
-authorized actions. That wallet is not the identity or controller; recovery, transfer
-rotation, and spending policy remain owner-controlled. The owner can fully opt out of
-the shared host through adapter `setAgentURI` and owner-writable endpoint metadata.
+ERC-8217 control follows NFT ownership. Census does not create a separate agent or
+execution wallet. The owner can fully opt out of the shared host through adapter
+`setAgentURI` and owner-writable endpoint metadata.
 
 ### D9 — Draft IDs and receipts are different identities
 
@@ -219,8 +216,7 @@ estimates.
 - mutable canonical host
 - admin pause after launch
 - a placeholder deployment host
-- creating or funding a separate agent wallet before the Phase 2 custody and spending
-  model passes Sepolia tests
+- creating or funding a separate agent wallet
 - treating identity registration as a claim that runtime services are active
 - automatic migration of legacy output filenames to token IDs
 - owner mutation of skill, class, or visual traits

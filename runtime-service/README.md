@@ -1,6 +1,6 @@
 # Census shared runtime
 
-This directory is the inactive Phase 2 protocol shell. It is deliberately separate
+This directory contains the bounded report-only runtime. It is deliberately separate
 from `registration-service`; there is one permanent registration project and one
 permanent runtime project at `https://census-runtime-dnebayis.vercel.app`.
 
@@ -13,8 +13,8 @@ Implemented surfaces:
 - Streamable HTTP MCP at `/mcp/<censusAddress>/<tokenId>`
 
 Every per-entry request reads live Census state and verifies the ERC-8217 adapter
-binding. `/talk` and MCP tool calls return `runtime_inactive`; no LLM, payment, wallet,
-or external action runs. `/news` never invokes an LLM and never emits a reply. Its
+binding. Disabled skills return `runtime_inactive`; no wallet or state-changing action
+runs. `/news` never invokes an LLM and never emits a reply.
 The storage layer supports Upstash REST and standard Vercel Redis connections. Both use
 an atomic bounded queue; distributed sliding-window limits protect `/talk`, `/news`, and
 MCP. No production credentials are committed.
@@ -36,7 +36,7 @@ wrapping relationship. A qualifying cross-currency result explicitly reports tha
 conversion is required and that wrapping gas is not included. No other token aliases or
 testnet wrapped assets are normalized.
 
-Unpaid public report execution requires the skill-specific flag and an
+Public report execution requires the skill-specific flag and an
 `ACTIVE_CENSUS_ADDRESS` match. The adapter binding and immutable onchain skill are read
 before execution, so current and future tokens from the active v3 contract need no
 manual token allowlist. Archived contracts remain blocked. Registration remains
@@ -47,8 +47,8 @@ account-events endpoint for at most 10 exact wallet addresses, a caller-supplied
 time, and transfer/sale/mint filters. Each wallet request is capped at one 200-event
 page; a returned cursor is reported as `truncated` and is never followed automatically.
 The engine emits direction, NFT details, transaction evidence, source URLs, and explicit
-limitations. Its independent gate remains inactive because no current v3 token has the
-Tracker skill trait. Census trait selection is never bypassed to manufacture a canary.
+limitations. No current v3 token has the Tracker skill trait, so no entry can reach it
+yet. Census trait selection is never bypassed to manufacture a canary.
 
 Token Hunter is the fourth implemented report-only engine and is assigned to v3 token
 4 / agent 9123. It reads at most 100 OpenSea trending-token summaries, filters them by
@@ -62,8 +62,8 @@ Trend Reader is the fifth implemented report-only engine. It reads one OpenSea t
 collection page for `1h`, `24h`, or `7d`, optionally filters one documented category,
 and attaches at most 10 collection-stat responses. It preserves OpenSea's rank, reports
 the exact matching interval when available, leaves missing intervals null, and never
-invents a Census momentum score. Its independent gate remains inactive because no
-current v3 token has skill index 4; the archived v2 `night-ledger` is not reused as an
+invents a Census momentum score. No current v3 token has skill index 4; the archived
+v2 `night-ledger` is not reused as an
 active canary.
 
 Fraud Detector is the sixth and final report-only engine. A collection assessment reads
@@ -87,9 +87,9 @@ Required local environment:
 - `OPENSEA_API_KEY` — required by OpenSea-backed report engines; instant keys expire
   after 30 days and require rotation
 - `ACTIVE_CENSUS_ADDRESS` — the only collection allowed to use report-only engines
-- `UNPAID_MINT_SCANNER_ENABLED`, `UNPAID_ARBITRAGEUR_ENABLED`,
-  `UNPAID_TRACKER_ENABLED`, `UNPAID_TOKEN_HUNTER_ENABLED`,
-  `UNPAID_TREND_READER_ENABLED`, and `UNPAID_FRAUD_DETECTOR_ENABLED` — independent
+- `REPORT_MINT_SCANNER_ENABLED`, `REPORT_ARBITRAGEUR_ENABLED`,
+  `REPORT_TRACKER_ENABLED`, `REPORT_TOKEN_HUNTER_ENABLED`,
+  `REPORT_TREND_READER_ENABLED`, and `REPORT_FRAUD_DETECTOR_ENABLED` — independent
   per-skill gates
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)
@@ -100,8 +100,7 @@ throwaway namespaced key with `RUN_REDIS_INTEGRATION=1 npm test`. The test delet
 key in a `finally` block.
 
 Do not add runtime services to ERC-8004 registration JSON and do not set `active: true`
-until storage and rate-limit integration tests, x402, skill execution, and external
-canary checks pass.
+until storage, rate-limit, skill-execution, and external checks pass.
 
 Current deployment state: the stable production project is a bounded report-only runtime. The
 official free Redis resource `census-runtime-free` is connected only to production,

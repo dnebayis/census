@@ -7,7 +7,7 @@ repo skill at `skills/census-mint/SKILL.md` for the complete autonomous loop.
 Active Sepolia Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`.
 Canonical host: `https://census-registration-dnebayis.vercel.app`. Minting is irreversibly
 open. This release implements
-ERC-8004 + ERC-8048 + ERC-8217; do not assume ERC-8257, MCP, RESTAP, or x402 runtime.
+ERC-8004 + ERC-8048 + ERC-8217; do not assume ERC-8257, MCP, RESTAP, or payment runtime.
 
 ## Required sequence
 

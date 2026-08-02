@@ -9,7 +9,7 @@ export function createAgentMcpServer(agent, execute) {
     agent.skill.slug,
     {
       title: agent.skill.name,
-      description: `${agent.skill.description} ${execute ? "Unpaid canary execution is enabled; payment is not." : "Runtime activation and payment are not enabled yet."}`,
+      description: `${agent.skill.description} ${execute ? "Report-only execution is enabled." : "Runtime execution is not enabled yet."}`,
       inputSchema: agent.skill.inputSchema,
       annotations: {
         readOnlyHint: agent.skill.name !== "Executor",

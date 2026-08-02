@@ -6,13 +6,15 @@ Implemented: ERC-721 collection, ERC-8048 metadata, ERC-8217 adapter binding to 
 ERC-8004 identity, immutable artwork and traits, safe local pipeline, read-only
 registration service, Sepolia rollout.
 
-Phase 2: ERC-8257, RESTAP, MCP, x402, seven skill runtimes, Executor authorization, and
-separate execution wallets are approved but not yet active. Their delivery gates are in
-`RUNTIME-PLAN.md`. A frontend remains outside the product direction.
+Runtime scope: RESTAP, MCP, six report-only skill engines, future ERC-8257 discovery,
+and separately authorized Executor work. Payment protocols and execution wallets are
+out of scope. Delivery gates are in `RUNTIME-PLAN.md`. A frontend remains outside the
+product direction.
 
 The inactive `runtime-service/` shell implements address-routed RESTAP discovery,
 `/talk`, passive `/news`, and MCP without claiming service activation. Registration
-continues to return `active: false`, empty services, and `x402Support: false`.
+continues to return `active: false` and empty services. The ERC-8004 registration
+compatibility field `x402Support` remains fixed to `false`; there is no implementation.
 Its local Mint Scanner engine is report-only and evidence-backed; it remains unavailable
 through public runtime routes until the Phase 2 integration gates pass.
 

@@ -1,6 +1,6 @@
 ---
 name: census-mint
-description: Create, visually review, and safely mint Census portraits from an IDE agent session. Use when the user asks to create, draw, prepare, batch, or mint a Census agent/NFT, or asks to improve Census art quality. This skill owns the agent-native raster generation loop; it does not implement runtime skills, MCP, RESTAP, x402, or a frontend.
+description: Create, visually review, and safely mint Census portraits from an IDE agent session. Use when the user asks to create, draw, prepare, batch, or mint a Census agent/NFT, or asks to improve Census art quality. This skill owns the agent-native raster generation loop; it does not implement runtime skills, MCP, RESTAP, payments, or a frontend.
 ---
 
 # Census Mint

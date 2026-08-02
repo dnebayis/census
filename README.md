@@ -4,10 +4,10 @@ Census is a capped collection of 10,000 fully-onchain 40×40 portraits. Every to
 created together with an ERC-8004 identity through the ERC-8217 adapter. The portrait,
 skill, class, and nine trait indices are immutable.
 
-This repository delivers the hardened mint core and a read-only ERC-8004 registration
-service. Phase 2 restores the original shared-agent economy: RESTAP, MCP, x402,
-ERC-8257 discovery, seven skill runtimes, and owner-controlled execution wallets. They
-are approved but not active; see [`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
+This repository delivers the hardened mint core, a read-only ERC-8004 registration
+service, and bounded report-only runtime skills over RESTAP and MCP. ERC-8257 discovery
+and Executor authorization remain future work; see
+[`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
 
 ## Deployment status
 
@@ -15,7 +15,7 @@ are approved but not active; see [`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
 |---|---|
 | Census v3 | [`0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`](https://sepolia.etherscan.io/address/0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc) — mint open |
 | Registration | [`https://census-registration-dnebayis.vercel.app`](https://census-registration-dnebayis.vercel.app) — permanent single project |
-| Runtime | [`https://census-runtime-dnebayis.vercel.app`](https://census-runtime-dnebayis.vercel.app) — production canary; Redis-backed Mint Scanner enabled only for token 2 and not advertised by registration |
+| Runtime | [`https://census-runtime-dnebayis.vercel.app`](https://census-runtime-dnebayis.vercel.app) — collection-scoped report-only production runtime; not advertised by registration |
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
 | Archived v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — tokens 1–4 preserved |
@@ -68,9 +68,7 @@ entry.
 - `bitmapOf` exposes only the bitmap. `traitsOf` and `traitOf` read the suffix.
 - `skill`, `class`, and every `trait[...]` key are immutable. The current NFT owner can
   write other ERC-8048 keys.
-- Agent control and the economic recipient are the current NFT owner. Census v3 does
-  not create a wallet; Phase 2 provisions a separate execution wallet lazily under
-  owner recovery and spending policy.
+- Agent control belongs to the current NFT owner. Census v3 does not create a wallet.
 
 ## Development
 

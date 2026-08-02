@@ -20,12 +20,12 @@ export function isActiveCensusAgent(agent, env = process.env) {
 
 export function canExecuteCanary(agent, env = process.env) {
   const flag = new Map([
-    [0, "UNPAID_MINT_SCANNER_ENABLED"],
-    [1, "UNPAID_ARBITRAGEUR_ENABLED"],
-    [2, "UNPAID_TRACKER_ENABLED"],
-    [3, "UNPAID_TOKEN_HUNTER_ENABLED"],
-    [4, "UNPAID_TREND_READER_ENABLED"],
-    [5, "UNPAID_FRAUD_DETECTOR_ENABLED"],
+    [0, "REPORT_MINT_SCANNER_ENABLED"],
+    [1, "REPORT_ARBITRAGEUR_ENABLED"],
+    [2, "REPORT_TRACKER_ENABLED"],
+    [3, "REPORT_TOKEN_HUNTER_ENABLED"],
+    [4, "REPORT_TREND_READER_ENABLED"],
+    [5, "REPORT_FRAUD_DETECTOR_ENABLED"],
   ]).get(agent.skillIndex);
   return Boolean(flag) && env[flag] === "true" && isActiveCensusAgent(agent, env);
 }

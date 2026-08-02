@@ -413,7 +413,6 @@ contract CensusTest is Test {
         uint256 id = _mint(alice, 1);
         assertEq(census.metadata(id, "endpoint[restap]").length, 0);
         assertEq(census.metadata(id, "endpoint[mcp]").length, 0);
-        assertEq(census.metadata(id, "endpoint[x402]").length, 0);
     }
 
     function test_CanonicalHostIsFixedAtConstruction() public {

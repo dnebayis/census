@@ -4,21 +4,20 @@ Repository: `https://github.com/dnebayis/census`
 
 ## Current phase
 
-The hardened mint core and read-only ERC-8004 registration API are live. Phase 2 now
-restores the shared RESTAP/MCP/x402 runtime, ERC-8257 discovery, seven skill
-implementations, and separate owner-controlled execution wallets. Nothing is active
-until the gates in `docs/RUNTIME-PLAN.md` pass; Executor remains last.
+The hardened mint core and read-only ERC-8004 registration API are live. The shared
+RESTAP/MCP runtime now exposes bounded report-only skills for the active v3 collection.
+ERC-8257 discovery and Executor authorization remain future work; Executor remains last.
 
 `runtime-service/` contains the inactive protocol shell: `llms.txt`,
 address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
 Vercel assigned its first deployment to the stable
-`https://census-runtime-dnebayis.vercel.app` alias; the runtime remains inactive and
-must not be advertised in registration JSON yet. Its bounded news queue and
+`https://census-runtime-dnebayis.vercel.app` alias; its report-only engines are active
+for matching v3 skills but are not advertised in registration JSON. Its bounded news queue and
 sliding-window limits use Redis. The official 30 MB free Redis resource
 `census-runtime-free` is connected to production only; its real queue and distributed
-rate-limit integration test passed. Mint Scanner is enabled only for the exact v3
-token 2 canary at `https://census-runtime-dnebayis.vercel.app`.
+rate-limit integration test passed. Access is scoped to the active v3 Census contract
+at `https://census-runtime-dnebayis.vercel.app`.
 
 The Vercel Git project is linked to `dnebayis/census`, production branch `main`, with
 Root Directory fixed to `runtime-service`. Never deploy the monorepo root manually;
@@ -38,7 +37,7 @@ returned its live agent 9121 binding and `canary.available: true`; `/talk` and t
 `mint-scanner` tool returned evidence-backed reports over Sepolia. Token 3 returned
 `runtime_inactive` through both surfaces, a missing token returned 404, and MCP emitted
 Redis-backed rate-limit headers. The runtime uses the public dRPC Sepolia endpoint;
-registration remains `active: false` with x402 disabled.
+registration remains `active: false` and does not advertise runtime services.
 
 Arbitrageur is implemented as the second report-only engine. It uses the fixed OpenSea
 API origin, a secret-managed instant key, at most 20 combined collection-slug or

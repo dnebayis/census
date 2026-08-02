@@ -1,13 +1,12 @@
 # Census runtime phase
 
-Status: architecture approved; inactive protocol shell deployed to the single permanent
-runtime project; production integration and activation pending.
+Status: six bounded report-only engines implemented; collection-scoped production
+runtime deployed to the single permanent project.
 
-The runtime returns to the original Census product thesis: entries are working agents,
-not only onchain identities. A single shared host provides RESTAP by default, MCP gives
-human and IDE clients access, ERC-8257 provides onchain tool discovery, and x402 pays
-the current NFT owner for skill calls. Owners may repoint their endpoints and leave the
-shared host without leaving the collection.
+Entries are working report agents, not only onchain identities. A single shared host
+provides RESTAP by default, MCP gives human and IDE clients access, and future ERC-8257
+support can provide onchain tool discovery. Owners may repoint their endpoints and leave
+the shared host without leaving the collection.
 
 ## Locked runtime shape
 
@@ -17,21 +16,14 @@ shared host without leaving the collection.
   than a second implementation.
 - OpenSea MCP is the discovery/data integration, including ERC-8257 `search_tools` and
   `get_tool`.
-- x402 gates paid `/talk` and direct capability calls. The payment recipient is resolved
-  from the current Census `ownerOf(tokenId)` when terms are issued, so revenue follows
-  NFT ownership.
-- Every entry receives a separate execution wallet. It is not the ERC-8004 identity and
-  does not replace ERC-8217 control. Provisioning is lazy; owner recovery, transfer
-  rotation, spending limits, and x402 signing compatibility must pass on Sepolia before
-  any wallet holds meaningful funds.
 - The first six skills are report-only. Executor is the only state-changing skill and
   ships last with allowlists, budget and expiry bounds, exact simulation, idempotency,
   and owner revocation.
 - The shared runtime is a default, not a lock-in. `endpoint[restap]`, `endpoint[mcp]`,
-  and `endpoint[x402]` remain owner-writable.
+  and other non-reserved endpoint metadata remain owner-writable.
 - Runtime activation is truthful and per entry. Registration stays `active: false` with
-  empty services until the live endpoints, payment path, and tool binding pass external
-  checks.
+  empty services until the live endpoints and tool binding pass external checks.
+- Census implements no payment protocol and creates no agent or execution wallet.
 
 ## Addressing and discovery
 
@@ -43,13 +35,12 @@ redeployments:
 /a/<censusAddress>/<tokenId>/talk
 /a/<censusAddress>/<tokenId>/news
 /mcp/<censusAddress>/<tokenId>
-/pay/<censusAddress>/<tokenId>
 ```
 
 ERC-8257 manifests use the required `/.well-known/ai-tool/<slug>.json` path, HTTPS
 origin binding, JCS canonicalization, `keccak256` manifest hashes, lowercase
-`creatorAddress`, JSON Schema inputs/outputs, and x402 pricing entries. Tool references
-use `eip155:<chainId>/erc8257:<registryAddress>/<toolId>`.
+`creatorAddress`, and JSON Schema inputs/outputs. Tool references use
+`eip155:<chainId>/erc8257:<registryAddress>/<toolId>`.
 
 Identity is still born in the mint transaction. Tool registration happens only when a
 real runtime is ready; a future Census deployment may proxy owner-controlled ERC-8257
@@ -61,8 +52,8 @@ Sepolia fork.
 
 1. Build the shared protocol shell: `llms.txt`, RESTAP catalog, JSON `/talk`, passive
    `/news`, MCP projection, address-routed chain reads, and schemas. This local shell is
-   implemented under `runtime-service/` and deployed inactive; `/talk` and MCP
-   invocation remain inactive.
+   implemented under `runtime-service/`; matching report-only skills are active on the
+   current v3 collection.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
@@ -71,9 +62,9 @@ Sepolia fork.
    missing-token, chain-read, and Redis rate-limit checks passed on 2 August 2026.
    This bounded canary does not make the non-persistent free database a durability gate
    for broader activation.
-2. Implement Mint Scanner end to end without payment, then the other five report-only
+2. Implement Mint Scanner end to end, then the other five report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
-   evidence and limitations; unpaid invocation is collection-scoped and skill-gated.
+   evidence and limitations; invocation is collection-scoped and skill-gated.
    Arbitrageur's bounded OpenSea listing/offer comparison
    engine and independent token 3 gate are implemented and enabled as the bounded
    production canary with the secret-managed instant key. Tracker's bounded OpenSea
@@ -87,14 +78,10 @@ Sepolia fork.
    Census contract. Future matching tokens work automatically after adapter-binding and
    immutable-skill checks; currently absent skill types remain unreachable. Executor
    remains outside this activation.
-3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
-   verify → settle → result flow, replay protection, and idempotent receipts.
-4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend
-   policies. Exercise agent-to-agent rentals using testnet funds.
-5. Deploy or adopt a conformant Sepolia ERC-8257 registry, publish canonical manifests,
+3. Deploy or adopt a conformant Sepolia ERC-8257 registry, publish canonical manifests,
    and verify them through OpenSea discovery.
-6. Add Executor behind explicit capability authorization and transaction simulation.
-7. Deploy one permanent shared runtime project, activate a small canary set, update
+4. Add Executor behind explicit capability authorization and transaction simulation.
+5. Deploy one permanent shared runtime project, activate a small canary set, update
    registration services, then expand only after monitoring proves stable.
 
 ## Pinned runtime inputs
@@ -103,8 +90,6 @@ Sepolia fork.
   `1b1b3f854f5c1b8b2b8380211d01db68e94dcf0d`.
 - RESTAP 0.1.4-beta: `nxt3d/restap` commit
   `5d7222692a0d1c53fbb03091b94de6c732cac2bc`.
-- x402: `coinbase/x402` commit
-  `dd927a26cfefc98c24b3ec38b3a8f204dad0c60d`.
 
 These are reviewed snapshots. CI reports upstream drift; it never changes runtime
-schemas, manifests, payment behavior, or deployments automatically.
+schemas, manifests, or deployments automatically.

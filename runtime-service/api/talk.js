@@ -24,7 +24,7 @@ export default async function handler(request, response) {
   try {
     const agent = await readConfiguredAgent(request.query || {});
     if (!canExecuteCanary(agent)) {
-      return json(response, 503, { error: "runtime_inactive", x402Support: false });
+      return json(response, 503, { error: "runtime_inactive" });
     }
     const backends = runtimeBackends();
     if (!(await applyRateLimit(response, backends.limits.talk, `${newsKey(agent)}:${clientKey(request)}`))) return;
@@ -34,12 +34,11 @@ export default async function handler(request, response) {
       census: agent.censusAddress,
       tokenId: agent.tokenId.toString(),
       skill: agent.skill.name,
-      x402Support: false,
       result,
     });
   } catch (error) {
     if (error instanceof RuntimeInactiveError) {
-      return json(response, 503, { error: "runtime_inactive", x402Support: false });
+      return json(response, 503, { error: "runtime_inactive" });
     }
     if (error?.name === "ZodError" || error instanceof TypeError) {
       return json(response, 400, { error: "invalid skill input" });
