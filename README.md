@@ -18,6 +18,7 @@ and Executor authorization remain future work; see
 | Runtime | [`https://census-runtime-dnebayis.vercel.app`](https://census-runtime-dnebayis.vercel.app) — collection-scoped report-only production runtime; not advertised by registration |
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
+| ERC-8257 Tool Registry | `0xd61aa597398a83122fce07a94beddb91fce8f42e` — Census Sepolia reference deployment |
 | Archived v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — tokens 1–4 preserved |
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
@@ -92,6 +93,7 @@ adapter and are comparison figures, not a prediction of production transaction c
 - [Plain-language overview](docs/OVERVIEW.md)
 - [Standards lock](docs/standards-lock.md)
 - [Sepolia deployment record](docs/DEPLOYMENT.md)
+- [ERC-8257 discovery record](docs/ERC8257.md)
 - [Pipeline guide](pipeline/README.md)
 - [Agent-native mint skill](skills/census-mint/SKILL.md)
 - [Handoff](HANDOFF.md)

@@ -78,8 +78,11 @@ Sepolia fork.
    Census contract. Future matching tokens work automatically after adapter-binding and
    immutable-skill checks; currently absent skill types remain unreachable. Executor
    remains outside this activation.
-3. Deploy or adopt a conformant Sepolia ERC-8257 registry, publish canonical manifests,
-   and verify them through OpenSea discovery.
+3. A conformant Sepolia ERC-8257 registry is deployed at
+   `0xd61aa597398a83122fce07a94beddb91fce8f42e`; six open report-tool manifests and
+   focused invocation routes are implemented. OpenSea does not currently list Sepolia
+   among its canonical registry chains, so OpenSea search verification remains pending
+   upstream network support rather than being falsely claimed.
 4. Add Executor behind explicit capability authorization and transaction simulation.
 5. Deploy one permanent shared runtime project, activate a small canary set, update
    registration services, then expand only after monitoring proves stable.

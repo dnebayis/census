@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { Client } from "@modelcontextprotocol/client";
 import { InMemoryTransport } from "@modelcontextprotocol/server";
+import toolManifestHandler from "../api/tool-manifest.js";
+import toolHandler from "../api/tool.js";
 import { MissingBindingError, TokenNotFoundError, readAgent } from "../lib/agent.js";
 import { RuntimeBackendConfigurationError, createRuntimeBackends } from "../lib/backends.js";
 import { buildCatalog, buildLlmsText, normalizeOrigin } from "../lib/catalog.js";
@@ -42,11 +44,20 @@ import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from ".
 import { applyRateLimit, clientKey } from "../lib/rate-limit.js";
 import { skillByIndex } from "../lib/skills.js";
 import { StandardRedisAdapter, StandardRedisSlidingWindowLimiter } from "../lib/standard-redis.js";
+import {
+  ERC8257_MANIFEST_TYPE,
+  REPORT_TOOLS,
+  buildToolManifest,
+  buildToolManifestBySlug,
+  canonicalManifest,
+  manifestHash,
+} from "../lib/tool-manifest.js";
 
 const census = "0x1111111111111111111111111111111111111111";
 const adapter = "0x2222222222222222222222222222222222222222";
 const owner = "0x3333333333333333333333333333333333333333";
 const origin = "https://census-runtime.example";
+const toolCreator = "0x21acb554118029815ef4c61bda33523b626743f3";
 
 const agent = {
   censusAddress: census,
@@ -190,6 +201,109 @@ test("llms.txt describes every skill without claiming activation", () => {
   assert.match(text, /Executor/);
   assert.match(text, /not active/);
   assert.match(text, /\/news is passive/);
+});
+
+test("builds six deterministic open ERC-8257 report-tool manifests", () => {
+  const expectedHashes = {
+    "mint-scanner": "0x5e211e00b905a5c36305a917a9d4bd8eb004e74ef2df4d0393b50fdca62dd4fe",
+    arbitrageur: "0xc13cb31bc194b97d5a01c0b3c445dcfdc352444ec5740e89f418d4df50ac877c",
+    tracker: "0x3b1528672023920745363e8cc74fd497ad34701e97ef79c17b26af94d00007aa",
+    "token-hunter": "0x508a5390bd6793cfd8e913eb62f200b80d85adebafcd3798911c7b8a1de7773c",
+    "trend-reader": "0x3b67aba189d11b3305648e8553cea5700adf68afd7ce1ab78900c47ff9a62213",
+    "fraud-detector": "0x2ffb344b5d9345512acfdbe72e506dd780526b64f8f5647b6b5c74a9b049575e",
+  };
+  assert.equal(REPORT_TOOLS.length, 6);
+  for (const skill of REPORT_TOOLS) {
+    const manifest = buildToolManifest(skill, origin, toolCreator);
+    assert.equal(manifest.type, ERC8257_MANIFEST_TYPE);
+    assert.equal(manifest.endpoint, `${origin}/tools/${skill.slug}`);
+    assert.equal(manifest.creatorAddress, toolCreator);
+    assert.deepEqual(manifest.inputs.required, ["censusAddress", "tokenId", "input"]);
+    assert.equal("pricing" in manifest, false);
+    assert.equal("access" in manifest, false);
+    assert.ok(Buffer.byteLength(canonicalManifest(manifest)) < 1_048_576);
+    assert.equal(manifestHash(manifest), expectedHashes[skill.slug]);
+  }
+});
+
+test("ERC-8257 manifests reject unknown tools and unsafe creator addresses", () => {
+  assert.throws(
+    () => buildToolManifestBySlug("executor", {
+      RUNTIME_ORIGIN: origin,
+      ERC8257_CREATOR_ADDRESS: toolCreator,
+    }),
+    /tool not found/,
+  );
+  assert.throws(
+    () => buildToolManifest(REPORT_TOOLS[0], origin, toolCreator.toUpperCase()),
+    /lowercase nonzero EVM address/,
+  );
+  assert.throws(
+    () => buildToolManifest(REPORT_TOOLS[0], origin, "0x0000000000000000000000000000000000000000"),
+    /must not be zero/,
+  );
+});
+
+test("well-known ERC-8257 handler serves manifests and rejects invalid slugs", () => {
+  function invoke(slug) {
+    let status;
+    let body;
+    const headers = new Map();
+    toolManifestHandler(
+      { method: "GET", query: { slug } },
+      {
+        setHeader(name, value) { headers.set(name, value); },
+        status(value) { status = value; return this; },
+        json(value) { body = value; return value; },
+      },
+    );
+    return { status, body, headers };
+  }
+
+  const previousOrigin = process.env.RUNTIME_ORIGIN;
+  const previousCreator = process.env.ERC8257_CREATOR_ADDRESS;
+  process.env.RUNTIME_ORIGIN = origin;
+  process.env.ERC8257_CREATOR_ADDRESS = toolCreator;
+  try {
+    const found = invoke("mint-scanner");
+    assert.equal(found.status, 200);
+    assert.equal(found.body.endpoint, `${origin}/tools/mint-scanner`);
+    assert.match(found.headers.get("Cache-Control"), /no-store/);
+    assert.deepEqual(invoke("executor").body, { error: "tool not found" });
+    assert.equal(invoke("executor").status, 404);
+  } finally {
+    if (previousOrigin === undefined) delete process.env.RUNTIME_ORIGIN;
+    else process.env.RUNTIME_ORIGIN = previousOrigin;
+    if (previousCreator === undefined) delete process.env.ERC8257_CREATOR_ADDRESS;
+    else process.env.ERC8257_CREATOR_ADDRESS = previousCreator;
+  }
+});
+
+test("ERC-8257 tool endpoint rejects invalid methods, bodies, and slugs before chain reads", async () => {
+  async function invoke({ method = "POST", slug = "mint-scanner", body = {} } = {}) {
+    let status;
+    let output;
+    const headers = new Map();
+    await toolHandler(
+      { method, query: { slug }, body, headers: {} },
+      {
+        setHeader(name, value) { headers.set(name, value); },
+        status(value) { status = value; return this; },
+        json(value) { output = value; return value; },
+      },
+    );
+    return { status, output, headers };
+  }
+
+  assert.equal((await invoke({ method: "GET" })).status, 405);
+  assert.deepEqual(
+    (await invoke({ slug: "executor", body: { censusAddress: census, tokenId: "2", input: {} } })).output,
+    { error: "tool not found" },
+  );
+  assert.equal(
+    (await invoke({ body: { censusAddress: census, tokenId: "2", input: {}, extra: true } })).status,
+    400,
+  );
 });
 
 test("news storage is passive and bounded", async () => {

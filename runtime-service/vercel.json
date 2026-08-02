@@ -28,6 +28,14 @@
     {
       "source": "/mcp/:censusAddress/:tokenId",
       "destination": "/api/mcp?censusAddress=:censusAddress&tokenId=:tokenId"
+    },
+    {
+      "source": "/.well-known/ai-tool/:slug.json",
+      "destination": "/api/tool-manifest?slug=:slug"
+    },
+    {
+      "source": "/tools/:slug",
+      "destination": "/api/tool?slug=:slug"
     }
   ],
   "headers": [

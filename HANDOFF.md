@@ -101,6 +101,8 @@ Read, in order:
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
+- Census Sepolia ERC-8257 Tool Registry:
+  `0xd61aa597398a83122fce07a94beddb91fce8f42e`
 - Active Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
 - Canonical registration origin: `https://census-registration-dnebayis.vercel.app`
 - Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
