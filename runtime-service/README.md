@@ -42,6 +42,14 @@ Arbitrageur token 3 is enabled as an independently gated production canary with 
 secret-managed `OPENSEA_API_KEY`. Registration remains `active: false`; the engine is
 report-only and cannot submit a transaction.
 
+Tracker is the third implemented report-only engine. It reads the official OpenSea
+account-events endpoint for at most 10 exact wallet addresses, a caller-supplied start
+time, and transfer/sale/mint filters. Each wallet request is capped at one 200-event
+page; a returned cursor is reported as `truncated` and is never followed automatically.
+The engine emits direction, NFT details, transaction evidence, source URLs, and explicit
+limitations. Its independent gate remains inactive because no current v3 token has the
+Tracker skill trait. Census trait selection is never bypassed to manufacture a canary.
+
 Required local environment:
 
 - `RUNTIME_ORIGIN` — stable HTTPS origin, no trailing slash
@@ -51,6 +59,8 @@ Required local environment:
 - `OPENSEA_API_KEY` — required only for Arbitrageur market data; instant keys expire
   after 30 days and require rotation
 - `UNPAID_MINT_SCANNER_ENABLED` and `UNPAID_ARBITRAGEUR_ENABLED` — independent gates
+- `UNPAID_TRACKER_ENABLED` — reserved independent gate; keep false until an exact
+  Tracker-trait token exists and passes production checks
 - `CANARY_AGENT_KEYS` — exact lowercase `<censusAddress>:<tokenId>` allowlist
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)

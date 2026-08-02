@@ -12,6 +12,12 @@ import {
   runArbitrageur,
 } from "../lib/engines/arbitrageur.js";
 import { ViemMintSource, normalizeMintScannerInput, runMintScanner } from "../lib/engines/mint-scanner.js";
+import {
+  OpenSeaTrackerSource,
+  TrackerDataUnavailableError,
+  normalizeTrackerInput,
+  runTracker,
+} from "../lib/engines/tracker.js";
 import { RuntimeInactiveError, canExecuteCanary, executeAgentSkill } from "../lib/execution.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
@@ -42,6 +48,15 @@ const arbitrageurAgent = {
   context: "a quiet machinist",
   skillIndex: 1,
   skill: skillByIndex(1),
+};
+
+const trackerAgent = {
+  ...agent,
+  tokenId: 6n,
+  agentId: 9125n,
+  context: "a patient observer",
+  skillIndex: 2,
+  skill: skillByIndex(2),
 };
 
 function fakeClient(overrides = {}) {
@@ -456,6 +471,91 @@ test("OpenSea adapter fails closed when market data is unavailable", async () =>
   );
 });
 
+test("Tracker validates and deduplicates bounded wallet input", () => {
+  const normalized = normalizeTrackerInput(
+    { wallets: [owner, owner.toUpperCase()], since: "2026-08-02T00:00:00.000Z" },
+    { now: () => new Date("2026-08-03T00:00:00.000Z") },
+  );
+  assert.deepEqual(normalized.wallets, [owner]);
+  assert.deepEqual(normalized.eventTypes, ["transfer", "sale", "mint"]);
+  assert.equal(normalized.maxMovements, 50);
+  assert.throws(
+    () => normalizeTrackerInput({ wallets: ["not-a-wallet"], since: "2026-08-02T00:00:00.000Z" }),
+    /Ethereum addresses/,
+  );
+  assert.throws(
+    () => normalizeTrackerInput(
+      { wallets: [owner], since: "2026-08-04T00:00:00.000Z" },
+      { now: () => new Date("2026-08-03T00:00:00.000Z") },
+    ),
+    /earlier/,
+  );
+});
+
+test("OpenSea Tracker maps account movements with bounded evidence", async () => {
+  const requests = [];
+  const source = new OpenSeaTrackerSource({
+    apiKey: "test-key",
+    async fetchImpl(url, options) {
+      requests.push({ url, options });
+      return new Response(JSON.stringify({
+        asset_events: [{
+          event_type: "transfer",
+          event_timestamp: 1785634200,
+          transaction: { hash: `0x${"a".repeat(64)}` },
+          from_address: adapter,
+          to_address: owner,
+          nft: {
+            chain: "ethereum",
+            contract: census,
+            identifier: "7",
+            collection: "census-fixture",
+            opensea_url: "https://opensea.io/item/ethereum/census/7",
+          },
+        }],
+        next: "bounded-cursor",
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    },
+  });
+  const report = await runTracker({
+    input: {
+      chain: "eip155:1",
+      wallets: [owner],
+      since: "2026-08-02T00:00:00.000Z",
+      eventTypes: ["transfer"],
+      maxMovements: 10,
+    },
+    source,
+    now: () => new Date("2026-08-03T00:00:00.000Z"),
+  });
+  assert.equal(report.reportOnly, true);
+  assert.equal(report.movements[0].direction, "incoming");
+  assert.equal(report.movements[0].evidence.transactionHash, `0x${"a".repeat(64)}`);
+  assert.equal(report.walletReports[0].truncated, true);
+  assert.equal(requests[0].url.origin, "https://api.opensea.io");
+  assert.equal(requests[0].url.searchParams.get("chain"), "ethereum");
+  assert.deepEqual(requests[0].url.searchParams.getAll("event_type"), ["transfer"]);
+  assert.equal(requests[0].options.headers["x-api-key"], "test-key");
+});
+
+test("OpenSea Tracker fails closed without usable provider data", async () => {
+  assert.throws(() => new OpenSeaTrackerSource(), TrackerDataUnavailableError);
+  const source = new OpenSeaTrackerSource({
+    apiKey: "test-key",
+    fetchImpl: async () => new Response("unavailable", { status: 503 }),
+  });
+  await assert.rejects(
+    source.snapshot({
+      chain: "eip155:1",
+      wallets: [owner],
+      since: new Date("2026-08-02T00:00:00.000Z"),
+      before: new Date("2026-08-03T00:00:00.000Z"),
+      eventTypes: ["transfer"],
+    }),
+    TrackerDataUnavailableError,
+  );
+});
+
 test("only the doubly-gated Mint Scanner canary can execute", async () => {
   const enabledEnv = {
     UNPAID_MINT_SCANNER_ENABLED: "true",
@@ -521,6 +621,16 @@ test("Arbitrageur has an independent double-gated canary", async () => {
   );
   assert.equal(report.skill, "Arbitrageur");
   assert.equal(report.opportunities[0].grossSpreadBps, 100);
+});
+
+test("Tracker has an independent gate and remains unavailable without a Tracker token", () => {
+  const enabledEnv = {
+    UNPAID_TRACKER_ENABLED: "true",
+    CANARY_AGENT_KEYS: `${census}:6`,
+  };
+  assert.equal(canExecuteCanary(trackerAgent, enabledEnv), true);
+  assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), false);
+  assert.equal(canExecuteCanary(trackerAgent, { ...enabledEnv, CANARY_AGENT_KEYS: "" }), false);
 });
 
 test("MCP returns structured canary output through the shared executor", async () => {

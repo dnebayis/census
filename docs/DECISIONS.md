@@ -132,6 +132,19 @@ treated as a 1:1 economic pair. Every such result declares that conversion is re
 and that wrapping gas is excluded. Reports remain gross observations, never guaranteed
 profit or transaction advice; no order is built, signed, simulated, or submitted.
 
+### D19 — Tracker is bounded by wallet, page, time, and immutable skill assignment
+
+Tracker uses OpenSea's read-only account-events endpoint with the same secret-managed
+API key. Input is limited to 10 Ethereum addresses, one chain, transfer/sale/mint event
+types, and a start timestamp. Each wallet receives one request capped at 200 events;
+pagination is disclosed as truncation rather than followed. Reports carry direction,
+NFT and transaction evidence but make no ownership or trading conclusion.
+
+Tracker runtime code may deploy inactive, but its canary cannot be attached to a token
+with another skill. No current v3 token has skill index 2. Draft seeds and trait indices
+will not be rerolled or selected to force one; activation waits for a naturally assigned
+Tracker entry and then uses the exact-token double gate.
+
 ## Active Sepolia record
 
 - Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`

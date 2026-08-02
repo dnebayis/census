@@ -59,6 +59,12 @@ The output marks `currencyConversion.required: true`, states the 1:1 basis, and 
 wrapping gas from the gross spread. Other currencies and Sepolia assets still require
 exact matching.
 
+Tracker is implemented as the third report-only engine using bounded OpenSea account
+events: at most 10 wallets, transfer/sale/mint filters, one 200-event page per wallet,
+transaction/source evidence, and explicit cursor truncation. Its independent gate is
+not configured in production because no current v3 token has skill index 2. Do not bind
+it to token 4 (Token Hunter) or reroll draft traits to force a Tracker token.
+
 Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
 inactive even while a production canary is exercised.

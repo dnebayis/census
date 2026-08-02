@@ -29,8 +29,11 @@ export const SKILLS = [
     slug: "tracker",
     description: "Watches wallets and reports evidence-backed movements.",
     inputSchema: z.object({
-      wallets: z.array(z.string()).min(1).max(100),
+      chain: z.enum(["eip155:1", "eip155:11155111"]).default("eip155:1"),
+      wallets: z.array(z.string()).min(1).max(10),
       since: z.string().datetime(),
+      eventTypes: z.array(z.enum(["transfer", "sale", "mint"])).min(1).max(3).default(["transfer", "sale", "mint"]),
+      maxMovements: z.number().int().min(1).max(200).default(50),
     }),
   },
   {

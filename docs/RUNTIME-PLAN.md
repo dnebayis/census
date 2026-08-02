@@ -76,8 +76,10 @@ Sepolia fork.
    evidence and limitations; unpaid invocation remains double-gated and limited to the
    exact production canary. Arbitrageur's bounded OpenSea listing/offer comparison
    engine and independent token 3 gate are implemented and enabled as the bounded
-   production canary with the secret-managed instant key. The remaining report-only
-   engines are Tracker, Token Hunter, Trend Reader, and Fraud Detector.
+   production canary with the secret-managed instant key. Tracker's bounded OpenSea
+   account-event engine and independent gate are implemented but remain inactive until
+   a naturally assigned Tracker-trait v3 token exists. The remaining report-only
+   engines are Token Hunter, Trend Reader, and Fraud Detector.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
    verify → settle → result flow, replay protection, and idempotent receipts.
 4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend
