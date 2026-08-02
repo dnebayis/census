@@ -15,17 +15,20 @@ Streamable HTTP. Every entry read verifies current Census state and ERC-8217 bin
 Vercel assigned its first deployment to the stable
 `https://census-runtime-dnebayis.vercel.app` alias; the runtime remains inactive and
 must not be advertised in registration JSON yet. Its bounded news queue and
-sliding-window limits use Redis, but no resource is connected and external
-integration/canary tests are still pending.
+sliding-window limits use Redis. The official 30 MB free Redis resource
+`census-runtime-free` is connected to preview only; its real queue and distributed
+rate-limit integration test passed. Mint Scanner is enabled only for the exact v3
+token 2 canary in the ready preview deployment
+`https://census-runtime-dnebayis-ayxzhsjg4-0xshawtys-projects.vercel.app`.
 
 The backend supports both Upstash REST credentials and the official Vercel Redis
 `REDIS_URL`. Redis Cloud's 30 MB free plan is acceptable for preview canaries only;
 its lack of paid-plan persistence guarantees does not satisfy production activation.
 
-The local Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
+The Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
 scans and emits ranked candidates with transaction/block evidence and explicit
-limitations. A live read-only canary passed; it is not connected to public `/talk` or
-MCP invocation yet.
+limitations. A live read-only scan and the Redis-backed preview integration passed; it
+remains inaccessible to every entry except the exact v3 token 2 preview canary.
 
 Canary invocation is double-gated by `UNPAID_MINT_SCANNER_ENABLED` and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains

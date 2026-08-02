@@ -64,12 +64,15 @@ Sepolia fork.
    implemented under `runtime-service/` and deployed inactive; `/talk` and MCP
    invocation remain inactive.
    Redis-backed bounded news storage and distributed sliding-window limits are
-   implemented for both Upstash REST and standard Redis connections, but their
-   production integration/canary tests are still required. A non-persistent free Redis
-   database may be used for preview testing, never as the production durability gate.
+   implemented for both Upstash REST and standard Redis connections. The standard
+   Redis queue and limiter passed a real integration test against the preview-only
+   `census-runtime-free` resource. The exact v3 token 2 Mint Scanner preview canary is
+   enabled; production integration remains pending. A non-persistent free Redis
+   database never qualifies as the production durability gate.
 2. Implement Mint Scanner end to end without payment, then the other five report-only
-   skill engines. Its deterministic, bounded Sepolia scan engine is implemented locally
-   with evidence and limitations; public invocation/integration testing remains gated.
+   skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
+   evidence and limitations; unpaid invocation remains double-gated and limited to the
+   exact preview canary.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
    verify → settle → result flow, replay protection, and idempotent receipts.
 4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend
