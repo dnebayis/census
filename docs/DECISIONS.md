@@ -143,7 +143,7 @@ NFT and transaction evidence but make no ownership or trading conclusion.
 Tracker runtime code may deploy inactive, but its canary cannot be attached to a token
 with another skill. No current v3 token has skill index 2. Draft seeds and trait indices
 will not be rerolled or selected to force one; activation waits for a naturally assigned
-Tracker entry and then uses the exact-token double gate.
+Tracker entry on the active Census contract.
 
 ### D20 — Token Hunter uses age, volume, and safety evidence without inventing liquidity
 
@@ -154,9 +154,8 @@ is the activity threshold; and only an exact OpenSea `OK` status qualifies. The 
 reports that earliest known activity is not guaranteed deployment time and that volume
 is not pool liquidity. It does not request swap quotes or produce transactions.
 
-V3 token 4 / agent 9123 has immutable skill index 3 and is the exact production canary.
-Its flag remains independent from Mint Scanner, Arbitrageur, and the unavailable Tracker
-canary.
+V3 token 4 / agent 9123 has immutable skill index 3 and is the verified production
+example. Its flag remains independent from Mint Scanner, Arbitrageur, and Tracker.
 
 ### D21 — Trend Reader preserves provider rank and exact interval evidence
 
@@ -170,17 +169,18 @@ No current v3 token has skill index 4, so the engine deploys inactive. The archi
 `night-ledger` identity is not promoted back into the active canary set merely to fill
 the gap. Activation waits for a naturally assigned current-v3 entry.
 
-### D22 — Report-only flags may all be open while exact-token gates remain mandatory
+### D22 — Report-only access is collection-scoped; write capabilities stay exact
 
 Fraud Detector completes the six report-only engines using bounded OpenSea collection
 metadata/stats or one public account profile. It surfaces provider labels and facts but
 does not calculate a fraud score, infer fraud from non-verification, or accuse a target.
 
 At the owner's direction all six report-only feature flags are enabled in production.
-The second gate remains an exact allowlist containing current v3 tokens 1–5; immutable
-onchain skill assignment determines which engine each token can invoke. Missing skill
-types do not become callable, and future tokens are not automatically trusted. Executor
-is not a report-only engine and remains unimplemented and disabled.
+Access is restricted to `ACTIVE_CENSUS_ADDRESS`; the adapter binding and immutable
+onchain skill assignment determine which engine each token can invoke. Future matching
+tokens from the active contract work without manual allowlist maintenance, while
+archived or unrelated deployments remain blocked. Executor is not a report-only engine,
+remains unimplemented and disabled, and will require exact capability authorization.
 
 ## Active Sepolia record
 

@@ -31,7 +31,7 @@ the owner's direction; its durability limits still prevent broader activation.
 The Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
 scans and emits ranked candidates with transaction/block evidence and explicit
 limitations. A live read-only scan and the Redis-backed integration passed; it remains
-inaccessible to every entry except the exact v3 token 2 production canary.
+available only to matching immutable-skill entries on the active v3 Census contract.
 
 External production verification passed on 2 August 2026. Token 2 RESTAP discovery
 returned its live agent 9121 binding and `canary.available: true`; `/talk` and the MCP
@@ -44,8 +44,8 @@ Arbitrageur is implemented as the second report-only engine. It uses the fixed O
 API origin, a secret-managed instant key, at most 20 combined collection-slug or
 `slug:tokenId` targets, same-currency raw-unit comparisons, and order/source evidence.
 It never builds or submits a transaction and does not claim net profit. The instant key
-expires after 30 days and must be rotated before 2026-09-02. Its independent token 3
-production canary is enabled with the exact-agent allowlist; registration remains
+expires after 30 days and must be rotated before 2026-09-02. Its independent skill
+flag is enabled for the active v3 Census contract; registration remains
 inactive and the engine has no transaction capability.
 
 External production checks passed on 3 August 2026 for token 3: RESTAP discovery
@@ -68,7 +68,7 @@ it to token 4 (Token Hunter) or reroll draft traits to force a Tracker token.
 Token Hunter is implemented for its real v3 token 4 / agent 9123 binding. It reads one
 OpenSea trending page (maximum 100), filters by `genesis_date`/`created_at` and 24-hour
 USD volume, and checks at most 20 token details for exact `status: OK`. It never calls
-volume liquidity, never requests a swap quote, and has its own exact-token canary flag.
+volume liquidity, never requests a swap quote, and has its own skill flag.
 
 Trend Reader is implemented as the fifth report-only engine: one OpenSea trending page,
 `1h`/`24h`/`7d`, an optional documented category, and at most 10 collection-stat calls.
@@ -79,12 +79,14 @@ the archived v2 `night-ledger` is not an active canary.
 Fraud Detector completes the six report-only engines. It uses one OpenSea profile call
 for wallets or collection metadata plus stats for collections, reports provider flags
 and missing evidence, and never assigns a fraud score or accusation. Production has all
-six report-only flags enabled and exact current-v3 tokens 1–5 allowlisted. Immutable
-skills still prevent absent Tracker, Trend Reader, or Fraud Detector tokens from calling
-those engines; future tokens need an explicit allowlist update. Executor remains off.
+six report-only flags enabled for the active v3 Census contract. Immutable skills still
+prevent absent Tracker, Trend Reader, or Fraud Detector tokens from calling those
+engines; a future matching v3 token works without an environment update. Executor
+remains off.
 
-Canary invocation is double-gated by a skill-specific enable flag and exact
-`CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
+Report-only invocation is gated by `ACTIVE_CENSUS_ADDRESS`, the adapter binding,
+immutable skill assignment, and its skill-specific flag. V3 token 2 is the verified
+Mint Scanner. Registration remains
 inactive even while a production canary is exercised.
 
 Read, in order:

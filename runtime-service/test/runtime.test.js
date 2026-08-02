@@ -821,13 +821,14 @@ test("OpenSea Fraud Detector fails closed on provider errors", async () => {
   );
 });
 
-test("only the doubly-gated Mint Scanner canary can execute", async () => {
+test("Mint Scanner accepts every bound agent from the active Census contract", async () => {
   const enabledEnv = {
     UNPAID_MINT_SCANNER_ENABLED: "true",
-    CANARY_AGENT_KEYS: `${census}:2`,
+    ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(agent, enabledEnv), true);
-  assert.equal(canExecuteCanary({ ...agent, tokenId: 3n }, enabledEnv), false);
+  assert.equal(canExecuteCanary({ ...agent, tokenId: 3n }, enabledEnv), true);
+  assert.equal(canExecuteCanary({ ...agent, censusAddress: adapter }, enabledEnv), false);
   await assert.rejects(
     executeAgentSkill(agent, { chains: ["eip155:11155111"], timeWindowHours: 1 }, { env: {} }),
     RuntimeInactiveError,
@@ -859,10 +860,10 @@ test("only the doubly-gated Mint Scanner canary can execute", async () => {
   assert.equal(report.reportOnly, true);
 });
 
-test("Arbitrageur has an independent double-gated canary", async () => {
+test("Arbitrageur has an independent skill flag on the active Census contract", async () => {
   const enabledEnv = {
     UNPAID_ARBITRAGEUR_ENABLED: "true",
-    CANARY_AGENT_KEYS: `${census}:3`,
+    ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(agent, enabledEnv), false);
@@ -888,42 +889,54 @@ test("Arbitrageur has an independent double-gated canary", async () => {
   assert.equal(report.opportunities[0].grossSpreadBps, 100);
 });
 
-test("Tracker has an independent gate and remains unavailable without a Tracker token", () => {
+test("Tracker accepts a matching future agent from the active Census contract", () => {
   const enabledEnv = {
     UNPAID_TRACKER_ENABLED: "true",
-    CANARY_AGENT_KEYS: `${census}:6`,
+    ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(trackerAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), false);
-  assert.equal(canExecuteCanary(trackerAgent, { ...enabledEnv, CANARY_AGENT_KEYS: "" }), false);
+  assert.equal(canExecuteCanary(trackerAgent, { ...enabledEnv, ACTIVE_CENSUS_ADDRESS: "" }), false);
 });
 
-test("Token Hunter has an exact independent token 4 gate", () => {
+test("Token Hunter has an independent skill flag", () => {
   const enabledEnv = {
     UNPAID_TOKEN_HUNTER_ENABLED: "true",
-    CANARY_AGENT_KEYS: `${census}:4`,
+    ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), false);
 });
 
-test("Trend Reader gate cannot activate without an exact matching token", () => {
+test("Trend Reader accepts a matching future agent from the active Census contract", () => {
   const enabledEnv = {
     UNPAID_TREND_READER_ENABLED: "true",
-    CANARY_AGENT_KEYS: `${census}:6`,
+    ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(trendReaderAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), false);
-  assert.equal(canExecuteCanary(trendReaderAgent, { ...enabledEnv, CANARY_AGENT_KEYS: "" }), false);
+  assert.equal(canExecuteCanary(trendReaderAgent, { ...enabledEnv, ACTIVE_CENSUS_ADDRESS: "" }), false);
 });
 
-test("Fraud Detector has an independent exact-token gate", () => {
+test("Fraud Detector has an independent skill flag", () => {
   const enabledEnv = {
     UNPAID_FRAUD_DETECTOR_ENABLED: "true",
-    CANARY_AGENT_KEYS: `${census}:7`,
+    ACTIVE_CENSUS_ADDRESS: census,
   };
   assert.equal(canExecuteCanary(fraudDetectorAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), false);
+});
+
+test("report-only access rejects invalid active addresses and Executor", () => {
+  const enabledEnv = {
+    UNPAID_MINT_SCANNER_ENABLED: "true",
+    ACTIVE_CENSUS_ADDRESS: "not-an-address",
+  };
+  assert.equal(canExecuteCanary(agent, enabledEnv), false);
+  assert.equal(canExecuteCanary({ ...agent, skillIndex: 6 }, {
+    ...enabledEnv,
+    ACTIVE_CENSUS_ADDRESS: census,
+  }), false);
 });
 
 test("MCP returns structured canary output through the shared executor", async () => {

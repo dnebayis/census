@@ -10,17 +10,12 @@ import { OpenSeaFraudDetectorSource, runFraudDetector } from "./engines/fraud-de
 export class RuntimeInactiveError extends Error {}
 export class UnsupportedRuntimeSkillError extends Error {}
 
-export function agentKey(agent) {
-  return `${agent.censusAddress.toLowerCase()}:${agent.tokenId}`;
-}
+const ADDRESS_PATTERN = /^0x[0-9a-fA-F]{40}$/;
 
-export function canaryAgentKeys(env = process.env) {
-  return new Set(
-    String(env.CANARY_AGENT_KEYS || "")
-      .split(",")
-      .map((value) => value.trim().toLowerCase())
-      .filter(Boolean),
-  );
+export function isActiveCensusAgent(agent, env = process.env) {
+  const activeCensusAddress = String(env.ACTIVE_CENSUS_ADDRESS || "").trim();
+  return ADDRESS_PATTERN.test(activeCensusAddress)
+    && agent.censusAddress.toLowerCase() === activeCensusAddress.toLowerCase();
 }
 
 export function canExecuteCanary(agent, env = process.env) {
@@ -32,7 +27,7 @@ export function canExecuteCanary(agent, env = process.env) {
     [4, "UNPAID_TREND_READER_ENABLED"],
     [5, "UNPAID_FRAUD_DETECTOR_ENABLED"],
   ]).get(agent.skillIndex);
-  return Boolean(flag) && env[flag] === "true" && canaryAgentKeys(env).has(agentKey(agent));
+  return Boolean(flag) && env[flag] === "true" && isActiveCensusAgent(agent, env);
 }
 
 export function createMintScannerSources(env = process.env) {

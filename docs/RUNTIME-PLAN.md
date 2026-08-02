@@ -66,26 +66,27 @@ Sepolia fork.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
-   `census-runtime-free`. The resource is production-only and the exact v3 token 2
-   Mint Scanner production canary is enabled. External RESTAP, MCP, inactive-token,
+   `census-runtime-free`. The resource is production-only and the active v3 Census
+   collection is enabled for report-only execution. External RESTAP, MCP, inactive-token,
    missing-token, chain-read, and Redis rate-limit checks passed on 2 August 2026.
    This bounded canary does not make the non-persistent free database a durability gate
    for broader activation.
 2. Implement Mint Scanner end to end without payment, then the other five report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
-   evidence and limitations; unpaid invocation remains double-gated and limited to the
-   exact production canary. Arbitrageur's bounded OpenSea listing/offer comparison
+   evidence and limitations; unpaid invocation is collection-scoped and skill-gated.
+   Arbitrageur's bounded OpenSea listing/offer comparison
    engine and independent token 3 gate are implemented and enabled as the bounded
    production canary with the secret-managed instant key. Tracker's bounded OpenSea
-   account-event engine and independent gate are implemented but remain inactive until
+   account-event engine and independent gate are implemented but unreachable until
    a naturally assigned Tracker-trait v3 token exists. Token Hunter's bounded OpenSea
-   trending/detail engine and exact token 4 gate are implemented. The remaining
+   trending/detail engine and token 4 verification are implemented. The remaining
    Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
    implemented but remain inactive until a current-v3 skill-index-4 token exists. The
    Fraud Detector's bounded provider-label assessment is implemented as the sixth and
-   final report-only engine. All six report-only flags are enabled; the exact v3 token
-   1–5 allowlist remains mandatory, so currently absent skill types are still
-   unreachable. Executor remains outside this activation.
+   final report-only engine. All six report-only flags are enabled for the active v3
+   Census contract. Future matching tokens work automatically after adapter-binding and
+   immutable-skill checks; currently absent skill types remain unreachable. Executor
+   remains outside this activation.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
    verify → settle → result flow, replay protection, and idempotent receipts.
 4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend

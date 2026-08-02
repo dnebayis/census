@@ -36,11 +36,11 @@ wrapping relationship. A qualifying cross-currency result explicitly reports tha
 conversion is required and that wrapping gas is not included. No other token aliases or
 testnet wrapped assets are normalized.
 
-Unpaid public canary execution requires the skill-specific flag and an exact
-`CANARY_AGENT_KEYS` match. The verified Mint Scanner canary is Census v3 token 2.
-Arbitrageur token 3 is enabled as an independently gated production canary with a
-secret-managed `OPENSEA_API_KEY`. Registration remains `active: false`; the engine is
-report-only and cannot submit a transaction.
+Unpaid public report execution requires the skill-specific flag and an
+`ACTIVE_CENSUS_ADDRESS` match. The adapter binding and immutable onchain skill are read
+before execution, so current and future tokens from the active v3 contract need no
+manual token allowlist. Archived contracts remain blocked. Registration remains
+`active: false`; these engines are report-only and cannot submit a transaction.
 
 Tracker is the third implemented report-only engine. It reads the official OpenSea
 account-events endpoint for at most 10 exact wallet addresses, a caller-supplied start
@@ -73,10 +73,10 @@ and self-declared-agent fields without assigning a fraud score or making an accu
 Missing profiles and non-verification are explicitly insufficient evidence. No current
 v3 token has skill index 5.
 
-All six report-only feature flags are enabled in production. The exact allowlist contains
-only current v3 tokens 1–5, so each existing token can execute only its immutable skill.
-Tracker, Trend Reader, and Fraud Detector remain unreachable until an exact matching v3
-token is minted and deliberately added. Executor is not implemented or enabled.
+All six report-only feature flags are enabled in production. Every valid token on the
+active v3 Census contract can execute only its immutable skill after the adapter binding
+check. Tracker, Trend Reader, and Fraud Detector become reachable automatically when a
+matching v3 token is naturally minted. Executor is not implemented or enabled.
 
 Required local environment:
 
@@ -86,14 +86,11 @@ Required local environment:
 - `CHAIN_ID` (`11155111`)
 - `OPENSEA_API_KEY` — required by OpenSea-backed report engines; instant keys expire
   after 30 days and require rotation
-- `UNPAID_MINT_SCANNER_ENABLED` and `UNPAID_ARBITRAGEUR_ENABLED` — independent gates
-- `UNPAID_TRACKER_ENABLED` — reserved independent gate; keep false until an exact
-  Tracker-trait token exists and passes production checks
-- `UNPAID_TOKEN_HUNTER_ENABLED` — independent exact-token gate for token 4
-- `UNPAID_TREND_READER_ENABLED` — reserved independent gate; keep false until an exact
-  current-v3 Trend Reader token exists
-- `UNPAID_FRAUD_DETECTOR_ENABLED` — reserved independent gate for an exact matching token
-- `CANARY_AGENT_KEYS` — exact lowercase `<censusAddress>:<tokenId>` allowlist
+- `ACTIVE_CENSUS_ADDRESS` — the only collection allowed to use report-only engines
+- `UNPAID_MINT_SCANNER_ENABLED`, `UNPAID_ARBITRAGEUR_ENABLED`,
+  `UNPAID_TRACKER_ENABLED`, `UNPAID_TOKEN_HUNTER_ENABLED`,
+  `UNPAID_TREND_READER_ENABLED`, and `UNPAID_FRAUD_DETECTOR_ENABLED` — independent
+  per-skill gates
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)
 - alternatively, `REDIS_URL` from the official Vercel Redis integration
@@ -106,10 +103,10 @@ Do not add runtime services to ERC-8004 registration JSON and do not set `active
 until storage and rate-limit integration tests, x402, skill execution, and external
 canary checks pass.
 
-Current deployment state: the stable production project is a narrow canary. The
+Current deployment state: the stable production project is a bounded report-only runtime. The
 official free Redis resource `census-runtime-free` is connected only to production,
-the real queue and distributed limiter integration test passed, and Mint Scanner is
-enabled only for exact v3 token 2 at
+the real queue and distributed limiter integration test passed, and the active v3
+collection is enabled at
 `https://census-runtime-dnebayis.vercel.app`. Registration remains inactive.
 
 External production checks passed on 2 August 2026: token 2 discovery, `/talk`, MCP
@@ -119,8 +116,8 @@ Sepolia endpoint because Mint Scanner requires addressless ERC-721 `eth_getLogs`
 queries, which some public providers reject.
 
 Arbitrageur code, deterministic provider fixtures, and fail-closed checks pass. Its
-production gate is limited to the exact token 3 agent key. Rotate the current OpenSea
-instant key before 2026-09-02.
+production gate is limited to agents with the matching immutable skill on the active
+v3 Census contract. Rotate the current OpenSea instant key before 2026-09-02.
 
 External production checks passed on 3 August 2026: token 3 RESTAP discovery returned
 agent 9122 and `canary.available: true`; `/talk` returned a report-only OpenSea result;
