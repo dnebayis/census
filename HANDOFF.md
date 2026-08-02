@@ -48,6 +48,12 @@ expires after 30 days and must be rotated before 2026-09-02. Its independent tok
 production canary is enabled with the exact-agent allowlist; registration remains
 inactive and the engine has no transaction capability.
 
+External production checks passed on 3 August 2026 for token 3: RESTAP discovery
+returned agent 9122 with the Arbitrageur canary available, `/talk` returned an OpenSea
+report, and MCP exposed and invoked only the `arbitrageur` tool. Same-currency and
+two-sided-order requirements correctly produced non-qualified observations rather than
+false opportunities.
+
 Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
 inactive even while a production canary is exercised.

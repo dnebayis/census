@@ -46,7 +46,7 @@ export function buildCatalog(agent, origin, { canaryAvailable = false } = {}) {
         method: "POST",
         endpoint: "/talk",
         description: canaryAvailable
-          ? "Unpaid Mint Scanner canary; production activation and payment remain disabled."
+          ? `Unpaid ${agent.skill.name} canary; payment remains disabled.`
           : "Runtime shell only; invocation remains inactive until payment and skill execution are verified.",
         input_schema: inputSchema,
         output_formats: ["application/json"],

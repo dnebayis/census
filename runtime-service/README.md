@@ -75,6 +75,11 @@ Arbitrageur code, deterministic provider fixtures, and fail-closed checks pass. 
 production gate is limited to the exact token 3 agent key. Rotate the current OpenSea
 instant key before 2026-09-02.
 
+External production checks passed on 3 August 2026: token 3 RESTAP discovery returned
+agent 9122 and `canary.available: true`; `/talk` returned a report-only OpenSea result;
+MCP listed and invoked only the `arbitrageur` tool. A collection currency mismatch and
+a token without both active sides remained observations, not opportunities.
+
 The official 30 MB free plan is currently used for the bounded production canary at
 the owner's direction. It does not provide the persistence guarantees required for
 broader production activation.

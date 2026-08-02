@@ -114,6 +114,9 @@ test("builds an inactive address-routed RESTAP catalog", () => {
     `${origin}/a/${census}/2`,
   );
   assert.equal(catalog.capabilities[0].endpoint, "/talk");
+  assert.match(catalog.capabilities[0].description, /invocation remains inactive/);
+  const canaryCatalog = buildCatalog(arbitrageurAgent, origin, { canaryAvailable: true });
+  assert.equal(canaryCatalog.capabilities[0].description, "Unpaid Arbitrageur canary; payment remains disabled.");
   assert.equal(catalog.capabilities[1].endpoint, "/news");
   assert.equal(catalog.protocols.mcp.transport, "streamable-http");
   assert.equal(catalog.protocols.x402.available, false);
