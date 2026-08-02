@@ -119,15 +119,16 @@ changes this decision. Narrow runtime canaries remain capability-gated even thou
 they run on the production host. Git project roots are fixed to `registration-service`
 and `runtime-service`; the monorepo root is never a deployment source.
 
-### D18 — Reservoir supplies bounded Arbitrageur market observations
+### D18 — OpenSea supplies bounded Arbitrageur market observations
 
-OpenSea MCP remains the future tool-discovery integration. Arbitrageur market data uses
-Reservoir's read-only collection and token endpoints because they expose aggregated best
-asks and top bids on Ethereum and Sepolia. The API origin is selected from a fixed
-chain map, the key stays in Vercel secrets, and each call is bounded to 25 combined
-targets. Reports compare raw amounts only when currencies and decimals match. They are
-gross observations, never guaranteed profit or transaction advice; no order is built,
-signed, simulated, or submitted.
+OpenSea remains the future MCP tool-discovery integration and is also the direct
+read-only market source for Arbitrageur. The runtime uses active listing and best-offer
+REST endpoints rather than wallet/trading SDK methods or a long-lived Stream socket.
+The origin is fixed to `api.opensea.io`, the instant key stays in Vercel secrets and is
+rotated before its 30-day expiry, and each call is bounded to 20 combined OpenSea slugs
+or `slug:tokenId` targets. Reports compare raw amounts only when currencies and decimals
+match. They are gross observations, never guaranteed profit or transaction advice; no
+order is built, signed, simulated, or submitted.
 
 ## Active Sepolia record
 

@@ -24,16 +24,18 @@ Sepolia block ranges for standard ERC-721 mint events, groups them by collection
 returns transaction/block evidence plus explicit limitations. A local read-only report
 can be run with `npm run scan:mint` after setting `SEPOLIA_RPC_URL`.
 
-Arbitrageur is the second implemented report-only engine. It reads Reservoir collection
-and token best asks/top bids, compares only matching currencies in raw units, and emits
-order-level evidence. Results are explicitly gross observations: gas, fees, royalties,
-slippage, approvals, order races, and execution risk are not simulated. Requests are
-limited to 25 combined targets and fixed Ethereum or Sepolia Reservoir origins.
+Arbitrageur is the second implemented report-only engine. It reads OpenSea active
+listings and offers, compares only matching currencies in raw units, and emits
+order-level evidence and marketplace attribution. Results are explicitly gross
+observations: gas, fees, royalties, slippage, approvals, order races, and execution risk
+are not simulated. Requests are limited to 20 combined OpenSea collection slugs or
+`slug:tokenId` targets and the fixed `api.opensea.io` origin.
 
 Unpaid public canary execution requires the skill-specific flag and an exact
 `CANARY_AGENT_KEYS` match. The verified Mint Scanner canary is Census v3 token 2.
-Arbitrageur token 3 remains inactive until a secret-managed `RESERVOIR_API_KEY` and its
-separate flag pass external production checks. Registration remains `active: false`.
+Arbitrageur token 3 is enabled as an independently gated production canary with a
+secret-managed `OPENSEA_API_KEY`. Registration remains `active: false`; the engine is
+report-only and cannot submit a transaction.
 
 Required local environment:
 
@@ -41,7 +43,8 @@ Required local environment:
 - `SEPOLIA_RPC_URL`
 - `ADAPTER_ADDRESS`
 - `CHAIN_ID` (`11155111`)
-- `RESERVOIR_API_KEY` — required only for Arbitrageur market data
+- `OPENSEA_API_KEY` — required only for Arbitrageur market data; instant keys expire
+  after 30 days and require rotation
 - `UNPAID_MINT_SCANNER_ENABLED` and `UNPAID_ARBITRAGEUR_ENABLED` — independent gates
 - `CANARY_AGENT_KEYS` — exact lowercase `<censusAddress>:<tokenId>` allowlist
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
@@ -68,9 +71,9 @@ inactive and a missing token returned 404. `SEPOLIA_RPC_URL` uses the public dRP
 Sepolia endpoint because Mint Scanner requires addressless ERC-721 `eth_getLogs`
 queries, which some public providers reject.
 
-Arbitrageur code and deterministic provider fixtures pass locally. It is deployed only
-after the Reservoir key is configured; token 3 must remain inactive until its live
-RESTAP/MCP and fail-closed provider checks pass.
+Arbitrageur code, deterministic provider fixtures, and fail-closed checks pass. Its
+production gate is limited to the exact token 3 agent key. Rotate the current OpenSea
+instant key before 2026-09-02.
 
 The official 30 MB free plan is currently used for the bounded production canary at
 the owner's direction. It does not provide the persistence guarantees required for

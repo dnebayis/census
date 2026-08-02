@@ -1,6 +1,6 @@
 import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
-import { ReservoirMarketSource, runArbitrageur } from "./engines/arbitrageur.js";
+import { OpenSeaMarketSource, runArbitrageur } from "./engines/arbitrageur.js";
 import { ViemMintSource, runMintScanner } from "./engines/mint-scanner.js";
 
 export class RuntimeInactiveError extends Error {}
@@ -36,7 +36,7 @@ export function createMintScannerSources(env = process.env) {
 }
 
 export function createArbitrageurSource(env = process.env) {
-  return new ReservoirMarketSource({ apiKey: env.RESERVOIR_API_KEY });
+  return new OpenSeaMarketSource({ apiKey: env.OPENSEA_API_KEY });
 }
 
 export async function executeAgentSkill(

@@ -40,12 +40,13 @@ returned its live agent 9121 binding and `canary.available: true`; `/talk` and t
 Redis-backed rate-limit headers. The runtime uses the public dRPC Sepolia endpoint;
 registration remains `active: false` with x402 disabled.
 
-Arbitrageur is implemented as the second report-only engine. It uses fixed Reservoir
-Ethereum/Sepolia origins, a secret-managed API key, at most 25 combined collection or
-token targets, same-currency raw-unit comparisons, and order/source evidence. It never
-builds or submits a transaction and does not claim net profit. Its independent token 3
-production gate remains off until `RESERVOIR_API_KEY` is configured and external checks
-pass.
+Arbitrageur is implemented as the second report-only engine. It uses the fixed OpenSea
+API origin, a secret-managed instant key, at most 20 combined collection-slug or
+`slug:tokenId` targets, same-currency raw-unit comparisons, and order/source evidence.
+It never builds or submits a transaction and does not claim net profit. The instant key
+expires after 30 days and must be rotated before 2026-09-02. Its independent token 3
+production canary is enabled with the exact-agent allowlist; registration remains
+inactive and the engine has no transaction capability.
 
 Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains

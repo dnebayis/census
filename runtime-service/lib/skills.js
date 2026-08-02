@@ -19,8 +19,8 @@ export const SKILLS = [
     description: "Finds mispricing and below-floor opportunities.",
     inputSchema: z.object({
       chain: z.enum(["eip155:1", "eip155:11155111"]).default("eip155:1"),
-      collections: z.array(z.string()).max(25).optional(),
-      watchlist: z.array(z.string()).max(25).optional(),
+      collections: z.array(z.string()).max(20).optional(),
+      watchlist: z.array(z.string()).max(20).optional(),
       minSpreadBps: z.number().int().min(0).max(100000),
     }),
   },

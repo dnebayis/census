@@ -1,12 +1,12 @@
 import { skillByIndex } from "../skills.js";
 
-const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
-const TOKEN = /^(0x[0-9a-fA-F]{40}):([0-9]+)$/;
-const MAX_TARGETS = 25;
-
-const RESERVOIR_ORIGINS = new Map([
-  ["eip155:1", "https://api.reservoir.tools"],
-  ["eip155:11155111", "https://api-sepolia.reservoir.tools"],
+const SLUG = /^[a-z0-9][a-z0-9-]{0,199}$/;
+const WATCH_TOKEN = /^([a-z0-9][a-z0-9-]{0,199}):([0-9]+)$/;
+const MAX_TARGETS = 20;
+const OPENSEA_ORIGIN = "https://api.opensea.io";
+const CHAIN_NAMES = new Map([
+  ["eip155:1", "ethereum"],
+  ["eip155:11155111", "sepolia"],
 ]);
 
 export class MarketDataUnavailableError extends Error {}
@@ -25,57 +25,65 @@ export function normalizeArbitrageurInput(input) {
   if (collections.length + watchlist.length > MAX_TARGETS) {
     throw new TypeError(`at most ${MAX_TARGETS} combined targets are allowed`);
   }
-  if (collections.some((value) => !ADDRESS.test(value))) {
-    throw new TypeError("collections must contain contract addresses");
+  if (collections.some((value) => !SLUG.test(value))) {
+    throw new TypeError("collections must contain OpenSea collection slugs");
   }
-  if (watchlist.some((value) => !TOKEN.test(value))) {
-    throw new TypeError("watchlist entries must use contract:tokenId");
+  if (watchlist.some((value) => !WATCH_TOKEN.test(value))) {
+    throw new TypeError("watchlist entries must use collectionSlug:tokenId");
   }
   return { ...parsed, collections, watchlist };
 }
 
-function quote(order) {
-  const raw = order?.price?.amount?.raw;
-  const decimals = order?.price?.currency?.decimals;
-  const currency = order?.price?.currency?.contract;
+function quote(order, chainName) {
+  if (!order || (order.status && order.status !== "ACTIVE") || order.chain !== chainName) return undefined;
+  const price = order.price?.current || order.price;
+  const raw = price?.value;
+  const decimals = price?.decimals;
   if (!/^\d+$/.test(raw || "") || BigInt(raw) <= 0n || !Number.isInteger(decimals)) return undefined;
   return {
     amountRaw: raw,
     decimals,
-    currency: String(currency || "native").toLowerCase(),
-    symbol: order.price.currency.symbol || null,
-    orderId: order.id || null,
-    marketplace: order.source?.domain || order.source?.name || null,
-    validUntil: order.validUntil || order.expiration || null,
+    currency: String(price.currency || "native").toLowerCase(),
+    symbol: null,
+    orderId: order.order_hash || null,
+    marketplace: "opensea.io",
+    validUntil: order.protocol_data?.parameters?.endTime || null,
   };
 }
 
-function collectionSnapshot(collection, requestedId, sourceUrl) {
-  return {
-    kind: "collection",
-    id: requestedId,
-    name: collection?.name || null,
-    ask: quote(collection?.floorAsk),
-    bid: quote(collection?.topBid),
-    sourceUrl,
-  };
+function bestQuote(orders, chainName, direction) {
+  const quotes = (orders || []).map((order) => quote(order, chainName)).filter(Boolean);
+  quotes.sort((a, b) => {
+    const left = BigInt(a.amountRaw);
+    const right = BigInt(b.amountRaw);
+    if (left === right) return String(a.orderId).localeCompare(String(b.orderId));
+    const ascending = left < right ? -1 : 1;
+    return direction === "min" ? ascending : -ascending;
+  });
+  return quotes[0];
 }
 
-function tokenSnapshot(entry, requestedId, sourceUrl) {
-  const contract = String(entry?.token?.contract || "").toLowerCase();
-  const tokenId = String(entry?.token?.tokenId || "");
-  return {
-    kind: "token",
-    id: contract && tokenId ? `${contract}:${tokenId}` : requestedId,
-    name: entry?.token?.name || null,
-    collection: entry?.token?.collection?.id || contract,
-    ask: quote(entry?.market?.floorAsk),
-    bid: quote(entry?.market?.topBid),
-    sourceUrl,
-  };
+function bestCompatiblePair(listingOrders, offerOrders, chainName) {
+  const asks = (listingOrders || []).map((order) => quote(order, chainName)).filter(Boolean);
+  const bids = (offerOrders || []).map((order) => quote(order, chainName)).filter(Boolean);
+  let best;
+  for (const ask of asks) {
+    for (const bid of bids) {
+      if (ask.currency !== bid.currency || ask.decimals !== bid.decimals) continue;
+      const spread = spreadBps(ask, bid);
+      if (
+        !best ||
+        spread > best.spread ||
+        (spread === best.spread && String(ask.orderId).localeCompare(String(best.ask.orderId)) < 0)
+      ) {
+        best = { ask, bid, spread };
+      }
+    }
+  }
+  return best;
 }
 
-export class ReservoirMarketSource {
+export class OpenSeaMarketSource {
   constructor({ apiKey, fetchImpl = fetch, timeoutMs = 10_000 } = {}) {
     if (!apiKey) throw new MarketDataUnavailableError("market_data_unavailable");
     this.apiKey = apiKey;
@@ -83,15 +91,14 @@ export class ReservoirMarketSource {
     this.timeoutMs = timeoutMs;
   }
 
-  async request(origin, path, params) {
-    const url = new URL(path, origin);
-    for (const [name, values] of Object.entries(params)) {
-      for (const value of Array.isArray(values) ? values : [values]) url.searchParams.append(name, value);
-    }
+  async request(path, { allowNotFound = false, params = {} } = {}) {
+    const url = new URL(path, OPENSEA_ORIGIN);
+    for (const [name, value] of Object.entries(params)) url.searchParams.set(name, value);
     const response = await this.fetchImpl(url, {
       headers: { accept: "application/json", "x-api-key": this.apiKey },
       signal: AbortSignal.timeout(this.timeoutMs),
     });
+    if (allowNotFound && response.status === 404) return { body: undefined, sourceUrl: url.toString() };
     if (!response.ok) throw new MarketDataUnavailableError("market_data_unavailable");
     try {
       return { body: await response.json(), sourceUrl: url.toString() };
@@ -100,37 +107,50 @@ export class ReservoirMarketSource {
     }
   }
 
+  async collectionSnapshot(slug, chainName) {
+    const safeSlug = encodeURIComponent(slug);
+    const [listings, offers] = await Promise.all([
+      this.request(`/api/v2/listings/collection/${safeSlug}/all`, { params: { limit: "200" } }),
+      this.request(`/api/v2/offers/collection/${safeSlug}`, { params: { limit: "200" } }),
+    ]);
+    const pair = bestCompatiblePair(listings.body?.listings, offers.body?.offers, chainName);
+    return {
+      kind: "collection",
+      id: slug,
+      name: slug,
+      ask: pair?.ask || bestQuote(listings.body?.listings, chainName, "min"),
+      bid: pair?.bid || bestQuote(offers.body?.offers, chainName, "max"),
+      sourceUrls: [listings.sourceUrl, offers.sourceUrl],
+      marketplaceUrl: `https://opensea.io/collection/${safeSlug}`,
+    };
+  }
+
+  async tokenSnapshot(target, chainName) {
+    const [, slug, tokenId] = WATCH_TOKEN.exec(target);
+    const safeSlug = encodeURIComponent(slug);
+    const safeTokenId = encodeURIComponent(tokenId);
+    const [listing, offer] = await Promise.all([
+      this.request(`/api/v2/listings/collection/${safeSlug}/nfts/${safeTokenId}/best`, { allowNotFound: true }),
+      this.request(`/api/v2/offers/collection/${safeSlug}/nfts/${safeTokenId}/best`, { allowNotFound: true }),
+    ]);
+    return {
+      kind: "token",
+      id: target,
+      name: `${slug} #${tokenId}`,
+      collection: slug,
+      ask: quote(listing.body, chainName),
+      bid: quote(offer.body, chainName),
+      sourceUrls: [listing.sourceUrl, offer.sourceUrl],
+      marketplaceUrl: `https://opensea.io/collection/${safeSlug}`,
+    };
+  }
+
   async snapshot({ chain, collections, watchlist }) {
-    const origin = RESERVOIR_ORIGINS.get(chain);
-    if (!origin) throw new TypeError(`unsupported Arbitrageur chain ${chain}`);
+    const chainName = CHAIN_NAMES.get(chain);
+    if (!chainName) throw new TypeError(`unsupported Arbitrageur chain ${chain}`);
     const snapshots = [];
-    for (const id of collections) {
-      const { body, sourceUrl } = await this.request(origin, "/collections/v7", {
-        id,
-        limit: "1",
-        normalizeRoyalties: "true",
-      });
-      const collection = (body.collections || []).find(
-        (item) => String(item?.id || item?.contract || "").toLowerCase() === id,
-      ) || body.collections?.[0];
-      snapshots.push(collectionSnapshot(collection, id, sourceUrl));
-    }
-    if (watchlist.length) {
-      const { body, sourceUrl } = await this.request(origin, "/tokens/v7", {
-        tokens: watchlist,
-        includeTopBid: "true",
-        normalizeRoyalties: "true",
-        excludeEOA: "true",
-        limit: String(watchlist.length),
-      });
-      const byId = new Map(
-        (body.tokens || []).map((entry) => [
-          `${String(entry?.token?.contract || "").toLowerCase()}:${entry?.token?.tokenId}`,
-          entry,
-        ]),
-      );
-      for (const id of watchlist) snapshots.push(tokenSnapshot(byId.get(id), id, sourceUrl));
-    }
+    for (const slug of collections) snapshots.push(await this.collectionSnapshot(slug, chainName));
+    for (const target of watchlist) snapshots.push(await this.tokenSnapshot(target, chainName));
     return snapshots;
   }
 }
@@ -150,11 +170,11 @@ export async function runArbitrageur({ input, source, now = () => new Date() }) 
 
   for (const snapshot of snapshots) {
     let reason;
-    if (!snapshot.ask || !snapshot.bid) reason = "both a fillable ask and bid are required";
+    if (!snapshot.ask || !snapshot.bid) reason = "both an active OpenSea listing and offer are required";
     else if (
       snapshot.ask.currency !== snapshot.bid.currency ||
       snapshot.ask.decimals !== snapshot.bid.decimals
-    ) reason = "ask and bid currencies do not match";
+    ) reason = "listing and offer currencies do not match";
     else {
       const grossSpreadBps = spreadBps(snapshot.ask, snapshot.bid);
       if (grossSpreadBps < normalized.minSpreadBps) {
@@ -169,10 +189,15 @@ export async function runArbitrageur({ input, source, now = () => new Date() }) 
           grossDifferenceRaw: (BigInt(snapshot.bid.amountRaw) - BigInt(snapshot.ask.amountRaw)).toString(),
           ask: snapshot.ask,
           bid: snapshot.bid,
-          evidence: { provider: "Reservoir", retrievedAt: generatedAt, sourceUrl: snapshot.sourceUrl },
+          evidence: {
+            provider: "OpenSea",
+            retrievedAt: generatedAt,
+            sourceUrls: snapshot.sourceUrls,
+            marketplaceUrl: snapshot.marketplaceUrl,
+          },
           reasoning: [
-            "The best observed bid exceeds the best observed ask in the same currency.",
-            "The spread is gross and does not subtract gas, marketplace fees, royalties, slippage, or failed-order risk.",
+            "The best observed OpenSea offer exceeds the best observed listing in the same currency.",
+            "The spread is gross and does not subtract gas, fees, royalties, slippage, or failed-order risk.",
           ],
         });
       }
@@ -186,7 +211,7 @@ export async function runArbitrageur({ input, source, now = () => new Date() }) 
     generatedAt,
     reportOnly: true,
     chain: normalized.chain,
-    methodology: "Reservoir best asks and top bids compared in raw units of the same currency.",
+    methodology: "OpenSea active listings and offers compared in raw units of the same currency.",
     limitations: [
       "Reported spreads are gross observations, not guaranteed or net profit.",
       "Gas, fees, royalties, slippage, order validity races, approvals, and execution risk are not simulated.",

@@ -6,8 +6,8 @@ import { MissingBindingError, TokenNotFoundError, readAgent } from "../lib/agent
 import { RuntimeBackendConfigurationError, createRuntimeBackends } from "../lib/backends.js";
 import { buildCatalog, buildLlmsText, normalizeOrigin } from "../lib/catalog.js";
 import {
-  ReservoirMarketSource,
   MarketDataUnavailableError,
+  OpenSeaMarketSource,
   normalizeArbitrageurInput,
   runArbitrageur,
 } from "../lib/engines/arbitrageur.js";
@@ -321,23 +321,23 @@ test("Arbitrageur reports only same-currency gross bid-ask crossovers", async ()
     now: () => new Date("2026-08-03T00:00:00.000Z"),
     input: {
       chain: "eip155:1",
-      collections: [census, census.toUpperCase().replace("0X", "0x")],
-      watchlist: [`${adapter}:7`],
+      collections: ["census-fixture", "CENSUS-FIXTURE"],
+      watchlist: ["quiet-machinist:7"],
       minSpreadBps: 1_000,
     },
     source: {
       async snapshot(input) {
-        assert.deepEqual(input.collections, [census]);
+        assert.deepEqual(input.collections, ["census-fixture"]);
         return [
           {
             kind: "collection",
-            id: census,
+            id: "census-fixture",
             name: "Census fixture",
             ask: { amountRaw: "100", decimals: 18, currency: "native", orderId: "ask-1" },
             bid: { amountRaw: "125", decimals: 18, currency: "native", orderId: "bid-1" },
-            sourceUrl: "https://api.reservoir.tools/collections/v7?id=fixture",
+            sourceUrls: ["https://api.opensea.io/api/v2/listings/collection/census-fixture/all"],
           },
-          { kind: "token", id: `${adapter}:7`, ask: undefined, bid: undefined },
+          { kind: "token", id: "quiet-machinist:7", ask: undefined, bid: undefined },
         ];
       },
     },
@@ -358,75 +358,73 @@ test("Arbitrageur validates bounded collection and token targets", () => {
     /at least one collection/,
   );
   assert.throws(
-    () => normalizeArbitrageurInput({ collections: ["not-an-address"], minSpreadBps: 1 }),
-    /contract addresses/,
+    () => normalizeArbitrageurInput({ collections: ["Not a slug!"], minSpreadBps: 1 }),
+    /collection slugs/,
   );
   assert.throws(
     () => normalizeArbitrageurInput({ watchlist: [census], minSpreadBps: 1 }),
-    /contract:tokenId/,
+    /collectionSlug:tokenId/,
   );
 });
 
-test("Reservoir adapter sends the API key and maps collection and token quotes", async () => {
+test("OpenSea adapter sends the API key and maps collection and token quotes", async () => {
   const requests = [];
-  const source = new ReservoirMarketSource({
+  const order = (value, { listing = false } = {}) => ({
+    order_hash: `order-${value}`,
+    chain: "ethereum",
+    status: "ACTIVE",
+    price: listing
+      ? { current: { value, decimals: 18, currency: census } }
+      : { value, decimals: 18, currency: census },
+    protocol_data: { parameters: { endTime: "9999999999" } },
+  });
+  const source = new OpenSeaMarketSource({
     apiKey: "test-key",
     async fetchImpl(url, options) {
       requests.push({ url, options });
-      if (url.pathname === "/collections/v7") {
-        return new Response(JSON.stringify({
-          collections: [{
-            name: "Fixture",
-            floorAsk: {
-              id: "ask-collection",
-              price: { amount: { raw: "100" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
-            },
-            topBid: {
-              id: "bid-collection",
-              price: { amount: { raw: "110" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
-            },
-          }],
-        }), { status: 200, headers: { "content-type": "application/json" } });
-      }
-      return new Response(JSON.stringify({
-        tokens: [{
-          token: { contract: adapter, tokenId: "7", name: "Fixture #7", collection: { id: adapter } },
-          market: {
-            floorAsk: {
-              id: "ask-token",
-              price: { amount: { raw: "200" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
-            },
-            topBid: {
-              id: "bid-token",
-              price: { amount: { raw: "220" }, currency: { contract: census, decimals: 18, symbol: "WETH" } },
-            },
-          },
-        }],
-      }), { status: 200, headers: { "content-type": "application/json" } });
+      const isToken = url.pathname.includes("/nfts/");
+      const isListing = url.pathname.includes("/listings/");
+      const body = isToken
+        ? order(isListing ? "200" : "220", { listing: isListing })
+        : isListing
+          ? {
+              listings: [
+                { ...order("90", { listing: true }), price: { current: { value: "90", decimals: 18, currency: owner } } },
+                order("100", { listing: true }),
+              ],
+            }
+          : {
+              offers: [
+                { ...order("999"), price: { value: "999", decimals: 18, currency: adapter } },
+                order("110"),
+              ],
+            };
+      return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
     },
   });
   const snapshots = await source.snapshot({
-    chain: "eip155:11155111",
-    collections: [census],
-    watchlist: [`${adapter}:7`],
+    chain: "eip155:1",
+    collections: ["census-fixture"],
+    watchlist: ["quiet-machinist:7"],
   });
   assert.equal(snapshots.length, 2);
   assert.equal(snapshots[0].ask.amountRaw, "100");
   assert.equal(snapshots[1].bid.amountRaw, "220");
-  assert.equal(requests[0].url.origin, "https://api-sepolia.reservoir.tools");
+  assert.equal(requests[0].url.origin, "https://api.opensea.io");
   assert.equal(requests[0].options.headers["x-api-key"], "test-key");
-  assert.equal(requests[1].url.searchParams.get("includeTopBid"), "true");
-  assert.equal(requests[1].url.searchParams.get("normalizeRoyalties"), "true");
+  assert.equal(requests.length, 4);
+  assert.ok(requests.some(({ url }) => url.pathname.endsWith("/quiet-machinist/nfts/7/best")));
+  assert.ok(requests.every(({ url }) => url.origin === "https://api.opensea.io"));
 });
 
-test("Reservoir adapter fails closed when market data is unavailable", async () => {
-  assert.throws(() => new ReservoirMarketSource(), MarketDataUnavailableError);
-  const source = new ReservoirMarketSource({
+test("OpenSea adapter fails closed when market data is unavailable", async () => {
+  assert.throws(() => new OpenSeaMarketSource(), MarketDataUnavailableError);
+  const source = new OpenSeaMarketSource({
     apiKey: "test-key",
     fetchImpl: async () => new Response("unavailable", { status: 503 }),
   });
   await assert.rejects(
-    source.snapshot({ chain: "eip155:1", collections: [census], watchlist: [] }),
+    source.snapshot({ chain: "eip155:1", collections: ["census-fixture"], watchlist: [] }),
     MarketDataUnavailableError,
   );
 });
@@ -478,7 +476,7 @@ test("Arbitrageur has an independent double-gated canary", async () => {
   assert.equal(canExecuteCanary(agent, enabledEnv), false);
   const report = await executeAgentSkill(
     arbitrageurAgent,
-    { chain: "eip155:1", collections: [census], minSpreadBps: 100 },
+    { chain: "eip155:1", collections: ["census-fixture"], minSpreadBps: 100 },
     {
       env: enabledEnv,
       now: () => new Date("2026-08-03T00:00:00.000Z"),
@@ -486,7 +484,7 @@ test("Arbitrageur has an independent double-gated canary", async () => {
         async snapshot() {
           return [{
             kind: "collection",
-            id: census,
+            id: "census-fixture",
             ask: { amountRaw: "100", decimals: 18, currency: "native" },
             bid: { amountRaw: "101", decimals: 18, currency: "native" },
           }];
