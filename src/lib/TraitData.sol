@@ -51,6 +51,17 @@ library TraitData {
         revert();
     }
 
+    /// @notice Visual class derived only from the immutable Species trait.
+    /// @dev Human variants occupy 0-3, android is 6, and skull-faced is 7.
+    ///      Every other non-human biological species belongs to Alien.
+    function className(uint8 species) internal pure returns (string memory) {
+        if (species < 4) return "Human";
+        if (species == 6) return "Agent";
+        if (species == 7) return "Skull";
+        if (species < 10) return "Alien";
+        revert();
+    }
+
     function _species(uint8 i) private pure returns (string memory) {
         if (i < 4) return "human";
         if (i == 4) return "cat-like humanoid";

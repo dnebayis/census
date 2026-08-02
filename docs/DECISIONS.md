@@ -189,6 +189,15 @@ limitations, and the same links. Every runtime result is marked `reportOnly: tru
 `transactionCapability: "none"`. Census never builds calldata, approvals, signature
 requests, trades, transfers, or contract calls.
 
+### D24 — Visual class follows Species, never skill
+
+`skill` describes what an entry can report; it is unrelated to portrait anatomy.
+`class` is deterministically derived from the immutable Species trait: human variants
+map to `Human`, android maps to `Agent`, skull-faced maps to `Skull`, and every other
+non-human species maps to `Alien`. `classOf`, ERC-8048 `class` metadata, and tokenURI all
+read that same stored Species byte. V4 is archived because it derived class from skill,
+which labelled visually human tokens as Skull.
+
 ## Active Sepolia record
 
 - Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`

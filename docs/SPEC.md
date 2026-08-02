@@ -90,6 +90,11 @@ changes adapter control because the binding resolves the NFT's current owner.
 immutable state. All keys with the `trait[` prefix are reserved against writes. Other
 keys, including `context`, are writable only by the current NFT owner.
 
+`skill` describes function and is assigned from the capped skill pool. `class` describes
+the portrait species and is derived from immutable `trait[Species]`: human variants map
+to `Human`, android maps to `Agent`, skull-faced maps to `Skull`, and the remaining
+non-human species map to `Alien`. Skill assignment cannot change visual class.
+
 `MetadataSet` is:
 
 ```solidity

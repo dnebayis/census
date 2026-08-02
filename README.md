@@ -2,7 +2,7 @@
 
 Census is a capped collection of 10,000 fully-onchain 40×40 portraits. Every token is
 created together with an ERC-8004 identity through the ERC-8217 adapter. The portrait,
-skill, class, and nine trait indices are immutable.
+skill, Species-derived class, and nine trait indices are immutable.
 
 This repository delivers the hardened mint core, a read-only ERC-8004 registration
 service, bounded report-only runtime skills over RESTAP and MCP, and seven open ERC-8257
@@ -76,6 +76,9 @@ entry.
 - `bitmapOf` exposes only the bitmap. `traitsOf` and `traitOf` read the suffix.
 - `skill`, `class`, and every `trait[...]` key are immutable. The current NFT owner can
   write other ERC-8048 keys.
+- `skill` describes function. `class` is derived only from the immutable Species trait:
+  human → Human, android → Agent, skull-faced → Skull, and other non-human species →
+  Alien.
 - Agent control belongs to the current NFT owner. Census does not create a wallet,
   build transactions, request signatures, or submit contract calls.
 

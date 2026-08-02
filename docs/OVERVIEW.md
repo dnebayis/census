@@ -1,8 +1,8 @@
 # Census overview
 
 Census records 10,000 faces and what each one does. A token contains a 40×40 one-bit
-portrait, one onchain-assigned skill and class, nine pipeline-assigned visual traits,
-and an ERC-8004 identity.
+portrait, one onchain-assigned skill, a class derived from its immutable Species trait,
+nine pipeline-assigned visual traits, and an ERC-8004 identity.
 
 Active Sepolia Census v4 is `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`.
 Registration is served from `https://census-registration-dnebayis.vercel.app`; adapter and
@@ -49,7 +49,7 @@ Immutable:
 
 - 200-byte one-bit bitmap
 - nine trait indices and vocabulary interpretation
-- skill and class
+- capped functional skill and Species-derived visual class
 - canonical registration host
 - ERC-8004 binding
 

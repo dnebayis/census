@@ -50,8 +50,8 @@ interface IAdapter8004 {
 
     /// @dev selector 0x466648da — controller-gated. Census deliberately does NOT route
     ///      `skill` or `class` through here: the controller is the token owner, so an owner
-    ///      could rewrite their own quota assignment. Those two keys live on Census itself,
-    ///      with no setter. See docs/SPEC.md §5.2 and docs/DECISIONS.md D25.
+    ///      could diverge from the immutable quota assignment or Species-derived visual class.
+    ///      Those two keys live on Census itself, with no setter.
     function setMetadata(uint256 agentId, string memory key, bytes memory value) external;
 
     /// @notice Update the ERC-8004 registration file URI. Controller-gated.

@@ -161,18 +161,16 @@ contract Census is ERC721, Ownable, IERC8048 {
         return "Advisor";
     }
 
-    /// @dev Class is implied by skill, never drawn separately. Human 60%, Agent 25%,
-    ///      Alien 12%, Skull 3% — exact, because the quotas are exact.
-    function className(uint8 s) public pure returns (string memory) {
-        if (s < 2) return "Human";
-        if (s < 4) return "Agent";
-        if (s < 6) return "Alien";
-        return "Skull";
+    /// @notice Visual class for a Species vocabulary index.
+    /// @dev Class is derived from the same immutable trait byte that drives the portrait,
+    ///      never from the independently assigned runtime skill.
+    function className(uint8 species) public pure returns (string memory) {
+        return TraitData.className(species);
     }
 
     function classOf(uint256 tokenId) public view returns (string memory) {
         if (!_exists(tokenId)) revert NonexistentEntry();
-        return className(_entry[tokenId].skill);
+        return className(uint8(traitsOf(tokenId)[0]));
     }
 
     // ---------------------------------------------------------------- validation
@@ -349,7 +347,7 @@ contract Census is ERC721, Ownable, IERC8048 {
         bytes32 h = keccak256(bytes(key));
 
         if (h == keccak256("skill")) return bytes(skillName(_entry[tokenId].skill));
-        if (h == keccak256("class")) return bytes(className(_entry[tokenId].skill));
+        if (h == keccak256("class")) return bytes(classOf(tokenId));
         (bool isTrait, uint256 category) = _traitCategory(h);
         if (isTrait) return bytes(traitOf(tokenId, uint8(category)));
 
@@ -357,9 +355,9 @@ contract Census is ERC721, Ownable, IERC8048 {
     }
 
     /// @notice Update an owner-writable key.
-    /// @dev `skill` and `class` are the quota assignment. An owner able to rewrite them could
-    ///      mint a common entry and relabel it as an Advisor, making every cap meaningless.
-    ///      Other ERC-8048 keys remain under the current NFT owner's control.
+    /// @dev `skill` is the quota assignment and `class` is derived from immutable Species.
+    ///      Neither may diverge from the art record. Other ERC-8048 keys remain under the
+    ///      current NFT owner's control.
     function setMetadata(uint256 tokenId, string calldata key, bytes calldata value) external {
         if (ownerOf(tokenId) != msg.sender) revert NotEntryOwner();
         bytes32 h = keccak256(bytes(key));
@@ -400,7 +398,7 @@ contract Census is ERC721, Ownable, IERC8048 {
         return Art.tokenURI(
             tokenId,
             bitmapOf(tokenId),
-            className(s),
+            classOf(tokenId),
             skillName(s),
             string(_meta[tokenId][keccak256("context")]),
             traitsOf(tokenId)

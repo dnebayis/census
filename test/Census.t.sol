@@ -361,24 +361,40 @@ contract CensusTest is Test {
         assertEq(census.remainingTotal(), 10_000);
     }
 
-    function test_ClassFollowsSkill() public view {
+    function test_ClassFollowsSpeciesVocabulary() public view {
         assertEq(census.className(0), "Human");
-        assertEq(census.className(1), "Human");
-        assertEq(census.className(2), "Agent");
-        assertEq(census.className(3), "Agent");
-        assertEq(census.className(4), "Alien");
+        assertEq(census.className(3), "Human");
+        assertEq(census.className(4), "Alien"); // cat-like humanoid
         assertEq(census.className(5), "Alien");
-        assertEq(census.className(6), "Skull");
+        assertEq(census.className(6), "Agent"); // android
+        assertEq(census.className(7), "Skull");
+        assertEq(census.className(8), "Alien"); // reptilian
+        assertEq(census.className(9), "Alien"); // ape-like humanoid
+    }
+
+    function test_ClassOfUsesSpeciesNotSkill() public {
+        bytes9 humanTraits = bytes9(hex"0000040a0805090200");
+        vm.prank(alice);
+        uint256 humanId = census.mint(_bitmap(77), humanTraits, "ctx");
+
+        bytes9 androidTraits = bytes9(hex"060005070304060600");
+        vm.prank(alice);
+        uint256 androidId = census.mint(_bitmap(78), androidTraits, "ctx");
+
+        assertEq(census.classOf(humanId), "Human");
+        assertEq(string(census.metadata(humanId, "class")), "Human");
+        assertEq(census.traitOf(humanId, 0), "human");
+        assertEq(census.classOf(androidId), "Agent");
+        assertEq(string(census.metadata(androidId, "class")), "Agent");
+        assertEq(census.traitOf(androidId, 0), "android with visible seams");
     }
 
     // ------------------------------------------------------------ ERC-8048
 
     function test_MetadataServesSkillAndClass() public {
         uint256 id = _mint(alice, 1);
-        uint8 s = census.skillOf(id);
-
-        assertEq(string(census.metadata(id, "skill")), census.skillName(s));
-        assertEq(string(census.metadata(id, "class")), census.className(s));
+        assertEq(string(census.metadata(id, "skill")), census.skillName(census.skillOf(id)));
+        assertEq(string(census.metadata(id, "class")), census.classOf(id));
     }
 
     function test_SkillAndClassHaveNoSetter() public {
