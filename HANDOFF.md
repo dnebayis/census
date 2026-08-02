@@ -20,6 +20,10 @@ sliding-window limits use Redis. The official 30 MB free Redis resource
 rate-limit integration test passed. Mint Scanner is enabled only for the exact v3
 token 2 canary at `https://census-runtime-dnebayis.vercel.app`.
 
+The Vercel Git project is linked to `dnebayis/census`, production branch `main`, with
+Root Directory fixed to `runtime-service`. Never deploy the monorepo root manually;
+that bypasses the root boundary and can package unrelated local artifacts.
+
 The backend supports both Upstash REST credentials and the official Vercel Redis
 `REDIS_URL`. The 30 MB free plan is being used for the bounded production canary at
 the owner's direction; its durability limits still prevent broader activation.

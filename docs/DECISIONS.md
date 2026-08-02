@@ -116,7 +116,8 @@ ERC-8217 binding instead of relying on one mutable `CENSUS_ADDRESS` environment 
 The owner has retired preview deployments for Census. Registration and runtime deploys
 target their existing permanent production projects directly unless the owner later
 changes this decision. Narrow runtime canaries remain capability-gated even though
-they run on the production host.
+they run on the production host. Git project roots are fixed to `registration-service`
+and `runtime-service`; the monorepo root is never a deployment source.
 
 ### D18 — Reservoir supplies bounded Arbitrageur market observations
 
