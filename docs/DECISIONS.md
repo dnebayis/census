@@ -111,6 +111,13 @@ cross-deployment token-ID collisions while every deployment reuses the same Verc
 project and canonical host. The service verifies the requested contract through the
 ERC-8217 binding instead of relying on one mutable `CENSUS_ADDRESS` environment value.
 
+### D17 — Vercel deployments go directly to production
+
+The owner has retired preview deployments for Census. Registration and runtime deploys
+target their existing permanent production projects directly unless the owner later
+changes this decision. Narrow runtime canaries remain capability-gated even though
+they run on the production host.
+
 ## Active Sepolia record
 
 - Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`

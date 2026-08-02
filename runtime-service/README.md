@@ -47,11 +47,12 @@ Do not add runtime services to ERC-8004 registration JSON and do not set `active
 until storage and rate-limit integration tests, x402, skill execution, and external
 canary checks pass.
 
-Current deployment state: the stable project remains inactive. The official free Redis
-resource `census-runtime-free` is connected only to preview, the real queue and
-distributed limiter integration test passed, and Mint Scanner is enabled only for the
-exact v3 token 2 preview canary. The ready preview is
-`https://census-runtime-dnebayis-ayxzhsjg4-0xshawtys-projects.vercel.app`.
+Current deployment state: the stable production project is a narrow canary. The
+official free Redis resource `census-runtime-free` is connected only to production,
+the real queue and distributed limiter integration test passed, and Mint Scanner is
+enabled only for exact v3 token 2 at
+`https://census-runtime-dnebayis.vercel.app`. Registration remains inactive.
 
-The official Redis Cloud 30 MB free plan may be used for preview integration tests. It
-does not provide the persistence guarantees required for production activation.
+The official 30 MB free plan is currently used for the bounded production canary at
+the owner's direction. It does not provide the persistence guarantees required for
+broader production activation.

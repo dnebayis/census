@@ -16,23 +16,22 @@ Vercel assigned its first deployment to the stable
 `https://census-runtime-dnebayis.vercel.app` alias; the runtime remains inactive and
 must not be advertised in registration JSON yet. Its bounded news queue and
 sliding-window limits use Redis. The official 30 MB free Redis resource
-`census-runtime-free` is connected to preview only; its real queue and distributed
+`census-runtime-free` is connected to production only; its real queue and distributed
 rate-limit integration test passed. Mint Scanner is enabled only for the exact v3
-token 2 canary in the ready preview deployment
-`https://census-runtime-dnebayis-ayxzhsjg4-0xshawtys-projects.vercel.app`.
+token 2 canary at `https://census-runtime-dnebayis.vercel.app`.
 
 The backend supports both Upstash REST credentials and the official Vercel Redis
-`REDIS_URL`. Redis Cloud's 30 MB free plan is acceptable for preview canaries only;
-its lack of paid-plan persistence guarantees does not satisfy production activation.
+`REDIS_URL`. The 30 MB free plan is being used for the bounded production canary at
+the owner's direction; its durability limits still prevent broader activation.
 
 The Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
 scans and emits ranked candidates with transaction/block evidence and explicit
-limitations. A live read-only scan and the Redis-backed preview integration passed; it
-remains inaccessible to every entry except the exact v3 token 2 preview canary.
+limitations. A live read-only scan and the Redis-backed integration passed; it remains
+inaccessible to every entry except the exact v3 token 2 production canary.
 
 Canary invocation is double-gated by `UNPAID_MINT_SCANNER_ENABLED` and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
-inactive even while a preview canary is exercised.
+inactive even while the production canary is exercised.
 
 Read, in order:
 
