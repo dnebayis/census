@@ -21,6 +21,10 @@ scans and emits ranked candidates with transaction/block evidence and explicit
 limitations. A live read-only canary passed; it is not connected to public `/talk` or
 MCP invocation yet.
 
+Canary invocation is double-gated by `UNPAID_MINT_SCANNER_ENABLED` and exact
+`CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
+inactive even while a preview canary is exercised.
+
 Read, in order:
 
 1. `docs/standards-lock.md`

@@ -24,6 +24,10 @@ returns transaction/block evidence plus explicit limitations. It is not wired to
 invocation yet. A local read-only report can be run with `npm run scan:mint` after
 setting `SEPOLIA_RPC_URL`.
 
+Unpaid public canary execution requires both `UNPAID_MINT_SCANNER_ENABLED=true` and an
+exact `CANARY_AGENT_KEYS` match. The initial verified canary is Census v3 token 2. All
+other entries remain inactive, and registration remains `active: false`.
+
 Required local environment:
 
 - `RUNTIME_ORIGIN` — stable HTTPS origin, no trailing slash
@@ -32,6 +36,10 @@ Required local environment:
 - `CHAIN_ID` (`11155111`)
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)
+
+After Redis is connected, run the destructive-safe integration canary against a
+throwaway namespaced key with `RUN_REDIS_INTEGRATION=1 npm test`. The test deletes its
+key in a `finally` block.
 
 Do not add runtime services to ERC-8004 registration JSON and do not set `active: true`
 until storage and rate-limit integration tests, x402, skill execution, and external

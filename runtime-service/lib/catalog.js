@@ -16,7 +16,7 @@ export function agentBasePath(agent) {
   return `/a/${agent.censusAddress.toLowerCase()}/${agent.tokenId}`;
 }
 
-export function buildCatalog(agent, origin) {
+export function buildCatalog(agent, origin, { canaryAvailable = false } = {}) {
   const basePath = agentBasePath(agent);
   const baseUrl = `${normalizeOrigin(origin)}${basePath}`;
   const inputSchema = z.toJSONSchema(agent.skill.inputSchema);
@@ -35,13 +35,19 @@ export function buildCatalog(agent, origin) {
       skill: agent.skill.name,
     },
     active: false,
+    canary: {
+      available: canaryAvailable,
+      unpaid: canaryAvailable,
+    },
     capabilities: [
       {
         id: "talk",
         title: `Talk to ${agent.skill.name}`,
         method: "POST",
         endpoint: "/talk",
-        description: "Runtime shell only; invocation remains inactive until payment and skill execution are verified.",
+        description: canaryAvailable
+          ? "Unpaid Mint Scanner canary; production activation and payment remain disabled."
+          : "Runtime shell only; invocation remains inactive until payment and skill execution are verified.",
         input_schema: inputSchema,
         output_formats: ["application/json"],
       },

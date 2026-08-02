@@ -1,5 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/talk.js": {
+      "maxDuration": 60
+    },
+    "api/mcp.js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     {
       "source": "/llms.txt",

@@ -6,6 +6,7 @@ import { MissingBindingError, TokenNotFoundError, readAgent } from "../lib/agent
 import { RuntimeBackendConfigurationError, createRuntimeBackends } from "../lib/backends.js";
 import { buildCatalog, buildLlmsText, normalizeOrigin } from "../lib/catalog.js";
 import { ViemMintSource, normalizeMintScannerInput, runMintScanner } from "../lib/engines/mint-scanner.js";
+import { RuntimeInactiveError, canExecuteCanary, executeAgentSkill } from "../lib/execution.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
 import { applyRateLimit, clientKey } from "../lib/rate-limit.js";
@@ -240,6 +241,68 @@ test("Mint Scanner rejects unsupported filters and chains", async () => {
     runMintScanner({ input: { chains: ["eip155:1"], timeWindowHours: 1 }, sources: {} }),
     /unsupported Mint Scanner chain/,
   );
+});
+
+test("only the doubly-gated Mint Scanner canary can execute", async () => {
+  const enabledEnv = {
+    UNPAID_MINT_SCANNER_ENABLED: "true",
+    CANARY_AGENT_KEYS: `${census}:2`,
+  };
+  assert.equal(canExecuteCanary(agent, enabledEnv), true);
+  assert.equal(canExecuteCanary({ ...agent, tokenId: 3n }, enabledEnv), false);
+  await assert.rejects(
+    executeAgentSkill(agent, { chains: ["eip155:11155111"], timeWindowHours: 1 }, { env: {} }),
+    RuntimeInactiveError,
+  );
+
+  const report = await executeAgentSkill(
+    agent,
+    { chains: ["eip155:11155111"], timeWindowHours: 1, filters: { minMints: 1 } },
+    {
+      env: enabledEnv,
+      now: () => new Date("2026-07-31T12:00:00.000Z"),
+      sources: {
+        "eip155:11155111": {
+          async scanMints({ requestedSince }) {
+            return {
+              chain: "eip155:11155111",
+              requestedSince: requestedSince.toISOString(),
+              fromBlock: 1n,
+              toBlock: 2n,
+              truncated: false,
+              events: [],
+            };
+          },
+        },
+      },
+    },
+  );
+  assert.equal(report.skill, "Mint Scanner");
+  assert.equal(report.reportOnly, true);
+});
+
+test("MCP returns structured canary output through the shared executor", async () => {
+  const server = createAgentMcpServer(agent, async () => ({
+    skill: "Mint Scanner",
+    reportOnly: true,
+    chains: [],
+  }));
+  const client = new Client({ name: "census-canary-test", version: "1.0.0" });
+  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+  await server.connect(serverTransport);
+  await client.connect(clientTransport);
+  try {
+    const called = await client.callTool({
+      name: "mint-scanner",
+      arguments: { chains: ["eip155:11155111"], timeWindowHours: 1 },
+    });
+    assert.equal(called.isError, undefined);
+    assert.equal(called.structuredContent.skill, "Mint Scanner");
+    assert.match(called.content[0].text, /reportOnly/);
+  } finally {
+    await client.close();
+    await server.close();
+  }
 });
 
 test("Viem Mint Scanner source bounds old windows and reads newest chunks first", async () => {
