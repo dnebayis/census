@@ -61,7 +61,7 @@ export const SKILLS = [
   {
     name: "Fraud Detector",
     slug: "fraud-detector",
-    description: "Assesses collections or wallets for fraud signals.",
+    description: "Reports bounded OpenSea enforcement and verification signals without declaring fraud.",
     inputSchema: z.object({
       target: z.object({
         type: z.enum(["collection", "wallet"]),

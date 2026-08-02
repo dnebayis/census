@@ -66,6 +66,18 @@ invents a Census momentum score. Its independent gate remains inactive because n
 current v3 token has skill index 4; the archived v2 `night-ledger` is not reused as an
 active canary.
 
+Fraud Detector is the sixth and final report-only engine. A collection assessment reads
+OpenSea collection metadata and stats; a wallet assessment reads one public OpenSea
+profile. It reports provider enforcement, verification, safelist, NSFW, profile-age,
+and self-declared-agent fields without assigning a fraud score or making an accusation.
+Missing profiles and non-verification are explicitly insufficient evidence. No current
+v3 token has skill index 5.
+
+All six report-only feature flags are enabled in production. The exact allowlist contains
+only current v3 tokens 1–5, so each existing token can execute only its immutable skill.
+Tracker, Trend Reader, and Fraud Detector remain unreachable until an exact matching v3
+token is minted and deliberately added. Executor is not implemented or enabled.
+
 Required local environment:
 
 - `RUNTIME_ORIGIN` — stable HTTPS origin, no trailing slash
@@ -80,6 +92,7 @@ Required local environment:
 - `UNPAID_TOKEN_HUNTER_ENABLED` — independent exact-token gate for token 4
 - `UNPAID_TREND_READER_ENABLED` — reserved independent gate; keep false until an exact
   current-v3 Trend Reader token exists
+- `UNPAID_FRAUD_DETECTOR_ENABLED` — reserved independent gate for an exact matching token
 - `CANARY_AGENT_KEYS` — exact lowercase `<censusAddress>:<tokenId>` allowlist
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)

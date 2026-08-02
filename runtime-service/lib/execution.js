@@ -5,6 +5,7 @@ import { ViemMintSource, runMintScanner } from "./engines/mint-scanner.js";
 import { OpenSeaTrackerSource, runTracker } from "./engines/tracker.js";
 import { OpenSeaTokenHunterSource, runTokenHunter } from "./engines/token-hunter.js";
 import { OpenSeaTrendReaderSource, runTrendReader } from "./engines/trend-reader.js";
+import { OpenSeaFraudDetectorSource, runFraudDetector } from "./engines/fraud-detector.js";
 
 export class RuntimeInactiveError extends Error {}
 export class UnsupportedRuntimeSkillError extends Error {}
@@ -29,6 +30,7 @@ export function canExecuteCanary(agent, env = process.env) {
     [2, "UNPAID_TRACKER_ENABLED"],
     [3, "UNPAID_TOKEN_HUNTER_ENABLED"],
     [4, "UNPAID_TREND_READER_ENABLED"],
+    [5, "UNPAID_FRAUD_DETECTOR_ENABLED"],
   ]).get(agent.skillIndex);
   return Boolean(flag) && env[flag] === "true" && canaryAgentKeys(env).has(agentKey(agent));
 }
@@ -55,6 +57,10 @@ export function createTokenHunterSource(env = process.env) {
 
 export function createTrendReaderSource(env = process.env) {
   return new OpenSeaTrendReaderSource({ apiKey: env.OPENSEA_API_KEY });
+}
+
+export function createFraudDetectorSource(env = process.env) {
+  return new OpenSeaFraudDetectorSource({ apiKey: env.OPENSEA_API_KEY });
 }
 
 export async function executeAgentSkill(
@@ -95,6 +101,13 @@ export async function executeAgentSkill(
     return runTrendReader({
       input,
       source: source || createTrendReaderSource(env),
+      ...(now ? { now } : {}),
+    });
+  }
+  if (agent.skillIndex === 5) {
+    return runFraudDetector({
+      input,
+      source: source || createFraudDetectorSource(env),
       ...(now ? { now } : {}),
     });
   }

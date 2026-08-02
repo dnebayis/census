@@ -30,6 +30,12 @@ import {
   normalizeTrendReaderInput,
   runTrendReader,
 } from "../lib/engines/trend-reader.js";
+import {
+  FraudDetectorDataUnavailableError,
+  OpenSeaFraudDetectorSource,
+  normalizeFraudDetectorInput,
+  runFraudDetector,
+} from "../lib/engines/fraud-detector.js";
 import { RuntimeInactiveError, canExecuteCanary, executeAgentSkill } from "../lib/execution.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
@@ -87,6 +93,15 @@ const trendReaderAgent = {
   context: "a signal listener",
   skillIndex: 4,
   skill: skillByIndex(4),
+};
+
+const fraudDetectorAgent = {
+  ...agent,
+  tokenId: 7n,
+  agentId: 9126n,
+  context: "a cautious examiner",
+  skillIndex: 5,
+  skill: skillByIndex(5),
 };
 
 function fakeClient(overrides = {}) {
@@ -725,6 +740,87 @@ test("OpenSea Trend Reader fails closed when ranking is unavailable", async () =
   );
 });
 
+test("Fraud Detector validates exact collection slugs and wallet addresses", () => {
+  assert.deepEqual(normalizeFraudDetectorInput({ target: { type: "collection", id: "Signal-Fixture" } }), {
+    target: { type: "collection", id: "signal-fixture" },
+  });
+  assert.throws(
+    () => normalizeFraudDetectorInput({ target: { type: "wallet", id: "not-a-wallet" } }),
+    /Ethereum address/,
+  );
+  assert.throws(
+    () => normalizeFraudDetectorInput({ target: { type: "collection", id: "bad slug!" } }),
+    /collection slug/,
+  );
+});
+
+test("OpenSea Fraud Detector reports provider flags without declaring fraud", async () => {
+  const requests = [];
+  const source = new OpenSeaFraudDetectorSource({
+    apiKey: "test-key",
+    async fetchImpl(url, options) {
+      requests.push({ url, options });
+      const body = url.pathname.endsWith("/stats")
+        ? { total: { volume: 100, sales: 5, num_owners: 4, floor_price: 0.1, floor_price_symbol: "ETH" } }
+        : {
+            collection: "signal-fixture",
+            name: "Signal Fixture",
+            safelist_status: "not_requested",
+            is_disabled: true,
+            is_nsfw: false,
+            category: "art",
+            opensea_url: "https://opensea.io/collection/signal-fixture",
+            contracts: [{ chain: "ethereum", address: census }],
+          };
+      return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
+    },
+  });
+  const report = await runFraudDetector({
+    input: { target: { type: "collection", id: "signal-fixture" } },
+    source,
+    now: () => new Date("2026-08-03T00:00:00.000Z"),
+  });
+  assert.equal(report.reportOnly, true);
+  assert.equal(report.assessment, "provider_enforcement_flag_observed");
+  assert.deepEqual(report.findings.map(({ code }) => code), ["OPENSEA_DISABLED", "COLLECTION_NOT_VERIFIED"]);
+  assert.doesNotMatch(JSON.stringify(report), /is fraudulent/i);
+  assert.equal(report.facts.stats.owners, 4);
+  assert.equal(requests.length, 2);
+  assert.ok(requests.every(({ url }) => url.origin === "https://api.opensea.io"));
+  assert.ok(requests.every(({ options }) => options.headers["x-api-key"] === "test-key"));
+});
+
+test("Fraud Detector treats wallet non-verification as informational", async () => {
+  const report = await runFraudDetector({
+    input: { target: { type: "wallet", id: owner } },
+    source: {
+      async snapshot() {
+        return {
+          type: "wallet",
+          id: owner,
+          profile: { address: owner, is_verified: false, is_agent: true, joined_date: "2026-01-01", follower_count: 3, following_count: 4 },
+          sourceUrls: [`https://api.opensea.io/api/v2/accounts/${owner}`],
+        };
+      },
+    },
+  });
+  assert.equal(report.assessment, "no_provider_enforcement_flags_observed");
+  assert.ok(report.findings.every(({ severity }) => severity === "informational"));
+  assert.equal(report.facts.selfDeclaredAgent, true);
+});
+
+test("OpenSea Fraud Detector fails closed on provider errors", async () => {
+  assert.throws(() => new OpenSeaFraudDetectorSource(), FraudDetectorDataUnavailableError);
+  const source = new OpenSeaFraudDetectorSource({
+    apiKey: "test-key",
+    fetchImpl: async () => new Response("unavailable", { status: 429 }),
+  });
+  await assert.rejects(
+    source.snapshot({ target: { type: "wallet", id: owner } }),
+    FraudDetectorDataUnavailableError,
+  );
+});
+
 test("only the doubly-gated Mint Scanner canary can execute", async () => {
   const enabledEnv = {
     UNPAID_MINT_SCANNER_ENABLED: "true",
@@ -819,6 +915,15 @@ test("Trend Reader gate cannot activate without an exact matching token", () => 
   assert.equal(canExecuteCanary(trendReaderAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), false);
   assert.equal(canExecuteCanary(trendReaderAgent, { ...enabledEnv, CANARY_AGENT_KEYS: "" }), false);
+});
+
+test("Fraud Detector has an independent exact-token gate", () => {
+  const enabledEnv = {
+    UNPAID_FRAUD_DETECTOR_ENABLED: "true",
+    CANARY_AGENT_KEYS: `${census}:7`,
+  };
+  assert.equal(canExecuteCanary(fraudDetectorAgent, enabledEnv), true);
+  assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), false);
 });
 
 test("MCP returns structured canary output through the shared executor", async () => {

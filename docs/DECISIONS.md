@@ -170,6 +170,18 @@ No current v3 token has skill index 4, so the engine deploys inactive. The archi
 `night-ledger` identity is not promoted back into the active canary set merely to fill
 the gap. Activation waits for a naturally assigned current-v3 entry.
 
+### D22 — Report-only flags may all be open while exact-token gates remain mandatory
+
+Fraud Detector completes the six report-only engines using bounded OpenSea collection
+metadata/stats or one public account profile. It surfaces provider labels and facts but
+does not calculate a fraud score, infer fraud from non-verification, or accuse a target.
+
+At the owner's direction all six report-only feature flags are enabled in production.
+The second gate remains an exact allowlist containing current v3 tokens 1–5; immutable
+onchain skill assignment determines which engine each token can invoke. Missing skill
+types do not become callable, and future tokens are not automatically trusted. Executor
+is not a report-only engine and remains unimplemented and disabled.
+
 ## Active Sepolia record
 
 - Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`

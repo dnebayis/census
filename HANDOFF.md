@@ -76,6 +76,13 @@ It preserves OpenSea rank, attaches exact interval/total evidence, and leaves un
 intervals null. No current v3 token has skill index 4, so its flag is not configured;
 the archived v2 `night-ledger` is not an active canary.
 
+Fraud Detector completes the six report-only engines. It uses one OpenSea profile call
+for wallets or collection metadata plus stats for collections, reports provider flags
+and missing evidence, and never assigns a fraud score or accusation. Production has all
+six report-only flags enabled and exact current-v3 tokens 1–5 allowlisted. Immutable
+skills still prevent absent Tracker, Trend Reader, or Fraud Detector tokens from calling
+those engines; future tokens need an explicit allowlist update. Executor remains off.
+
 Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
 inactive even while a production canary is exercised.

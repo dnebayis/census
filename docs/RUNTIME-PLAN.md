@@ -82,7 +82,10 @@ Sepolia fork.
    trending/detail engine and exact token 4 gate are implemented. The remaining
    Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
    implemented but remain inactive until a current-v3 skill-index-4 token exists. The
-   remaining report-only engine is Fraud Detector.
+   Fraud Detector's bounded provider-label assessment is implemented as the sixth and
+   final report-only engine. All six report-only flags are enabled; the exact v3 token
+   1–5 allowlist remains mandatory, so currently absent skill types are still
+   unreachable. Executor remains outside this activation.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
    verify → settle → result flow, replay protection, and idempotent receipts.
 4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend
