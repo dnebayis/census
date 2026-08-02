@@ -1,0 +1,71 @@
+{
+  "build": {
+    "bitmap_file": "v4-pastel-analyst.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0x7b721aa0630ecbc300fe674336f272822fb667028acda985beb12a364b9bf8a4",
+    "generator": "agent:codex-imagegen",
+    "source_file": "v4-pastel-analyst.agent-v2.png",
+    "source_sha256": "0xa7078c1bd2eaab67346ca54b8685f44db4b0e385ba5568259cc73dba2ef5adec",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 495,
+      "density_pct": 30.9,
+      "isolated_pct": 1.0,
+      "mintable": true,
+      "signature": "0xff7e242420101800",
+      "subject": "a pastel analyst",
+      "symmetry": 2,
+      "traits": {
+        "Accessory": "none",
+        "Age": "middle-aged",
+        "Attire": "robe",
+        "Expression": "smirk",
+        "Eyes": "round spectacles",
+        "Facial": "face tattoo",
+        "Hair": "mohawk",
+        "Headwear": "bandana",
+        "Species": "human"
+      },
+      "warnings": []
+    },
+    "stats_file": "v4-pastel-analyst.json"
+  },
+  "draft_id": "v4-pastel-analyst",
+  "mint": {
+    "agent_id": 9246,
+    "block_number": 11406617,
+    "draft_id": "v4-pastel-analyst",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0xff7e242420101800",
+    "skill": 2,
+    "token_id": 3,
+    "transaction_hash": "0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27"
+  },
+  "seed": "0xc93b4010a969b4ac78600d56b8140a89",
+  "subject": "a pastel analyst",
+  "trait_indices": [
+    0,
+    1,
+    7,
+    5,
+    8,
+    7,
+    7,
+    7,
+    0
+  ],
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "robe",
+    "Expression": "smirk",
+    "Eyes": "round spectacles",
+    "Facial": "face tattoo",
+    "Hair": "mohawk",
+    "Headwear": "bandana",
+    "Species": "human"
+  },
+  "traits_hex": "0x000107050807070700",
+  "version": 2
+}

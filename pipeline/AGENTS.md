@@ -4,10 +4,11 @@ You create the portrait with the IDE's image generator; this CLI assigns persist
 traits, reduces the raster image to the onchain format, and safely submits it. Use the
 repo skill at `skills/census-mint/SKILL.md` for the complete autonomous loop.
 
-Active Sepolia Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`.
+Active Sepolia Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`.
 Canonical host: `https://census-registration-dnebayis.vercel.app`. Minting is irreversibly
-open. This release implements
-ERC-8004 + ERC-8048 + ERC-8217; do not assume ERC-8257, MCP, RESTAP, or payment runtime.
+open. This release implements ERC-8004 + ERC-8048 + ERC-8217. ERC-8257, MCP, and RESTAP
+are report-only discovery/runtime surfaces; no skill builds, signs, or submits transactions,
+and no payment runtime exists.
 
 ## Required sequence
 

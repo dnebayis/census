@@ -14,8 +14,8 @@ address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
 Vercel assigned its first deployment to the stable
 `https://census-runtime-dnebayis.vercel.app` alias; its report-only engines are active
-for matching active-v4 skills but are not advertised in registration JSON. V4 currently
-has no minted entries. Its bounded news queue and
+for matching active-v4 skills but are not advertised in registration JSON. V4 tokens
+1 and 2 are Advisor entries; token 3 is Tracker. Its bounded news queue and
 sliding-window limits use Redis. The official 30 MB free Redis resource
 `census-runtime-free` is connected to production only; its real queue and distributed
 rate-limit integration test passed. Access is scoped to the active v4 Census contract
@@ -118,7 +118,11 @@ V4 minting is irreversibly open. Deploy transaction:
 `0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`;
 open-mint transaction:
 `0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`.
-It uses the broad 1%–95% density band and has no minted entries yet.
+It uses the broad 1%–95% density band. Its first batch minted tokens 1–3 / agents
+9244–9246 with skills Advisor, Advisor, and Tracker in transaction
+`0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`
+at block `11406617`. All three production registration URLs returned HTTP 200 with
+`no-store`; missing-token probes returned 404 and every adapter binding matched.
 
 Archived v3 used open transaction
 `0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094`.

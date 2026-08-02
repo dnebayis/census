@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "young",
+    "Attire": "hoodie",
+    "Expression": "one raised eyebrow",
+    "Eyes": "mirrored visor",
+    "Facial": "face tattoo",
+    "Hair": "high ponytail",
+    "Headwear": "crown",
+    "Species": "human"
+  },
+  "indices": [
+    0,
+    0,
+    4,
+    10,
+    8,
+    5,
+    9,
+    2,
+    0
+  ]
+}

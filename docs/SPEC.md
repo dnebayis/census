@@ -201,7 +201,9 @@ Active rollout:
   `0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`
 - open-mint transaction:
   `0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`
-- minted entries: none at rollout
+- first v4 batch: tokens `1–3`, agents `9244–9246`, skills `Advisor`, `Advisor`,
+  `Tracker`, transaction
+  `0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`
 
 Archived v3: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`; its tokens 1–5 remain
 registered through the permanent address-routed service. Its immutable Executor name is

@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "young",
+    "Attire": "armoured shoulders",
+    "Expression": "grim set jaw",
+    "Eyes": "dark sunglasses",
+    "Facial": "full beard",
+    "Hair": "buzz cut",
+    "Headwear": "hood up",
+    "Species": "android with visible seams"
+  },
+  "indices": [
+    6,
+    0,
+    5,
+    7,
+    3,
+    4,
+    6,
+    6,
+    0
+  ]
+}

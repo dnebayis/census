@@ -1,0 +1,30 @@
+{
+  "transaction_hash": "0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27",
+  "block_number": 11406617,
+  "entries": [
+    {
+      "draft_id": "v4-ember-librarian",
+      "token_id": 1,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 6,
+      "signature": "0x6f6e646424381800",
+      "agent_id": 9244
+    },
+    {
+      "draft_id": "v4-quiet-navigator",
+      "token_id": 2,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 6,
+      "signature": "0xf77e7e7624241800",
+      "agent_id": 9245
+    },
+    {
+      "draft_id": "v4-pastel-analyst",
+      "token_id": 3,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 2,
+      "signature": "0xff7e242420101800",
+      "agent_id": 9246
+    }
+  ]
+}

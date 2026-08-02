@@ -23,7 +23,10 @@
 - bitmap/art record: 200-byte one-bit bitmap / 209-byte SSTORE2 record
 - palette: `#34343A` foreground / `#E9DDC7` background
 - seventh skill: Advisor, 300 exact quota, report-only
-- rollout entries: none
+- first v4 batch: tokens `1–3`, agents `9244–9246`, skills `Advisor`, `Advisor`,
+  `Tracker`, transaction
+  `0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`,
+  block `11406617`
 
 The permanent route is:
 

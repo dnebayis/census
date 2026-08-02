@@ -1,0 +1,73 @@
+{
+  "build": {
+    "bitmap_file": "v4-ember-librarian.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0xc55934860a05fcc76661179eb7309bd822f38060c0a01a7f628412c81059d5cc",
+    "generator": "agent:codex-imagegen",
+    "source_file": "v4-ember-librarian.agent-v1.png",
+    "source_sha256": "0x445b5958419c37b8a2d3c9936f504da676e752b09cdb7af572b5f8289f8696ed",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 580,
+      "density_pct": 36.2,
+      "isolated_pct": 0.9,
+      "mintable": true,
+      "signature": "0x6f6e646424381800",
+      "subject": "an ember librarian",
+      "symmetry": 6,
+      "traits": {
+        "Accessory": "none",
+        "Age": "young",
+        "Attire": "hoodie",
+        "Expression": "one raised eyebrow",
+        "Eyes": "mirrored visor",
+        "Facial": "face tattoo",
+        "Hair": "high ponytail",
+        "Headwear": "crown",
+        "Species": "human"
+      },
+      "warnings": [
+        "dense \u2014 facial detail may merge"
+      ]
+    },
+    "stats_file": "v4-ember-librarian.json"
+  },
+  "draft_id": "v4-ember-librarian",
+  "mint": {
+    "agent_id": 9244,
+    "block_number": 11406617,
+    "draft_id": "v4-ember-librarian",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0x6f6e646424381800",
+    "skill": 6,
+    "token_id": 1,
+    "transaction_hash": "0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27"
+  },
+  "seed": "0x9a78c3ef16d93f6072026d4053331885",
+  "subject": "an ember librarian",
+  "trait_indices": [
+    0,
+    0,
+    4,
+    10,
+    8,
+    5,
+    9,
+    2,
+    0
+  ],
+  "traits": {
+    "Accessory": "none",
+    "Age": "young",
+    "Attire": "hoodie",
+    "Expression": "one raised eyebrow",
+    "Eyes": "mirrored visor",
+    "Facial": "face tattoo",
+    "Hair": "high ponytail",
+    "Headwear": "crown",
+    "Species": "human"
+  },
+  "traits_hex": "0x0000040a0805090200",
+  "version": 2
+}

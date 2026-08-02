@@ -25,7 +25,11 @@ suggestions, evidence, and links; see
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-V4 permissionless minting is irreversibly open and has no minted entries yet. The
+V4 permissionless minting is irreversibly open. Its first batch minted
+`v4-ember-librarian`, `v4-quiet-navigator`, and `v4-pastel-analyst` as tokens 1–3 /
+agents 9244–9246 with skills Advisor, Advisor, and Tracker in transaction
+[`0x8e3806…c27`](https://sepolia.etherscan.io/tx/0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27).
+The
 archived v3 first production entry,
 `threshold-keeper`, minted token 1 / ERC-8004 agent 9119 in transaction
 [`0xe6f91c…c7d90`](https://sepolia.etherscan.io/tx/0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90).

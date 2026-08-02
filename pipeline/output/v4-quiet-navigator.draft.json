@@ -1,0 +1,73 @@
+{
+  "build": {
+    "bitmap_file": "v4-quiet-navigator.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0x2c2e85969d6ec3c7e561588dde94da0d3156a9fa7de56b52da3b0df131e41229",
+    "generator": "agent:codex-imagegen",
+    "source_file": "v4-quiet-navigator.agent-v1.png",
+    "source_sha256": "0x75c23189060cc30e867aad0f44410b22e6bbbb50048cce55f6489a399687adb1",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 756,
+      "density_pct": 47.2,
+      "isolated_pct": 0.4,
+      "mintable": true,
+      "signature": "0xf77e7e7624241800",
+      "subject": "a quiet navigator",
+      "symmetry": 2,
+      "traits": {
+        "Accessory": "none",
+        "Age": "young",
+        "Attire": "armoured shoulders",
+        "Expression": "grim set jaw",
+        "Eyes": "dark sunglasses",
+        "Facial": "full beard",
+        "Hair": "buzz cut",
+        "Headwear": "hood up",
+        "Species": "android with visible seams"
+      },
+      "warnings": [
+        "dense \u2014 facial detail may merge"
+      ]
+    },
+    "stats_file": "v4-quiet-navigator.json"
+  },
+  "draft_id": "v4-quiet-navigator",
+  "mint": {
+    "agent_id": 9245,
+    "block_number": 11406617,
+    "draft_id": "v4-quiet-navigator",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0xf77e7e7624241800",
+    "skill": 6,
+    "token_id": 2,
+    "transaction_hash": "0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27"
+  },
+  "seed": "0x04315af5142f40fb4ae8523713c2052c",
+  "subject": "a quiet navigator",
+  "trait_indices": [
+    6,
+    0,
+    5,
+    7,
+    3,
+    4,
+    6,
+    6,
+    0
+  ],
+  "traits": {
+    "Accessory": "none",
+    "Age": "young",
+    "Attire": "armoured shoulders",
+    "Expression": "grim set jaw",
+    "Eyes": "dark sunglasses",
+    "Facial": "full beard",
+    "Hair": "buzz cut",
+    "Headwear": "hood up",
+    "Species": "android with visible seams"
+  },
+  "traits_hex": "0x060005070304060600",
+  "version": 2
+}

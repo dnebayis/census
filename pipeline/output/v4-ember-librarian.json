@@ -1,0 +1,27 @@
+{
+  "draft_id": "v4-ember-librarian",
+  "bytes": 200,
+  "density": 580,
+  "density_pct": 36.2,
+  "isolated_pct": 0.9,
+  "symmetry": 6,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0x6f6e646424381800",
+  "mintable": true,
+  "warnings": [
+    "dense \u2014 facial detail may merge"
+  ],
+  "subject": "an ember librarian",
+  "traits": {
+    "Accessory": "none",
+    "Age": "young",
+    "Attire": "hoodie",
+    "Expression": "one raised eyebrow",
+    "Eyes": "mirrored visor",
+    "Facial": "face tattoo",
+    "Hair": "high ponytail",
+    "Headwear": "crown",
+    "Species": "human"
+  }
+}

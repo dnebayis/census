@@ -1,0 +1,27 @@
+{
+  "draft_id": "v4-quiet-navigator",
+  "bytes": 200,
+  "density": 756,
+  "density_pct": 47.2,
+  "isolated_pct": 0.4,
+  "symmetry": 2,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xf77e7e7624241800",
+  "mintable": true,
+  "warnings": [
+    "dense \u2014 facial detail may merge"
+  ],
+  "subject": "a quiet navigator",
+  "traits": {
+    "Accessory": "none",
+    "Age": "young",
+    "Attire": "armoured shoulders",
+    "Expression": "grim set jaw",
+    "Eyes": "dark sunglasses",
+    "Facial": "full beard",
+    "Hair": "buzz cut",
+    "Headwear": "hood up",
+    "Species": "android with visible seams"
+  }
+}

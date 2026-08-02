@@ -8,7 +8,8 @@ Active Sepolia Census v4 is `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`.
 Registration is served from `https://census-registration-dnebayis.vercel.app`; adapter and
 Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
 `0x8004a818bfb912233c491871b3d84c89a494bd9e`. Permissionless minting is irreversibly
-open. V4 has no minted entries yet. Archived v3 tokens 1–5 and v2 tokens 1–4 remain
+open. V4 tokens 1–3 / agents 9244–9246 have immutable skills Advisor, Advisor, and
+Tracker. Archived v3 tokens 1–5 and v2 tokens 1–4 remain
 available through the same address-routed registration project.
 
 ## What exists in this phase

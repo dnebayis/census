@@ -1,0 +1,25 @@
+{
+  "draft_id": "v4-pastel-analyst",
+  "bytes": 200,
+  "density": 495,
+  "density_pct": 30.9,
+  "isolated_pct": 1.0,
+  "symmetry": 2,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff7e242420101800",
+  "mintable": true,
+  "warnings": [],
+  "subject": "a pastel analyst",
+  "traits": {
+    "Accessory": "none",
+    "Age": "middle-aged",
+    "Attire": "robe",
+    "Expression": "smirk",
+    "Eyes": "round spectacles",
+    "Facial": "face tattoo",
+    "Hair": "mohawk",
+    "Headwear": "bandana",
+    "Species": "human"
+  }
+}
