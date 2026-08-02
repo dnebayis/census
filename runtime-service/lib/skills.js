@@ -39,11 +39,12 @@ export const SKILLS = [
   {
     name: "Token Hunter",
     slug: "token-hunter",
-    description: "Finds young tokens and liquidity movements.",
+    description: "Finds young trending tokens with evidence-backed volume and safety signals.",
     inputSchema: z.object({
-      chains: chainList,
-      minLiquidityUsd: z.number().nonnegative(),
+      chain: z.enum(["eip155:1", "eip155:11155111"]).default("eip155:1"),
+      minVolume24hUsd: z.number().nonnegative(),
       maxAgeHours: z.number().positive().max(8760),
+      maxCandidates: z.number().int().min(1).max(20).default(10),
     }),
   },
   {

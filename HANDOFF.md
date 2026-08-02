@@ -65,6 +65,11 @@ transaction/source evidence, and explicit cursor truncation. Its independent gat
 not configured in production because no current v3 token has skill index 2. Do not bind
 it to token 4 (Token Hunter) or reroll draft traits to force a Tracker token.
 
+Token Hunter is implemented for its real v3 token 4 / agent 9123 binding. It reads one
+OpenSea trending page (maximum 100), filters by `genesis_date`/`created_at` and 24-hour
+USD volume, and checks at most 20 token details for exact `status: OK`. It never calls
+volume liquidity, never requests a swap quote, and has its own exact-token canary flag.
+
 Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
 inactive even while a production canary is exercised.

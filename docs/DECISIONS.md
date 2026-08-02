@@ -145,6 +145,19 @@ with another skill. No current v3 token has skill index 2. Draft seeds and trait
 will not be rerolled or selected to force one; activation waits for a naturally assigned
 Tracker entry and then uses the exact-token double gate.
 
+### D20 — Token Hunter uses age, volume, and safety evidence without inventing liquidity
+
+Token Hunter uses OpenSea's trending-token endpoint followed by bounded token-detail
+lookups. A call reads one page of at most 100 summaries and at most 20 details. Candidate
+age comes from `genesis_date`, falling back to OpenSea `created_at`; 24-hour USD volume
+is the activity threshold; and only an exact OpenSea `OK` status qualifies. The engine
+reports that earliest known activity is not guaranteed deployment time and that volume
+is not pool liquidity. It does not request swap quotes or produce transactions.
+
+V3 token 4 / agent 9123 has immutable skill index 3 and is the exact production canary.
+Its flag remains independent from Mint Scanner, Arbitrageur, and the unavailable Tracker
+canary.
+
 ## Active Sepolia record
 
 - Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`

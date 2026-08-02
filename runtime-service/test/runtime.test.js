@@ -18,6 +18,12 @@ import {
   normalizeTrackerInput,
   runTracker,
 } from "../lib/engines/tracker.js";
+import {
+  OpenSeaTokenHunterSource,
+  TokenHunterDataUnavailableError,
+  normalizeTokenHunterInput,
+  runTokenHunter,
+} from "../lib/engines/token-hunter.js";
 import { RuntimeInactiveError, canExecuteCanary, executeAgentSkill } from "../lib/execution.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
@@ -57,6 +63,15 @@ const trackerAgent = {
   context: "a patient observer",
   skillIndex: 2,
   skill: skillByIndex(2),
+};
+
+const tokenHunterAgent = {
+  ...agent,
+  tokenId: 4n,
+  agentId: 9123n,
+  context: "a memory diver",
+  skillIndex: 3,
+  skill: skillByIndex(3),
 };
 
 function fakeClient(overrides = {}) {
@@ -556,6 +571,78 @@ test("OpenSea Tracker fails closed without usable provider data", async () => {
   );
 });
 
+test("Token Hunter normalizes honest volume and age filters", () => {
+  const normalized = normalizeTokenHunterInput(
+    { minVolume24hUsd: 50_000, maxAgeHours: 72 },
+    { now: () => new Date("2026-08-03T00:00:00.000Z") },
+  );
+  assert.equal(normalized.chain, "eip155:1");
+  assert.equal(normalized.maxCandidates, 10);
+  assert.equal(normalized.before.toISOString(), "2026-08-03T00:00:00.000Z");
+  assert.throws(
+    () => normalizeTokenHunterInput({ minLiquidityUsd: 1, maxAgeHours: 24 }),
+    /minVolume24hUsd/,
+  );
+});
+
+test("OpenSea Token Hunter returns only young OK-status volume candidates", async () => {
+  const requests = [];
+  const firstSeen = Date.parse("2026-08-02T12:00:00.000Z") / 1_000;
+  const young = "0x4444444444444444444444444444444444444444";
+  const warning = "0x5555555555555555555555555555555555555555";
+  const source = new OpenSeaTokenHunterSource({
+    apiKey: "test-key",
+    async fetchImpl(url, options) {
+      requests.push({ url, options });
+      if (url.pathname.endsWith("/tokens/trending")) {
+        return new Response(JSON.stringify({
+          tokens: [
+            { address: young, chain: "ethereum", name: "Young", symbol: "YNG", decimals: 18, usd_price: "0.1", opensea_url: "https://opensea.io/token/young", volume_24h: 150_000, price_change_24h: 25, genesis_date: firstSeen, is_verified: false },
+            { address: warning, chain: "ethereum", name: "Warning", symbol: "WARN", decimals: 18, usd_price: "0.2", opensea_url: "https://opensea.io/token/warning", volume_24h: 100_000, price_change_24h: 10, created_at: firstSeen, is_verified: false },
+          ],
+          next: "next-page",
+        }), { status: 200, headers: { "content-type": "application/json" } });
+      }
+      const status = url.pathname.endsWith(young) ? "OK" : "WARNING";
+      return new Response(JSON.stringify({ status, stats: { volume_24h: status === "OK" ? 150_000 : 100_000 } }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    },
+  });
+  const report = await runTokenHunter({
+    input: { chain: "eip155:1", minVolume24hUsd: 50_000, maxAgeHours: 72, maxCandidates: 5 },
+    source,
+    now: () => new Date("2026-08-03T00:00:00.000Z"),
+  });
+  assert.equal(report.reportOnly, true);
+  assert.equal(report.truncated, true);
+  assert.deepEqual(report.candidates.map(({ symbol }) => symbol), ["YNG"]);
+  assert.equal(report.candidates[0].ageBasis, "genesis_date");
+  assert.equal(report.observations[0].reason, "OpenSea safety status is WARNING");
+  assert.equal(requests.length, 3);
+  assert.equal(requests[0].url.searchParams.get("chains"), "ethereum");
+  assert.equal(requests[0].options.headers["x-api-key"], "test-key");
+});
+
+test("OpenSea Token Hunter fails closed when discovery is unavailable", async () => {
+  assert.throws(() => new OpenSeaTokenHunterSource(), TokenHunterDataUnavailableError);
+  const source = new OpenSeaTokenHunterSource({
+    apiKey: "test-key",
+    fetchImpl: async () => new Response("unavailable", { status: 429 }),
+  });
+  await assert.rejects(
+    source.snapshot({
+      chain: "eip155:1",
+      minVolume24hUsd: 0,
+      maxAgeHours: 24,
+      maxCandidates: 10,
+      before: new Date("2026-08-03T00:00:00.000Z"),
+    }),
+    TokenHunterDataUnavailableError,
+  );
+});
+
 test("only the doubly-gated Mint Scanner canary can execute", async () => {
   const enabledEnv = {
     UNPAID_MINT_SCANNER_ENABLED: "true",
@@ -631,6 +718,15 @@ test("Tracker has an independent gate and remains unavailable without a Tracker 
   assert.equal(canExecuteCanary(trackerAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), false);
   assert.equal(canExecuteCanary(trackerAgent, { ...enabledEnv, CANARY_AGENT_KEYS: "" }), false);
+});
+
+test("Token Hunter has an exact independent token 4 gate", () => {
+  const enabledEnv = {
+    UNPAID_TOKEN_HUNTER_ENABLED: "true",
+    CANARY_AGENT_KEYS: `${census}:4`,
+  };
+  assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), true);
+  assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), false);
 });
 
 test("MCP returns structured canary output through the shared executor", async () => {

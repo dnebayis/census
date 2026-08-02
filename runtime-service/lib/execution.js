@@ -3,6 +3,7 @@ import { sepolia } from "viem/chains";
 import { OpenSeaMarketSource, runArbitrageur } from "./engines/arbitrageur.js";
 import { ViemMintSource, runMintScanner } from "./engines/mint-scanner.js";
 import { OpenSeaTrackerSource, runTracker } from "./engines/tracker.js";
+import { OpenSeaTokenHunterSource, runTokenHunter } from "./engines/token-hunter.js";
 
 export class RuntimeInactiveError extends Error {}
 export class UnsupportedRuntimeSkillError extends Error {}
@@ -25,6 +26,7 @@ export function canExecuteCanary(agent, env = process.env) {
     [0, "UNPAID_MINT_SCANNER_ENABLED"],
     [1, "UNPAID_ARBITRAGEUR_ENABLED"],
     [2, "UNPAID_TRACKER_ENABLED"],
+    [3, "UNPAID_TOKEN_HUNTER_ENABLED"],
   ]).get(agent.skillIndex);
   return Boolean(flag) && env[flag] === "true" && canaryAgentKeys(env).has(agentKey(agent));
 }
@@ -43,6 +45,10 @@ export function createArbitrageurSource(env = process.env) {
 
 export function createTrackerSource(env = process.env) {
   return new OpenSeaTrackerSource({ apiKey: env.OPENSEA_API_KEY });
+}
+
+export function createTokenHunterSource(env = process.env) {
+  return new OpenSeaTokenHunterSource({ apiKey: env.OPENSEA_API_KEY });
 }
 
 export async function executeAgentSkill(
@@ -69,6 +75,13 @@ export async function executeAgentSkill(
     return runTracker({
       input,
       source: source || createTrackerSource(env),
+      ...(now ? { now } : {}),
+    });
+  }
+  if (agent.skillIndex === 3) {
+    return runTokenHunter({
+      input,
+      source: source || createTokenHunterSource(env),
       ...(now ? { now } : {}),
     });
   }

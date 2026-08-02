@@ -3,6 +3,7 @@ import { RuntimeBackendConfigurationError } from "./backends.js";
 import { ConfigurationError } from "./config.js";
 import { MarketDataUnavailableError } from "./engines/arbitrageur.js";
 import { TrackerDataUnavailableError } from "./engines/tracker.js";
+import { TokenHunterDataUnavailableError } from "./engines/token-hunter.js";
 
 export function json(response, status, body) {
   response.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -31,6 +32,7 @@ export function chainError(response, error) {
   if (error instanceof RuntimeBackendConfigurationError) kind = "runtime backend unavailable";
   if (error instanceof MarketDataUnavailableError) kind = "market data unavailable";
   if (error instanceof TrackerDataUnavailableError) kind = "tracker data unavailable";
+  if (error instanceof TokenHunterDataUnavailableError) kind = "token hunter data unavailable";
   console.error(kind, error instanceof Error ? error.message : String(error));
   return json(response, 502, { error: kind });
 }

@@ -50,17 +50,26 @@ The engine emits direction, NFT details, transaction evidence, source URLs, and 
 limitations. Its independent gate remains inactive because no current v3 token has the
 Tracker skill trait. Census trait selection is never bypassed to manufacture a canary.
 
+Token Hunter is the fourth implemented report-only engine and is assigned to v3 token
+4 / agent 9123. It reads at most 100 OpenSea trending-token summaries, filters them by
+earliest known activity and 24-hour USD volume, then checks at most 20 token-detail
+records for an exact `OK` safety status. The API does not expose pool liquidity, so the
+public input is deliberately named `minVolume24hUsd`; volume is never presented as
+liquidity. Results contain age basis, momentum, volume, holder/verification fields,
+OpenSea attribution, and explicit limitations. No swap quote or transaction is built.
+
 Required local environment:
 
 - `RUNTIME_ORIGIN` — stable HTTPS origin, no trailing slash
 - `SEPOLIA_RPC_URL`
 - `ADAPTER_ADDRESS`
 - `CHAIN_ID` (`11155111`)
-- `OPENSEA_API_KEY` — required only for Arbitrageur market data; instant keys expire
+- `OPENSEA_API_KEY` — required by OpenSea-backed report engines; instant keys expire
   after 30 days and require rotation
 - `UNPAID_MINT_SCANNER_ENABLED` and `UNPAID_ARBITRAGEUR_ENABLED` — independent gates
 - `UNPAID_TRACKER_ENABLED` — reserved independent gate; keep false until an exact
   Tracker-trait token exists and passes production checks
+- `UNPAID_TOKEN_HUNTER_ENABLED` — independent exact-token gate for token 4
 - `CANARY_AGENT_KEYS` — exact lowercase `<censusAddress>:<tokenId>` allowlist
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)
