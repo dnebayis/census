@@ -54,6 +54,11 @@ report, and MCP exposed and invoked only the `arbitrageur` tool. Same-currency a
 two-sided-order requirements correctly produced non-qualified observations rather than
 false opportunities.
 
+Mainnet ETH and canonical WETH now form the only allowed cross-currency comparison.
+The output marks `currencyConversion.required: true`, states the 1:1 basis, and excludes
+wrapping gas from the gross spread. Other currencies and Sepolia assets still require
+exact matching.
+
 Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
 inactive even while a production canary is exercised.

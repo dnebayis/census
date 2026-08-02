@@ -127,8 +127,10 @@ REST endpoints rather than wallet/trading SDK methods or a long-lived Stream soc
 The origin is fixed to `api.opensea.io`, the instant key stays in Vercel secrets and is
 rotated before its 30-day expiry, and each call is bounded to 20 combined OpenSea slugs
 or `slug:tokenId` targets. Reports compare raw amounts only when currencies and decimals
-match. They are gross observations, never guaranteed profit or transaction advice; no
-order is built, signed, simulated, or submitted.
+match, with one explicit exception: Ethereum mainnet native ETH and canonical WETH are
+treated as a 1:1 economic pair. Every such result declares that conversion is required
+and that wrapping gas is excluded. Reports remain gross observations, never guaranteed
+profit or transaction advice; no order is built, signed, simulated, or submitted.
 
 ## Active Sepolia record
 

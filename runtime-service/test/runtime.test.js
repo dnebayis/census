@@ -355,6 +355,30 @@ test("Arbitrageur reports only same-currency gross bid-ask crossovers", async ()
   assert.match(report.limitations[0], /not guaranteed/);
 });
 
+test("Arbitrageur compares mainnet ETH and canonical WETH at 1:1 without hiding conversion cost", async () => {
+  const report = await runArbitrageur({
+    input: { chain: "eip155:1", collections: ["wrapped-fixture"], minSpreadBps: 100 },
+    source: {
+      async snapshot() {
+        return [{
+          kind: "collection",
+          id: "wrapped-fixture",
+          ask: { amountRaw: "100", decimals: 18, currency: "ETH" },
+          bid: { amountRaw: "110", decimals: 18, currency: "WETH" },
+        }];
+      },
+    },
+  });
+  assert.equal(report.opportunities[0].grossSpreadBps, 1_000);
+  assert.deepEqual(report.opportunities[0].currencyConversion, {
+    required: true,
+    pair: "ETH/WETH",
+    rate: "1:1",
+    costsIncluded: false,
+  });
+  assert.match(report.limitations[1], /wrapping/);
+});
+
 test("Arbitrageur validates bounded collection and token targets", () => {
   assert.throws(
     () => normalizeArbitrageurInput({ minSpreadBps: 1 }),
@@ -372,13 +396,13 @@ test("Arbitrageur validates bounded collection and token targets", () => {
 
 test("OpenSea adapter sends the API key and maps collection and token quotes", async () => {
   const requests = [];
-  const order = (value, { listing = false } = {}) => ({
+  const order = (value, { listing = false, currency = census } = {}) => ({
     order_hash: `order-${value}`,
     chain: "ethereum",
     status: "ACTIVE",
     price: listing
-      ? { current: { value, decimals: 18, currency: census } }
-      : { value, decimals: 18, currency: census },
+      ? { current: { value, decimals: 18, currency } }
+      : { value, decimals: 18, currency },
     protocol_data: { parameters: { endTime: "9999999999" } },
   });
   const source = new OpenSeaMarketSource({
@@ -388,18 +412,18 @@ test("OpenSea adapter sends the API key and maps collection and token quotes", a
       const isToken = url.pathname.includes("/nfts/");
       const isListing = url.pathname.includes("/listings/");
       const body = isToken
-        ? order(isListing ? "200" : "220", { listing: isListing })
+        ? order(isListing ? "200" : "220", { listing: isListing, currency: isListing ? "ETH" : "WETH" })
         : isListing
           ? {
               listings: [
                 { ...order("90", { listing: true }), price: { current: { value: "90", decimals: 18, currency: owner } } },
-                order("100", { listing: true }),
+                order("100", { listing: true, currency: "ETH" }),
               ],
             }
           : {
               offers: [
                 { ...order("999"), price: { value: "999", decimals: 18, currency: adapter } },
-                order("110"),
+                order("110", { currency: "WETH" }),
               ],
             };
       return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });

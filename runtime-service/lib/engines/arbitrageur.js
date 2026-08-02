@@ -4,6 +4,8 @@ const SLUG = /^[a-z0-9][a-z0-9-]{0,199}$/;
 const WATCH_TOKEN = /^([a-z0-9][a-z0-9-]{0,199}):([0-9]+)$/;
 const MAX_TARGETS = 20;
 const OPENSEA_ORIGIN = "https://api.opensea.io";
+const NATIVE_ETH = "0x0000000000000000000000000000000000000000";
+const MAINNET_WETH = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 const CHAIN_NAMES = new Map([
   ["eip155:1", "ethereum"],
   ["eip155:11155111", "sepolia"],
@@ -51,6 +53,21 @@ function quote(order, chainName) {
   };
 }
 
+function currencyKey(currency, chainName) {
+  const normalized = String(currency).toLowerCase();
+  if (
+    chainName === "ethereum" &&
+    ["eth", "native", NATIVE_ETH, "weth", MAINNET_WETH].includes(normalized)
+  ) {
+    return "ethereum:eth-weth";
+  }
+  return normalized;
+}
+
+function currenciesMatch(ask, bid, chainName) {
+  return ask.decimals === bid.decimals && currencyKey(ask.currency, chainName) === currencyKey(bid.currency, chainName);
+}
+
 function bestQuote(orders, chainName, direction) {
   const quotes = (orders || []).map((order) => quote(order, chainName)).filter(Boolean);
   quotes.sort((a, b) => {
@@ -69,7 +86,7 @@ function bestCompatiblePair(listingOrders, offerOrders, chainName) {
   let best;
   for (const ask of asks) {
     for (const bid of bids) {
-      if (ask.currency !== bid.currency || ask.decimals !== bid.decimals) continue;
+      if (!currenciesMatch(ask, bid, chainName)) continue;
       const spread = spreadBps(ask, bid);
       if (
         !best ||
@@ -167,19 +184,20 @@ export async function runArbitrageur({ input, source, now = () => new Date() }) 
   const snapshots = await source.snapshot(normalized);
   const opportunities = [];
   const observations = [];
+  const chainName = CHAIN_NAMES.get(normalized.chain);
 
   for (const snapshot of snapshots) {
     let reason;
     if (!snapshot.ask || !snapshot.bid) reason = "both an active OpenSea listing and offer are required";
-    else if (
-      snapshot.ask.currency !== snapshot.bid.currency ||
-      snapshot.ask.decimals !== snapshot.bid.decimals
-    ) reason = "listing and offer currencies do not match";
+    else if (!currenciesMatch(snapshot.ask, snapshot.bid, chainName)) {
+      reason = "listing and offer currencies do not match";
+    }
     else {
       const grossSpreadBps = spreadBps(snapshot.ask, snapshot.bid);
       if (grossSpreadBps < normalized.minSpreadBps) {
         reason = `gross spread ${grossSpreadBps} bps is below the requested threshold`;
       } else {
+        const conversionRequired = snapshot.ask.currency !== snapshot.bid.currency;
         opportunities.push({
           kind: snapshot.kind,
           id: snapshot.id,
@@ -189,6 +207,9 @@ export async function runArbitrageur({ input, source, now = () => new Date() }) 
           grossDifferenceRaw: (BigInt(snapshot.bid.amountRaw) - BigInt(snapshot.ask.amountRaw)).toString(),
           ask: snapshot.ask,
           bid: snapshot.bid,
+          currencyConversion: conversionRequired
+            ? { required: true, pair: "ETH/WETH", rate: "1:1", costsIncluded: false }
+            : { required: false },
           evidence: {
             provider: "OpenSea",
             retrievedAt: generatedAt,
@@ -196,8 +217,10 @@ export async function runArbitrageur({ input, source, now = () => new Date() }) 
             marketplaceUrl: snapshot.marketplaceUrl,
           },
           reasoning: [
-            "The best observed OpenSea offer exceeds the best observed listing in the same currency.",
-            "The spread is gross and does not subtract gas, fees, royalties, slippage, or failed-order risk.",
+            conversionRequired
+              ? "The best observed OpenSea offer exceeds the listing after comparing mainnet ETH and canonical WETH at 1:1."
+              : "The best observed OpenSea offer exceeds the best observed listing in the same currency.",
+            "The spread is gross and does not subtract gas, wrapping, fees, royalties, slippage, or failed-order risk.",
           ],
         });
       }
@@ -211,10 +234,10 @@ export async function runArbitrageur({ input, source, now = () => new Date() }) 
     generatedAt,
     reportOnly: true,
     chain: normalized.chain,
-    methodology: "OpenSea active listings and offers compared in raw units of the same currency.",
+    methodology: "OpenSea active listings and offers compared in raw units; mainnet ETH and canonical WETH are treated as a 1:1 pair.",
     limitations: [
       "Reported spreads are gross observations, not guaranteed or net profit.",
-      "Gas, fees, royalties, slippage, order validity races, approvals, and execution risk are not simulated.",
+      "Gas, ETH/WETH wrapping, fees, royalties, slippage, order validity races, approvals, and execution risk are not simulated.",
       "No transaction is built, signed, submitted, or recommended as safe.",
     ],
     requestedTargets: normalized.collections.length + normalized.watchlist.length,

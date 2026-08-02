@@ -31,6 +31,11 @@ observations: gas, fees, royalties, slippage, approvals, order races, and execut
 are not simulated. Requests are limited to 20 combined OpenSea collection slugs or
 `slug:tokenId` targets and the fixed `api.opensea.io` origin.
 
+On Ethereum mainnet only, native ETH and canonical WETH are compared at their 1:1
+wrapping relationship. A qualifying cross-currency result explicitly reports that
+conversion is required and that wrapping gas is not included. No other token aliases or
+testnet wrapped assets are normalized.
+
 Unpaid public canary execution requires the skill-specific flag and an exact
 `CANARY_AGENT_KEYS` match. The verified Mint Scanner canary is Census v3 token 2.
 Arbitrageur token 3 is enabled as an independently gated production canary with a
