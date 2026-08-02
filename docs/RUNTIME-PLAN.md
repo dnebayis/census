@@ -64,7 +64,9 @@ Sepolia fork.
    implemented under `runtime-service/` and deployed inactive; `/talk` and MCP
    invocation remain inactive.
    Redis-backed bounded news storage and distributed sliding-window limits are
-   implemented, but their production integration/canary tests are still required.
+   implemented for both Upstash REST and standard Redis connections, but their
+   production integration/canary tests are still required. A non-persistent free Redis
+   database may be used for preview testing, never as the production durability gate.
 2. Implement Mint Scanner end to end without payment, then the other five report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented locally
    with evidence and limitations; public invocation/integration testing remains gated.

@@ -18,6 +18,10 @@ must not be advertised in registration JSON yet. Its bounded news queue and
 sliding-window limits use Redis, but no resource is connected and external
 integration/canary tests are still pending.
 
+The backend supports both Upstash REST credentials and the official Vercel Redis
+`REDIS_URL`. Redis Cloud's 30 MB free plan is acceptable for preview canaries only;
+its lack of paid-plan persistence guarantees does not satisfy production activation.
+
 The local Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
 scans and emits ranked candidates with transaction/block evidence and explicit
 limitations. A live read-only canary passed; it is not connected to public `/talk` or

@@ -15,8 +15,9 @@ Implemented surfaces:
 Every per-entry request reads live Census state and verifies the ERC-8217 adapter
 binding. `/talk` and MCP tool calls return `runtime_inactive`; no LLM, payment, wallet,
 or external action runs. `/news` never invokes an LLM and never emits a reply. Its
-production storage uses Upstash Redis with an atomic bounded queue. Distributed sliding
-window limits protect `/talk`, `/news`, and MCP. No production credentials are committed.
+The storage layer supports Upstash REST and standard Vercel Redis connections. Both use
+an atomic bounded queue; distributed sliding-window limits protect `/talk`, `/news`, and
+MCP. No production credentials are committed.
 
 The first report-only engine, Mint Scanner, is implemented locally. It scans bounded
 Sepolia block ranges for standard ERC-721 mint events, groups them by collection, and
@@ -36,6 +37,7 @@ Required local environment:
 - `CHAIN_ID` (`11155111`)
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)
+- alternatively, `REDIS_URL` from the official Vercel Redis integration
 
 After Redis is connected, run the destructive-safe integration canary against a
 throwaway namespaced key with `RUN_REDIS_INTEGRATION=1 npm test`. The test deletes its
@@ -47,3 +49,6 @@ canary checks pass.
 
 Current deployment state: the stable project and a preview build exist, but no Redis
 resource is connected and `UNPAID_MINT_SCANNER_ENABLED` is false.
+
+The official Redis Cloud 30 MB free plan may be used for preview integration tests. It
+does not provide the persistence guarantees required for production activation.

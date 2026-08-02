@@ -11,6 +11,7 @@ import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
 import { applyRateLimit, clientKey } from "../lib/rate-limit.js";
 import { skillByIndex } from "../lib/skills.js";
+import { StandardRedisAdapter, StandardRedisSlidingWindowLimiter } from "../lib/standard-redis.js";
 
 const census = "0x1111111111111111111111111111111111111111";
 const adapter = "0x2222222222222222222222222222222222222222";
@@ -164,6 +165,63 @@ test("runtime backends require secret-managed Redis credentials", () => {
       UPSTASH_REDIS_REST_TOKEN: "test-only-token",
     }),
   );
+  assert.doesNotThrow(() => createRuntimeBackends({ REDIS_URL: "rediss://default:test@example.com:6379" }));
+});
+
+test("standard Redis adapter normalizes queue commands and sliding-window results", async () => {
+  const commands = [];
+  const fakeClient = {
+    isOpen: false,
+    on() {},
+    async connect() {
+      this.isOpen = true;
+    },
+    multi() {
+      return {
+        rPush(key, value) {
+          commands.push(["rPush", key, value]);
+          return this;
+        },
+        lTrim(key, start, stop) {
+          commands.push(["lTrim", key, start, stop]);
+          return this;
+        },
+        async exec() {
+          return [1, "OK"];
+        },
+      };
+    },
+    async lRange() {
+      return ['{"id":"one"}'];
+    },
+    async eval() {
+      return [1, 3, 61_000];
+    },
+    async close() {
+      this.isOpen = false;
+    },
+  };
+  const redis = new StandardRedisAdapter("rediss://unused", fakeClient);
+  const store = new RedisNewsStore(redis, { prefix: "test", maxItems: 2 });
+  await store.append("agent", { id: "one" });
+  assert.deepEqual(commands, [
+    ["rPush", "test:agent", '{"id":"one"}'],
+    ["lTrim", "test:agent", -2, -1],
+  ]);
+  assert.deepEqual(await store.list("agent"), [{ id: "one" }]);
+
+  const limiter = new StandardRedisSlidingWindowLimiter(redis, {
+    limit: 5,
+    windowMs: 60_000,
+    prefix: "limit",
+  });
+  assert.deepEqual(await limiter.limit("agent", 1_000), {
+    success: true,
+    limit: 5,
+    remaining: 2,
+    reset: 61_000,
+  });
+  await redis.close();
 });
 
 test("rate limiting hashes the client address and emits retry metadata", async () => {
