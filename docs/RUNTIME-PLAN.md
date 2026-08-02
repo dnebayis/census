@@ -67,8 +67,10 @@ Sepolia fork.
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
    `census-runtime-free`. The resource is production-only and the exact v3 token 2
-   Mint Scanner production canary is enabled. This bounded canary does not make the
-   non-persistent free database a durability gate for broader activation.
+   Mint Scanner production canary is enabled. External RESTAP, MCP, inactive-token,
+   missing-token, chain-read, and Redis rate-limit checks passed on 2 August 2026.
+   This bounded canary does not make the non-persistent free database a durability gate
+   for broader activation.
 2. Implement Mint Scanner end to end without payment, then the other five report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
    evidence and limitations; unpaid invocation remains double-gated and limited to the

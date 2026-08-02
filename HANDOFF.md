@@ -29,6 +29,13 @@ scans and emits ranked candidates with transaction/block evidence and explicit
 limitations. A live read-only scan and the Redis-backed integration passed; it remains
 inaccessible to every entry except the exact v3 token 2 production canary.
 
+External production verification passed on 2 August 2026. Token 2 RESTAP discovery
+returned its live agent 9121 binding and `canary.available: true`; `/talk` and the MCP
+`mint-scanner` tool returned evidence-backed reports over Sepolia. Token 3 returned
+`runtime_inactive` through both surfaces, a missing token returned 404, and MCP emitted
+Redis-backed rate-limit headers. The runtime uses the public dRPC Sepolia endpoint;
+registration remains `active: false` with x402 disabled.
+
 Canary invocation is double-gated by `UNPAID_MINT_SCANNER_ENABLED` and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
 inactive even while the production canary is exercised.

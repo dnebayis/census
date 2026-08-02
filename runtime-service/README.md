@@ -53,6 +53,12 @@ the real queue and distributed limiter integration test passed, and Mint Scanner
 enabled only for exact v3 token 2 at
 `https://census-runtime-dnebayis.vercel.app`. Registration remains inactive.
 
+External production checks passed on 2 August 2026: token 2 discovery, `/talk`, MCP
+initialize, MCP tool execution, and Redis rate-limit headers succeeded; token 3 stayed
+inactive and a missing token returned 404. `SEPOLIA_RPC_URL` uses the public dRPC
+Sepolia endpoint because Mint Scanner requires addressless ERC-721 `eth_getLogs`
+queries, which some public providers reject.
+
 The official 30 MB free plan is currently used for the bounded production canary at
 the owner's direction. It does not provide the persistence guarantees required for
 broader production activation.
