@@ -9,11 +9,13 @@ restores the shared RESTAP/MCP/x402 runtime, ERC-8257 discovery, seven skill
 implementations, and separate owner-controlled execution wallets. Nothing is active
 until the gates in `docs/RUNTIME-PLAN.md` pass; Executor remains last.
 
-`runtime-service/` contains the local inactive protocol shell: `llms.txt`,
+`runtime-service/` contains the inactive protocol shell: `llms.txt`,
 address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
-It is not deployed and must not be advertised in registration JSON yet. Its bounded
-news queue and sliding-window limits use Redis, but production credentials and external
+Vercel assigned its first deployment to the stable
+`https://census-runtime-dnebayis.vercel.app` alias; the runtime remains inactive and
+must not be advertised in registration JSON yet. Its bounded news queue and
+sliding-window limits use Redis, but no resource is connected and external
 integration/canary tests are still pending.
 
 The local Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log

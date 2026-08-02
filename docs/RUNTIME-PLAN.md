@@ -1,7 +1,7 @@
 # Census runtime phase
 
-Status: architecture approved; inactive protocol shell implemented locally; production
-implementation and activation pending.
+Status: architecture approved; inactive protocol shell deployed to the single permanent
+runtime project; production integration and activation pending.
 
 The runtime returns to the original Census product thesis: entries are working agents,
 not only onchain identities. A single shared host provides RESTAP by default, MCP gives
@@ -61,7 +61,8 @@ Sepolia fork.
 
 1. Build the shared protocol shell: `llms.txt`, RESTAP catalog, JSON `/talk`, passive
    `/news`, MCP projection, address-routed chain reads, and schemas. This local shell is
-   implemented under `runtime-service/`; `/talk` and MCP invocation remain inactive.
+   implemented under `runtime-service/` and deployed inactive; `/talk` and MCP
+   invocation remain inactive.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented, but their production integration/canary tests are still required.
 2. Implement Mint Scanner end to end without payment, then the other five report-only

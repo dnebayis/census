@@ -1,8 +1,8 @@
 # Census shared runtime
 
 This directory is the inactive Phase 2 protocol shell. It is deliberately separate
-from `registration-service`; there is one permanent registration project and, later,
-one permanent runtime project.
+from `registration-service`; there is one permanent registration project and one
+permanent runtime project at `https://census-runtime-dnebayis.vercel.app`.
 
 Implemented surfaces:
 
@@ -44,3 +44,6 @@ key in a `finally` block.
 Do not add runtime services to ERC-8004 registration JSON and do not set `active: true`
 until storage and rate-limit integration tests, x402, skill execution, and external
 canary checks pass.
+
+Current deployment state: the stable project and a preview build exist, but no Redis
+resource is connected and `UNPAID_MINT_SCANNER_ENABLED` is false.
