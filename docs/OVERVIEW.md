@@ -4,12 +4,13 @@ Census records 10,000 faces and what each one does. A token contains a 40×40 on
 portrait, one onchain-assigned skill, a class derived from its immutable Species trait,
 nine pipeline-assigned visual traits, and an ERC-8004 identity.
 
-Active Sepolia Census v4 is `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`.
+Active Sepolia Census v5 is `0x5863E1d0539c659204B097359AC1a75C51144E78`.
 Registration is served from `https://census-registration-dnebayis.vercel.app`; adapter and
 Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
 `0x8004a818bfb912233c491871b3d84c89a494bd9e`. Permissionless minting is irreversibly
-open. V4 tokens 1–3 / agents 9244–9246 have immutable skills Advisor, Advisor, and
-Tracker. Archived v3 tokens 1–5 and v2 tokens 1–4 remain
+open. V5 starts with zero tokens. Archived v4 tokens 1–3 / agents 9244–9246 retain
+skills Advisor, Advisor, and Tracker, but their skill-derived class labels are historical.
+Archived v3 tokens 1–5 and v2 tokens 1–4 remain
 available through the same address-routed registration project.
 
 ## What exists in this phase

@@ -199,16 +199,17 @@ Fixed Sepolia infrastructure:
 
 Active rollout:
 
-- Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
+- Census v5: `0x5863E1d0539c659204B097359AC1a75C51144E78`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - minting: irreversibly open
 - deploy transaction:
-  `0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`
+  `0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9`
 - open-mint transaction:
-  `0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`
-- first v4 batch: tokens `1–3`, agents `9244–9246`, skills `Advisor`, `Advisor`,
-  `Tracker`, transaction
-  `0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`
+  `0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280`
+- minted supply at rollout: `0`
+
+Archived v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`; tokens 1–3 remain
+registered, but its skill-derived visual class semantics are historical.
 
 Archived v3: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`; its tokens 1–5 remain
 registered through the permanent address-routed service. Its immutable Executor name is

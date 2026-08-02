@@ -14,18 +14,21 @@ suggestions, evidence, and links; see
 
 | Component | Sepolia |
 |---|---|
-| Census v4 | [`0x629B4534D07F1E35a70a403f4521Cd95f34eb030`](https://sepolia.etherscan.io/address/0x629B4534D07F1E35a70a403f4521Cd95f34eb030) — mint open, Advisor-only boundary |
+| Census v5 | [`0x5863E1d0539c659204B097359AC1a75C51144E78`](https://sepolia.etherscan.io/address/0x5863E1d0539c659204B097359AC1a75C51144E78) — mint open, Species-derived class |
 | Registration | [`https://census-registration-dnebayis.vercel.app`](https://census-registration-dnebayis.vercel.app) — permanent single project |
 | Runtime | [`https://census-runtime-dnebayis.vercel.app`](https://census-runtime-dnebayis.vercel.app) — collection-scoped report-only production runtime; not advertised by registration |
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
 | ERC-8257 Tool Registry | `0xd61aa597398a83122fce07a94beddb91fce8f42e` — Census Sepolia reference deployment |
+| Archived v4 | [`0x629B4534D07F1E35a70a403f4521Cd95f34eb030`](https://sepolia.etherscan.io/address/0x629B4534D07F1E35a70a403f4521Cd95f34eb030) — tokens 1–3 preserved; skill-derived class retired |
 | Archived v3 | [`0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`](https://sepolia.etherscan.io/address/0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc) — tokens 1–5 preserved; immutable Executor retired |
 | Archived v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — tokens 1–4 preserved |
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-V4 permissionless minting is irreversibly open. Its first batch minted
+V5 permissionless minting is irreversibly open and starts with zero tokens. V4 is
+archive-only because its class label followed skill rather than Species. Its preserved
+first batch minted
 `v4-ember-librarian`, `v4-quiet-navigator`, and `v4-pastel-analyst` as tokens 1–3 /
 agents 9244–9246 with skills Advisor, Advisor, and Tracker in transaction
 [`0x8e3806…c27`](https://sepolia.etherscan.io/tx/0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27).

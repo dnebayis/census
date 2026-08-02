@@ -7,18 +7,18 @@ Repository: `https://github.com/dnebayis/census`
 The hardened mint core and read-only ERC-8004 registration API are live. The shared
 RESTAP/MCP runtime exposes seven bounded report-only skills for the active collection.
 OpenSea does not currently index Sepolia tool registries. The archived v3 Executor has
-no implementation or authorization path; v4 replaces it with report-only Advisor.
+no implementation or authorization path; v4 and v5 replace it with report-only Advisor.
 
 `runtime-service/` contains the inactive protocol shell: `llms.txt`,
 address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
 Vercel assigned its first deployment to the stable
 `https://census-runtime-dnebayis.vercel.app` alias; its report-only engines are active
-for matching active-v4 skills but are not advertised in registration JSON. V4 tokens
-1 and 2 are Advisor entries; token 3 is Tracker. Its bounded news queue and
+for matching active-v5 skills but are not advertised in registration JSON. V5 currently
+has no tokens; archived v4 tokens 1 and 2 are Advisor entries and token 3 is Tracker. Its bounded news queue and
 sliding-window limits use Redis. The official 30 MB free Redis resource
 `census-runtime-free` is connected to production only; its real queue and distributed
-rate-limit integration test passed. Access is scoped to the active v4 Census contract
+rate-limit integration test passed. Access is scoped to the active v5 Census contract
 at `https://census-runtime-dnebayis.vercel.app`.
 
 The Vercel Git project is linked to `dnebayis/census`, production branch `main`, with
@@ -32,7 +32,7 @@ the owner's direction; its durability limits still prevent broader activation.
 The Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
 scans and emits ranked candidates with transaction/block evidence and explicit
 limitations. A live read-only scan and the Redis-backed integration passed; it remains
-available only to matching immutable-skill entries on the active v4 Census contract.
+available only to matching immutable-skill entries on the active v5 Census contract.
 
 External production verification passed on 2 August 2026. Token 2 RESTAP discovery
 returned its live agent 9121 binding and `canary.available: true`; `/talk` and the MCP
@@ -46,7 +46,7 @@ API origin, a secret-managed instant key, at most 20 combined collection-slug or
 `slug:tokenId` targets, same-currency raw-unit comparisons, and order/source evidence.
 It never builds or submits a transaction and does not claim net profit. The instant key
 expires after 30 days and must be rotated before 2026-09-02. Its independent skill
-flag is enabled for the active v4 Census contract; registration remains
+flag is enabled for the active v5 Census contract; registration remains
 inactive and the engine has no transaction capability.
 
 External production checks passed on 3 August 2026 for token 3: RESTAP discovery
@@ -89,7 +89,7 @@ signs, or submits transactions.
 
 Report-only invocation is gated by `ACTIVE_CENSUS_ADDRESS`, the adapter binding,
 immutable skill assignment, and its skill-specific flag. Archived v3 token 2 was the
-verified Mint Scanner canary; it is blocked after the active address moved to v4. Registration remains
+verified Mint Scanner canary; it is blocked after the active address moved again to v5. Registration remains
 inactive even while a production canary is exercised.
 
 Read, in order:
@@ -107,18 +107,20 @@ Read, in order:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - Census Sepolia ERC-8257 Tool Registry:
   `0xd61aa597398a83122fce07a94beddb91fce8f42e`
-- Active Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
+- Active Census v5: `0x5863E1d0539c659204B097359AC1a75C51144E78`
+- Archived v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
 - Archived v3: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
 - Canonical registration origin: `https://census-registration-dnebayis.vercel.app`
 - Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
 - Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
 - Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`
 
-V4 minting is irreversibly open. Deploy transaction:
-`0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`;
+V5 minting is irreversibly open. Deploy transaction:
+`0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9`;
 open-mint transaction:
-`0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`.
-It uses the broad 1%–95% density band. Its first batch minted tokens 1–3 / agents
+`0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280`.
+It uses the broad 1%–95% density band and derives class from Species. It starts with
+zero tokens. Archived v4 minted tokens 1–3 / agents
 9244–9246 with skills Advisor, Advisor, and Tracker in transaction
 `0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`
 at block `11406617`. All three production registration URLs returned HTTP 200 with

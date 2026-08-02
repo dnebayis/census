@@ -52,12 +52,13 @@ Sepolia fork.
 
 1. Build the shared protocol shell: `llms.txt`, RESTAP catalog, JSON `/talk`, passive
    `/news`, MCP projection, address-routed chain reads, and schemas. This local shell is
-   implemented under `runtime-service/`; matching report-only skills are available to
-   v4 entries. Tokens 1 and 2 expose Advisor; token 3 exposes Tracker.
+   implemented under `runtime-service/`; matching report-only skills are scoped to
+   active v5 entries. V5 currently has no tokens; archived v4 tokens 1 and 2 expose
+   Advisor and token 3 exposes Tracker but are no longer accepted by the active gate.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
-   `census-runtime-free`. The resource is production-only and the active v4 Census
+   `census-runtime-free`. The resource is production-only and the active v5 Census
    collection is enabled for report-only execution. External RESTAP, MCP, inactive-token,
    missing-token, chain-read, and Redis rate-limit checks passed on 2 August 2026.
    This bounded canary does not make the non-persistent free database a durability gate
@@ -69,10 +70,10 @@ Sepolia fork.
    engine and independent token 3 gate are implemented and enabled as the bounded
    production canary with the secret-managed instant key. Tracker's bounded OpenSea
    account-event engine and independent gate are implemented but unreachable until
-   a naturally assigned matching v4 token exists. Token Hunter's bounded OpenSea
+   a naturally assigned matching v5 token exists. Token Hunter's bounded OpenSea
    trending/detail engine and token 4 verification are implemented. The remaining
    Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
-   implemented but remain unreachable until a matching v4 token exists. The
+   implemented but remain unreachable until a matching v5 token exists. The
    Fraud Detector's bounded provider-label assessment is implemented as the sixth and
    final market-data report engine. Advisor is the seventh report-only engine. All seven report-only flags are enabled for the active
    Census contract. Future matching tokens work automatically after adapter-binding and

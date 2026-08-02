@@ -1,6 +1,6 @@
 {
   "chainId": 11155111,
-  "census": "0x629B4534D07F1E35a70a403f4521Cd95f34eb030",
+  "census": "0x5863E1d0539c659204B097359AC1a75C51144E78",
   "adapter": "0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92",
   "identityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
   "toolRegistry": "0xd61aa597398a83122fce07a94beddb91fce8f42e",
@@ -56,24 +56,30 @@
   "bitmapBytes": 200,
   "artRecordBytes": 209,
   "mintingOpen": true,
-  "deploymentTransaction": "0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3",
-  "deploymentBlock": 11406418,
-  "openMintTransaction": "0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d",
-  "openMintBlock": 11406456,
-  "rolloutTokenId": 1,
-  "rolloutAgentId": 9244,
-  "rolloutTransaction": "0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27",
-  "productionBatches": [
-    {
-      "transaction": "0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27",
-      "blockNumber": 11406617,
-      "drafts": ["v4-ember-librarian", "v4-quiet-navigator", "v4-pastel-analyst"],
-      "tokens": [1, 2, 3],
-      "agents": [9244, 9245, 9246],
-      "skills": ["Advisor", "Advisor", "Tracker"]
-    }
-  ],
+  "deploymentTransaction": "0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9",
+  "deploymentBlock": 11406675,
+  "openMintTransaction": "0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280",
+  "openMintBlock": 11406691,
+  "rolloutTokenId": null,
+  "rolloutAgentId": null,
+  "rolloutTransaction": null,
+  "productionBatches": [],
   "archivedCensus": [
+    {
+      "address": "0x629B4534D07F1E35a70a403f4521Cd95f34eb030",
+      "canonicalHost": "https://census-registration-dnebayis.vercel.app",
+      "reason": "v4 archived because visual class was derived from skill instead of immutable Species; tokens 1-3 remain preserved",
+      "productionBatches": [
+        {
+          "transaction": "0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27",
+          "blockNumber": 11406617,
+          "drafts": ["v4-ember-librarian", "v4-quiet-navigator", "v4-pastel-analyst"],
+          "tokens": [1, 2, 3],
+          "agents": [9244, 9245, 9246],
+          "skills": ["Advisor", "Advisor", "Tracker"]
+        }
+      ]
+    },
     {
       "address": "0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc",
       "canonicalHost": "https://census-registration-dnebayis.vercel.app",

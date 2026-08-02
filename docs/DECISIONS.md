@@ -183,7 +183,8 @@ archived or unrelated deployments remain blocked.
 
 The archived v3 contract's seventh immutable skill was named Executor. It is not
 implemented and must never be treated as an authorization surface. V4 replaces it with
-Advisor while preserving the 300-entry quota and Skull class. Advisor accepts a goal,
+Advisor while preserving the 300-entry quota. V4 also preserved the old skill-derived
+Skull label; D24 retires that unrelated visual mapping. Advisor accepts a goal,
 bounded HTTPS evidence links, constraints, and a risk preference; it returns suggestions,
 limitations, and the same links. Every runtime result is marked `reportOnly: true` and
 `transactionCapability: "none"`. Census never builds calldata, approvals, signature
@@ -200,19 +201,20 @@ which labelled visually human tokens as Skull.
 
 ## Active Sepolia record
 
-- Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
+- Census v5: `0x5863E1d0539c659204B097359AC1a75C51144E78`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - minting: irreversibly open
 - deploy transaction:
-  `0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`
+  `0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9`
 - open-mint transaction:
-  `0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`
-- first v4 batch: tokens `1–3`, agents `9244–9246`, skills `Advisor`, `Advisor`,
-  `Tracker`, transaction
-  `0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`
+  `0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280`
+- minted supply at rollout: `0`
+
+Archived v4 is `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`; tokens 1–3 /
+agents 9244–9246 remain preserved, but its skill-derived class labels are historical.
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains available through the permanent address-routed host.
