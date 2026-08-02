@@ -1,31 +1,29 @@
 # Sepolia deployment record
 
-## Active v3
+## Active v4
 
-- Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
+- Census: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
 - deploy transaction:
-  `0x6d5ec0e686997f513a151c099aa7703885a2fc56defb20b60959e5bb0fa9f945`
-- deploy block: `11389677`
+  `0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`
+- deploy block: `11406418`
 - source verification: Sourcify exact match, job
-  `6f5278ce-6ed3-4269-bfb2-caac8b0f4623`
+  `542b8cc7-b726-4027-a1ee-1ab00804e3e0`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - registration project: `dnebayis` account / `0xshawtys-projects` scope /
   `census-registration-dnebayis`
-- Vercel production deployment: `dpl_6Q8hVkh2jCS8gEpsUrfg3nhtPNfn`
+- registration production deployment: `dpl_DWeWGoQSLNfNXxWzFf3Py2mpCVfZ`
+- runtime production deployment: `dpl_DbbBKYqPDF1BJCfu312uKfembhtW`
 - repeatable deployment: native Vercel GitHub connection, production branch `main`,
   Root Directory `registration-service`
 - open-mint transaction:
-  `0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094`
-- open-mint block: `11389684`
+  `0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`
+- open-mint block: `11406456`
 - mint status: irreversibly open; there is no pause or close function
 - density hard band: 16–1520 lit pixels (1%–95%); art warnings are informational
 - bitmap/art record: 200-byte one-bit bitmap / 209-byte SSTORE2 record
 - palette: `#34343A` foreground / `#E9DDC7` background
-- rollout token/agent: `1 / 9119` (`threshold-keeper`)
-- rollout transaction:
-  `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
-- first v3 batch: tokens `2–5`, agents `9121–9124`, transaction
-  `0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
+- seventh skill: Advisor, 300 exact quota, report-only
+- rollout entries: none
 
 The permanent route is:
 
@@ -36,6 +34,13 @@ https://census-registration-dnebayis.vercel.app/a/<censusAddress>/<tokenId>/regi
 The Census address namespace lets all future deployments use this same Vercel project
 without colliding on token IDs. The service has no mutable `CENSUS_ADDRESS` setting; it
 validates the requested collection against the live ERC-8217 binding.
+
+## Archived v3 production entries
+
+V3 Census `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc` minted tokens 1–5 / agents
+9119 and 9121–9124. It was archived because its immutable seventh skill was named
+Executor. That skill has no runtime implementation; the tokens and registrations remain
+preserved through the same permanent service.
 
 ## Archived v2 production entries
 

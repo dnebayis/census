@@ -49,10 +49,10 @@ account-events endpoint for at most 10 exact wallet addresses, a caller-supplied
 time, and transfer/sale/mint filters. Each wallet request is capped at one 200-event
 page; a returned cursor is reported as `truncated` and is never followed automatically.
 The engine emits direction, NFT details, transaction evidence, source URLs, and explicit
-limitations. No current v3 token has the Tracker skill trait, so no entry can reach it
+limitations. No active v4 entry exists yet, so no entry can currently reach it
 yet. Census trait selection is never bypassed to manufacture a canary.
 
-Token Hunter is the fourth implemented report-only engine and is assigned to v3 token
+Token Hunter is the fourth implemented report-only engine and was verified with archived v3 token
 4 / agent 9123. It reads at most 100 OpenSea trending-token summaries, filters them by
 earliest known activity and 24-hour USD volume, then checks at most 20 token-detail
 records for an exact `OK` safety status. The API does not expose pool liquidity, so the
@@ -64,7 +64,7 @@ Trend Reader is the fifth implemented report-only engine. It reads one OpenSea t
 collection page for `1h`, `24h`, or `7d`, optionally filters one documented category,
 and attaches at most 10 collection-stat responses. It preserves OpenSea's rank, reports
 the exact matching interval when available, leaves missing intervals null, and never
-invents a Census momentum score. No current v3 token has skill index 4; the archived
+invents a Census momentum score. No active v4 entry exists yet; the archived
 v2 `night-ledger` is not reused as an
 active canary.
 
@@ -73,7 +73,7 @@ OpenSea collection metadata and stats; a wallet assessment reads one public Open
 profile. It reports provider enforcement, verification, safelist, NSFW, profile-age,
 and self-declared-agent fields without assigning a fraud score or making an accusation.
 Missing profiles and non-verification are explicitly insufficient evidence. No current
-v3 token has skill index 5.
+v3 collection had no token with skill index 5.
 
 All seven report-only feature flags are enabled in production. Every valid token on the
 active Census contract can invoke only its immutable report skill after the adapter binding
@@ -117,7 +117,7 @@ until storage, rate-limit, skill-execution, and external checks pass.
 
 Current deployment state: the stable production project is a bounded report-only runtime. The
 official free Redis resource `census-runtime-free` is connected only to production,
-the real queue and distributed limiter integration test passed, and the active v3
+the real queue and distributed limiter integration test passed, and the active v4
 collection is enabled at
 `https://census-runtime-dnebayis.vercel.app`. Registration remains inactive.
 
@@ -129,7 +129,7 @@ queries, which some public providers reject.
 
 Arbitrageur code, deterministic provider fixtures, and fail-closed checks pass. Its
 production gate is limited to agents with the matching immutable skill on the active
-v3 Census contract. Rotate the current OpenSea instant key before 2026-09-02.
+v4 Census contract. Rotate the current OpenSea instant key before 2026-09-02.
 
 External production checks passed on 3 August 2026: token 3 RESTAP discovery returned
 agent 9122 and `canary.available: true`; `/talk` returned a report-only OpenSea result;

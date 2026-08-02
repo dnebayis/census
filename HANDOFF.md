@@ -14,10 +14,11 @@ address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
 Vercel assigned its first deployment to the stable
 `https://census-runtime-dnebayis.vercel.app` alias; its report-only engines are active
-for matching v3 skills but are not advertised in registration JSON. Its bounded news queue and
+for matching active-v4 skills but are not advertised in registration JSON. V4 currently
+has no minted entries. Its bounded news queue and
 sliding-window limits use Redis. The official 30 MB free Redis resource
 `census-runtime-free` is connected to production only; its real queue and distributed
-rate-limit integration test passed. Access is scoped to the active v3 Census contract
+rate-limit integration test passed. Access is scoped to the active v4 Census contract
 at `https://census-runtime-dnebayis.vercel.app`.
 
 The Vercel Git project is linked to `dnebayis/census`, production branch `main`, with
@@ -31,7 +32,7 @@ the owner's direction; its durability limits still prevent broader activation.
 The Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
 scans and emits ranked candidates with transaction/block evidence and explicit
 limitations. A live read-only scan and the Redis-backed integration passed; it remains
-available only to matching immutable-skill entries on the active v3 Census contract.
+available only to matching immutable-skill entries on the active v4 Census contract.
 
 External production verification passed on 2 August 2026. Token 2 RESTAP discovery
 returned its live agent 9121 binding and `canary.available: true`; `/talk` and the MCP
@@ -45,7 +46,7 @@ API origin, a secret-managed instant key, at most 20 combined collection-slug or
 `slug:tokenId` targets, same-currency raw-unit comparisons, and order/source evidence.
 It never builds or submits a transaction and does not claim net profit. The instant key
 expires after 30 days and must be rotated before 2026-09-02. Its independent skill
-flag is enabled for the active v3 Census contract; registration remains
+flag is enabled for the active v4 Census contract; registration remains
 inactive and the engine has no transaction capability.
 
 External production checks passed on 3 August 2026 for token 3: RESTAP discovery
@@ -62,10 +63,10 @@ exact matching.
 Tracker is implemented as the third report-only engine using bounded OpenSea account
 events: at most 10 wallets, transfer/sale/mint filters, one 200-event page per wallet,
 transaction/source evidence, and explicit cursor truncation. Its independent gate is
-not configured in production because no current v3 token has skill index 2. Do not bind
+historically had no v3 token with skill index 2. Do not bind
 it to token 4 (Token Hunter) or reroll draft traits to force a Tracker token.
 
-Token Hunter is implemented for its real v3 token 4 / agent 9123 binding. It reads one
+Token Hunter was production-verified with archived v3 token 4 / agent 9123. It reads one
 OpenSea trending page (maximum 100), filters by `genesis_date`/`created_at` and 24-hour
 USD volume, and checks at most 20 token details for exact `status: OK`. It never calls
 volume liquidity, never requests a swap quote, and has its own skill flag.
@@ -73,7 +74,7 @@ volume liquidity, never requests a swap quote, and has its own skill flag.
 Trend Reader is implemented as the fifth report-only engine: one OpenSea trending page,
 `1h`/`24h`/`7d`, an optional documented category, and at most 10 collection-stat calls.
 It preserves OpenSea rank, attaches exact interval/total evidence, and leaves unavailable
-intervals null. No current v3 token has skill index 4, so its flag is not configured;
+intervals null. No archived v3 token had skill index 4;
 the archived v2 `night-ledger` is not an active canary.
 
 Fraud Detector completes the six market-data report engines. It uses one OpenSea profile call
@@ -87,8 +88,8 @@ engines; a future matching token works without an environment update. No skill b
 signs, or submits transactions.
 
 Report-only invocation is gated by `ACTIVE_CENSUS_ADDRESS`, the adapter binding,
-immutable skill assignment, and its skill-specific flag. V3 token 2 is the verified
-Mint Scanner. Registration remains
+immutable skill assignment, and its skill-specific flag. Archived v3 token 2 was the
+verified Mint Scanner canary; it is blocked after the active address moved to v4. Registration remains
 inactive even while a production canary is exercised.
 
 Read, in order:
@@ -106,17 +107,22 @@ Read, in order:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - Census Sepolia ERC-8257 Tool Registry:
   `0xd61aa597398a83122fce07a94beddb91fce8f42e`
-- Active Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
+- Active Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
+- Archived v3: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
 - Canonical registration origin: `https://census-registration-dnebayis.vercel.app`
 - Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
 - Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
 - Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`
 
-V3 minting is irreversibly open. Deploy transaction:
-`0x6d5ec0e686997f513a151c099aa7703885a2fc56defb20b60959e5bb0fa9f945`;
-open transaction:
+V4 minting is irreversibly open. Deploy transaction:
+`0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`;
+open-mint transaction:
+`0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`.
+It uses the broad 1%–95% density band and has no minted entries yet.
+
+Archived v3 used open transaction
 `0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094`.
-It uses the broad 1%–95% density band. Its first production entry is
+Its first production entry is
 `threshold-keeper`, token 1 / ERC-8004 agent 9119, minted in transaction
 `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
 at block `11390845`. Its verified registration URI is
@@ -160,9 +166,9 @@ Python/SVG smoke drawings are archive proof, not collection art.
 
 ## Safety-critical rollout order
 
-The initial rollout completed in this order:
+The production-only rollout completed in this order:
 
-1. Push the reviewed source and deploy the registration service to preview.
+1. Push the reviewed source and deploy the registration service to production.
 2. Run its unit/schema/404/chain-read tests.
 3. Obtain the stable public Vercel production project URL.
 4. Deploy Census to Sepolia with that exact URL; it starts closed.

@@ -191,17 +191,17 @@ requests, trades, transfers, or contract calls.
 
 ## Active Sepolia record
 
-- Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
+- Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - minting: irreversibly open
-- rollout token/agent: `1 / 9119` (`threshold-keeper`)
-- rollout transaction:
-  `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
-- first v3 batch: tokens `2–5`, agents `9121–9124`, transaction
-  `0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
+- deploy transaction:
+  `0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`
+- open-mint transaction:
+  `0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`
+- minted entries: none at rollout
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains available through the permanent address-routed host.

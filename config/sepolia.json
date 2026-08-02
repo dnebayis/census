@@ -1,6 +1,6 @@
 {
   "chainId": 11155111,
-  "census": "0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc",
+  "census": "0x629B4534D07F1E35a70a403f4521Cd95f34eb030",
   "adapter": "0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92",
   "identityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
   "toolRegistry": "0xd61aa597398a83122fce07a94beddb91fce8f42e",
@@ -10,32 +10,43 @@
     {
       "toolId": 1,
       "slug": "mint-scanner",
-      "transaction": "0x6eae59309e03ab974eccc1d87d547fc46355baa4f4534160cb085c4068af7486"
+      "transaction": "0x6eae59309e03ab974eccc1d87d547fc46355baa4f4534160cb085c4068af7486",
+      "metadataUpdateTransaction": "0xeb7c7a945e71b0550806c021c2ce9be86d6becf6839a2c5392c97e031f3576e2"
     },
     {
       "toolId": 2,
       "slug": "arbitrageur",
-      "transaction": "0xe3509267b2b5fd7db412fd5dddbf58b508c7448d189fbe0af68194c2d2f282de"
+      "transaction": "0xe3509267b2b5fd7db412fd5dddbf58b508c7448d189fbe0af68194c2d2f282de",
+      "metadataUpdateTransaction": "0x8ba7074d0c4881374627ae2849f69581db88ff199504ca7e4e3c179aa9df160e"
     },
     {
       "toolId": 3,
       "slug": "tracker",
-      "transaction": "0x7477fc873d899a365548dea906a441a0040756efaf86cf80c23fef8c7140861f"
+      "transaction": "0x7477fc873d899a365548dea906a441a0040756efaf86cf80c23fef8c7140861f",
+      "metadataUpdateTransaction": "0xc47d4927866d00757527bd369d5f7848c16b4b8b505a5a80d815846e5b8a170b"
     },
     {
       "toolId": 4,
       "slug": "token-hunter",
-      "transaction": "0x82657ead6700357cb3a6fa7e2accacebeebd64544a10dfd226683b9619c1ad87"
+      "transaction": "0x82657ead6700357cb3a6fa7e2accacebeebd64544a10dfd226683b9619c1ad87",
+      "metadataUpdateTransaction": "0xd371c01b30d69b8ead0bf718dd132fad13aafe80e01b3700ffc9163d1261fefc"
     },
     {
       "toolId": 5,
       "slug": "trend-reader",
-      "transaction": "0x1464245158dffdb8b490d140b40f7ac106d74199036609eee99fbde5f8cd1e8c"
+      "transaction": "0x1464245158dffdb8b490d140b40f7ac106d74199036609eee99fbde5f8cd1e8c",
+      "metadataUpdateTransaction": "0xa4b2529a49beb5cb7a004d7c9ebb3f4fb34d0ea7a1816a32798cd77e8dbdda47"
     },
     {
       "toolId": 6,
       "slug": "fraud-detector",
-      "transaction": "0x1fea92b9b0dcd8529c0e18aa0ead3b4ae331c427bd9142a2ca1770e5685d69d9"
+      "transaction": "0x1fea92b9b0dcd8529c0e18aa0ead3b4ae331c427bd9142a2ca1770e5685d69d9",
+      "metadataUpdateTransaction": "0xf12cc33553bf1995017a84913982ed32e93b39fe12cc34899d4a04e28067f133"
+    },
+    {
+      "toolId": 7,
+      "slug": "advisor",
+      "transaction": "0x5d54b805cb6951bfbf9a02cbbb9c4518c3d988cf549e6e7415af9344391c7696"
     }
   ],
   "canonicalHost": "https://census-registration-dnebayis.vercel.app",
@@ -45,29 +56,32 @@
   "bitmapBytes": 200,
   "artRecordBytes": 209,
   "mintingOpen": true,
-  "deploymentTransaction": "0x6d5ec0e686997f513a151c099aa7703885a2fc56defb20b60959e5bb0fa9f945",
-  "openMintTransaction": "0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094",
-  "rolloutTokenId": 1,
-  "rolloutAgentId": 9119,
-  "rolloutTransaction": "0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90",
-  "productionBatches": [
-    {
-      "transaction": "0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90",
-      "blockNumber": 11390845,
-      "drafts": ["threshold-keeper"]
-    },
-    {
-      "transaction": "0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45",
-      "blockNumber": 11390925,
-      "drafts": [
-        "dawn-cartographer",
-        "quiet-machinist",
-        "memory-diver",
-        "pastel-sentinel"
-      ]
-    }
-  ],
+  "deploymentTransaction": "0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3",
+  "deploymentBlock": 11406418,
+  "openMintTransaction": "0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d",
+  "openMintBlock": 11406456,
+  "rolloutTokenId": null,
+  "rolloutAgentId": null,
+  "rolloutTransaction": null,
+  "productionBatches": [],
   "archivedCensus": [
+    {
+      "address": "0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc",
+      "canonicalHost": "https://census-registration-dnebayis.vercel.app",
+      "reason": "v3 deployment archived because immutable skill index 6 was Executor; tokens 1-5 remain preserved",
+      "productionBatches": [
+        {
+          "transaction": "0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90",
+          "blockNumber": 11390845,
+          "drafts": ["threshold-keeper"]
+        },
+        {
+          "transaction": "0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45",
+          "blockNumber": 11390925,
+          "drafts": ["dawn-cartographer", "quiet-machinist", "memory-diver", "pastel-sentinel"]
+        }
+      ]
+    },
     {
       "address": "0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC",
       "canonicalHost": "https://census-registration-v2.vercel.app",

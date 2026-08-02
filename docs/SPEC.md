@@ -194,14 +194,18 @@ Fixed Sepolia infrastructure:
 
 Active rollout:
 
-- Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
+- Census v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - minting: irreversibly open
-- rollout token/agent: `1 / 9119` (`threshold-keeper`)
-- rollout transaction:
-  `0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
-- first v3 batch: tokens `2–5`, agents `9121–9124`, transaction
-  `0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
+- deploy transaction:
+  `0xd328c6e4db84ffe1c394861e86dd8f69ee9f4f47fbc4258fa3aba6fdfec286e3`
+- open-mint transaction:
+  `0x310ef10902a3bb1fb82e6584c9d83eea700c1be30ef89e3b66afb753cde1662d`
+- minted entries: none at rollout
+
+Archived v3: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`; its tokens 1–5 remain
+registered through the permanent address-routed service. Its immutable Executor name is
+historical and has no runtime implementation.
 
 Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`; its tokens 1–4
 remain registered through the permanent address-routed service.

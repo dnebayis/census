@@ -14,22 +14,24 @@ suggestions, evidence, and links; see
 
 | Component | Sepolia |
 |---|---|
-| Census v3 | [`0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`](https://sepolia.etherscan.io/address/0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc) — mint open |
+| Census v4 | [`0x629B4534D07F1E35a70a403f4521Cd95f34eb030`](https://sepolia.etherscan.io/address/0x629B4534D07F1E35a70a403f4521Cd95f34eb030) — mint open, Advisor-only boundary |
 | Registration | [`https://census-registration-dnebayis.vercel.app`](https://census-registration-dnebayis.vercel.app) — permanent single project |
 | Runtime | [`https://census-runtime-dnebayis.vercel.app`](https://census-runtime-dnebayis.vercel.app) — collection-scoped report-only production runtime; not advertised by registration |
 | ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
 | ERC-8257 Tool Registry | `0xd61aa597398a83122fce07a94beddb91fce8f42e` — Census Sepolia reference deployment |
+| Archived v3 | [`0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`](https://sepolia.etherscan.io/address/0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc) — tokens 1–5 preserved; immutable Executor retired |
 | Archived v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — tokens 1–4 preserved |
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-V3 permissionless minting is irreversibly open. Its first production entry,
+V4 permissionless minting is irreversibly open and has no minted entries yet. The
+archived v3 first production entry,
 `threshold-keeper`, minted token 1 / ERC-8004 agent 9119 in transaction
 [`0xe6f91c…c7d90`](https://sepolia.etherscan.io/tx/0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90).
 Its live registration is
 [`/a/<contract>/1/registration.json`](https://census-registration-dnebayis.vercel.app/a/0x1ada8e305f684b13419c51ea40a09a3c5e4760bc/1/registration.json).
-The first v3 batch minted `dawn-cartographer`, `quiet-machinist`, `memory-diver`, and
+The archived v3 batch minted `dawn-cartographer`, `quiet-machinist`, `memory-diver`, and
 `pastel-sentinel` as tokens 2–5 / agents 9121–9124 in transaction
 [`0x8117fb…ace45`](https://sepolia.etherscan.io/tx/0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45).
 Archived v2 genesis draft `genesis-registrar`

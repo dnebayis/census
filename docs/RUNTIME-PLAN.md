@@ -45,19 +45,19 @@ origin binding, JCS canonicalization, `keccak256` manifest hashes, lowercase
 Identity is still born in the mint transaction. Tool registration happens only when a
 real runtime is ready; a future Census deployment may proxy owner-controlled ERC-8257
 registration so creator control follows NFT ownership without advertising a dead tool.
-No v3 redeploy occurs until the runtime and registry integration pass locally and on a
+V4 was deployed only after the runtime and registry integration passed locally and on a
 Sepolia fork.
 
 ## Delivery order
 
 1. Build the shared protocol shell: `llms.txt`, RESTAP catalog, JSON `/talk`, passive
    `/news`, MCP projection, address-routed chain reads, and schemas. This local shell is
-   implemented under `runtime-service/`; matching report-only skills are active on the
-   current v3 collection.
+   implemented under `runtime-service/`; matching report-only skills are available to
+   future v4 entries. V4 currently has no minted entries.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
-   `census-runtime-free`. The resource is production-only and the active v3 Census
+   `census-runtime-free`. The resource is production-only and the active v4 Census
    collection is enabled for report-only execution. External RESTAP, MCP, inactive-token,
    missing-token, chain-read, and Redis rate-limit checks passed on 2 August 2026.
    This bounded canary does not make the non-persistent free database a durability gate
@@ -69,17 +69,17 @@ Sepolia fork.
    engine and independent token 3 gate are implemented and enabled as the bounded
    production canary with the secret-managed instant key. Tracker's bounded OpenSea
    account-event engine and independent gate are implemented but unreachable until
-   a naturally assigned Tracker-trait v3 token exists. Token Hunter's bounded OpenSea
+   a naturally assigned matching v4 token exists. Token Hunter's bounded OpenSea
    trending/detail engine and token 4 verification are implemented. The remaining
    Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
-   implemented but remain inactive until a current-v3 skill-index-4 token exists. The
+   implemented but remain unreachable until a matching v4 token exists. The
    Fraud Detector's bounded provider-label assessment is implemented as the sixth and
    final market-data report engine. Advisor is the seventh report-only engine. All seven report-only flags are enabled for the active
    Census contract. Future matching tokens work automatically after adapter-binding and
    immutable-skill checks; currently absent skill types remain unreachable.
 3. A conformant Sepolia ERC-8257 registry is deployed at
-   `0xd61aa597398a83122fce07a94beddb91fce8f42e`; six open report-tool manifests and
-   focused invocation routes are implemented and registered as tool IDs 1–6. OpenSea
+   `0xd61aa597398a83122fce07a94beddb91fce8f42e`; seven open report-tool manifests and
+   focused invocation routes are implemented and registered as tool IDs 1–7. OpenSea
    does not currently list Sepolia
    among its canonical registry chains, so OpenSea search verification remains pending
    upstream network support rather than being falsely claimed.
