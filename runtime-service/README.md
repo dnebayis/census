@@ -58,6 +58,14 @@ public input is deliberately named `minVolume24hUsd`; volume is never presented 
 liquidity. Results contain age basis, momentum, volume, holder/verification fields,
 OpenSea attribution, and explicit limitations. No swap quote or transaction is built.
 
+Trend Reader is the fifth implemented report-only engine. It reads one OpenSea trending
+collection page for `1h`, `24h`, or `7d`, optionally filters one documented category,
+and attaches at most 10 collection-stat responses. It preserves OpenSea's rank, reports
+the exact matching interval when available, leaves missing intervals null, and never
+invents a Census momentum score. Its independent gate remains inactive because no
+current v3 token has skill index 4; the archived v2 `night-ledger` is not reused as an
+active canary.
+
 Required local environment:
 
 - `RUNTIME_ORIGIN` — stable HTTPS origin, no trailing slash
@@ -70,6 +78,8 @@ Required local environment:
 - `UNPAID_TRACKER_ENABLED` — reserved independent gate; keep false until an exact
   Tracker-trait token exists and passes production checks
 - `UNPAID_TOKEN_HUNTER_ENABLED` — independent exact-token gate for token 4
+- `UNPAID_TREND_READER_ENABLED` — reserved independent gate; keep false until an exact
+  current-v3 Trend Reader token exists
 - `CANARY_AGENT_KEYS` — exact lowercase `<censusAddress>:<tokenId>` allowlist
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the Vercel-provided
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` aliases)

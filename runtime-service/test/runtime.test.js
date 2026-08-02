@@ -24,6 +24,12 @@ import {
   normalizeTokenHunterInput,
   runTokenHunter,
 } from "../lib/engines/token-hunter.js";
+import {
+  OpenSeaTrendReaderSource,
+  TrendReaderDataUnavailableError,
+  normalizeTrendReaderInput,
+  runTrendReader,
+} from "../lib/engines/trend-reader.js";
 import { RuntimeInactiveError, canExecuteCanary, executeAgentSkill } from "../lib/execution.js";
 import { createAgentMcpHandler, createAgentMcpServer } from "../lib/mcp.js";
 import { InMemoryNewsStore, RedisNewsStore, newsKey, normalizeNewsItem } from "../lib/news.js";
@@ -72,6 +78,15 @@ const tokenHunterAgent = {
   context: "a memory diver",
   skillIndex: 3,
   skill: skillByIndex(3),
+};
+
+const trendReaderAgent = {
+  ...agent,
+  tokenId: 6n,
+  agentId: 9125n,
+  context: "a signal listener",
+  skillIndex: 4,
+  skill: skillByIndex(4),
 };
 
 function fakeClient(overrides = {}) {
@@ -643,6 +658,73 @@ test("OpenSea Token Hunter fails closed when discovery is unavailable", async ()
   );
 });
 
+test("Trend Reader normalizes bounded timeframe and category input", () => {
+  const normalized = normalizeTrendReaderInput({ timeframe: "24h", category: "art" });
+  assert.equal(normalized.chain, "eip155:1");
+  assert.equal(normalized.maxCollections, 10);
+  assert.throws(() => normalizeTrendReaderInput({ timeframe: "30d" }), /timeframe/);
+  assert.throws(() => normalizeTrendReaderInput({ timeframe: "1h", category: "anything" }), /category/);
+});
+
+test("OpenSea Trend Reader attaches exact interval and total collection evidence", async () => {
+  const requests = [];
+  const source = new OpenSeaTrendReaderSource({
+    apiKey: "test-key",
+    async fetchImpl(url, options) {
+      requests.push({ url, options });
+      if (url.pathname.endsWith("/collections/trending")) {
+        return new Response(JSON.stringify({
+          collections: [{
+            collection: "signal-fixture",
+            name: "Signal Fixture",
+            category: "art",
+            safelist_status: "verified",
+            is_disabled: false,
+            is_nsfw: false,
+            opensea_url: "https://opensea.io/collection/signal-fixture",
+            contracts: [{ chain: "ethereum", address: census }],
+          }],
+          next: "next-page",
+        }), { status: 200, headers: { "content-type": "application/json" } });
+      }
+      return new Response(JSON.stringify({
+        total: { volume: 1_000, sales: 100, num_owners: 50, floor_price: 1.25, floor_price_symbol: "ETH" },
+        intervals: [
+          { interval: "one_day", volume: 250, sales: 20 },
+          { interval: "seven_days", volume: 800, sales: 70 },
+        ],
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    },
+  });
+  const report = await runTrendReader({
+    input: { chain: "eip155:1", timeframe: "24h", category: "art", maxCollections: 5 },
+    source,
+    now: () => new Date("2026-08-03T00:00:00.000Z"),
+  });
+  assert.equal(report.reportOnly, true);
+  assert.equal(report.truncated, true);
+  assert.equal(report.collections[0].rank, 1);
+  assert.deepEqual(report.collections[0].selectedInterval, { interval: "one_day", volume: 250, sales: 20 });
+  assert.equal(report.collections[0].totals.floorPrice, 1.25);
+  assert.equal(requests.length, 2);
+  assert.equal(requests[0].url.searchParams.get("timeframe"), "one_day");
+  assert.equal(requests[0].url.searchParams.get("chains"), "ethereum");
+  assert.equal(requests[0].url.searchParams.get("category"), "art");
+  assert.equal(requests[0].options.headers["x-api-key"], "test-key");
+});
+
+test("OpenSea Trend Reader fails closed when ranking is unavailable", async () => {
+  assert.throws(() => new OpenSeaTrendReaderSource(), TrendReaderDataUnavailableError);
+  const source = new OpenSeaTrendReaderSource({
+    apiKey: "test-key",
+    fetchImpl: async () => new Response("unavailable", { status: 503 }),
+  });
+  await assert.rejects(
+    source.snapshot({ chain: "eip155:1", timeframe: "24h", maxCollections: 5 }),
+    TrendReaderDataUnavailableError,
+  );
+});
+
 test("only the doubly-gated Mint Scanner canary can execute", async () => {
   const enabledEnv = {
     UNPAID_MINT_SCANNER_ENABLED: "true",
@@ -727,6 +809,16 @@ test("Token Hunter has an exact independent token 4 gate", () => {
   };
   assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), true);
   assert.equal(canExecuteCanary(arbitrageurAgent, enabledEnv), false);
+});
+
+test("Trend Reader gate cannot activate without an exact matching token", () => {
+  const enabledEnv = {
+    UNPAID_TREND_READER_ENABLED: "true",
+    CANARY_AGENT_KEYS: `${census}:6`,
+  };
+  assert.equal(canExecuteCanary(trendReaderAgent, enabledEnv), true);
+  assert.equal(canExecuteCanary(tokenHunterAgent, enabledEnv), false);
+  assert.equal(canExecuteCanary(trendReaderAgent, { ...enabledEnv, CANARY_AGENT_KEYS: "" }), false);
 });
 
 test("MCP returns structured canary output through the shared executor", async () => {

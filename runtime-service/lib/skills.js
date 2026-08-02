@@ -50,10 +50,12 @@ export const SKILLS = [
   {
     name: "Trend Reader",
     slug: "trend-reader",
-    description: "Reports collections with early momentum.",
+    description: "Reports OpenSea trending collections with bounded market evidence.",
     inputSchema: z.object({
+      chain: z.enum(["eip155:1", "eip155:11155111"]).default("eip155:1"),
       timeframe: z.enum(["1h", "24h", "7d"]),
-      category: z.string().min(1).optional(),
+      category: z.enum(["art", "gaming", "memberships", "music", "pfps", "photography", "domain-names", "virtual-worlds", "sports-collectibles", "physical-collectibles"]).optional(),
+      maxCollections: z.number().int().min(1).max(10).default(10),
     }),
   },
   {

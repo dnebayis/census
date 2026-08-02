@@ -158,6 +158,18 @@ V3 token 4 / agent 9123 has immutable skill index 3 and is the exact production 
 Its flag remains independent from Mint Scanner, Arbitrageur, and the unavailable Tracker
 canary.
 
+### D21 — Trend Reader preserves provider rank and exact interval evidence
+
+Trend Reader uses one OpenSea trending-collections request followed by at most 10
+collection-stat requests. Inputs are one supported chain, `1h`/`24h`/`7d`, one optional
+documented category, and a maximum of 10 results. Output preserves provider rank and
+attaches total and exact matching interval statistics. A missing interval remains null;
+Census does not infer it from another window or claim an independent momentum score.
+
+No current v3 token has skill index 4, so the engine deploys inactive. The archived v2
+`night-ledger` identity is not promoted back into the active canary set merely to fill
+the gap. Activation waits for a naturally assigned current-v3 entry.
+
 ## Active Sepolia record
 
 - Census: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`

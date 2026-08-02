@@ -70,6 +70,12 @@ OpenSea trending page (maximum 100), filters by `genesis_date`/`created_at` and 
 USD volume, and checks at most 20 token details for exact `status: OK`. It never calls
 volume liquidity, never requests a swap quote, and has its own exact-token canary flag.
 
+Trend Reader is implemented as the fifth report-only engine: one OpenSea trending page,
+`1h`/`24h`/`7d`, an optional documented category, and at most 10 collection-stat calls.
+It preserves OpenSea rank, attaches exact interval/total evidence, and leaves unavailable
+intervals null. No current v3 token has skill index 4, so its flag is not configured;
+the archived v2 `night-ledger` is not an active canary.
+
 Canary invocation is double-gated by a skill-specific enable flag and exact
 `CANARY_AGENT_KEYS`; v3 token 2 is the verified Mint Scanner. Registration remains
 inactive even while a production canary is exercised.

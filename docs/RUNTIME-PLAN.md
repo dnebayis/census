@@ -80,7 +80,9 @@ Sepolia fork.
    account-event engine and independent gate are implemented but remain inactive until
    a naturally assigned Tracker-trait v3 token exists. Token Hunter's bounded OpenSea
    trending/detail engine and exact token 4 gate are implemented. The remaining
-   report-only engines are Trend Reader and Fraud Detector.
+   Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
+   implemented but remain inactive until a current-v3 skill-index-4 token exists. The
+   remaining report-only engine is Fraud Detector.
 3. Add per-entry price configuration, dynamic owner recipient resolution, x402 402 →
    verify → settle → result flow, replay protection, and idempotent receipts.
 4. Add lazy per-entry execution wallets with owner recovery/rotation and strict spend
