@@ -8,6 +8,9 @@ optimizer = true
 # margin over marginal hot-path gas savings; mint remains testnet gas-only.
 optimizer_runs = 1
 via_ir = true
+# Read-only access to the frozen cross-language golden vectors shared with the Python
+# pipeline tests. Scoped to the fixtures directory; no write access is granted.
+fs_permissions = [{ access = "read", path = "./test/fixtures" }]
 
 [fmt]
 line_length = 120

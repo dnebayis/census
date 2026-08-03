@@ -93,6 +93,44 @@ contract BitmapEquivalenceTest is Test {
         assertEq(sig & 1, 1, "13 of 25 must set the block bit");
     }
 
+    /// @notice Pins `Bitmap` to the exact numbers `pipeline/binarize.py` produces.
+    /// @dev Both languages hand-roll the same analysis. `test/fixtures/bitmap-golden.json`
+    ///      is a frozen record generated from the Python side; asserting the Solidity
+    ///      library reproduces every field catches silent drift between the two
+    ///      implementations — including `symmetryDistance`, `cornerDensity` and
+    ///      `isolationCount`, which have no other Solidity coverage.
+    function test_MatchesCrossLanguageGoldenVectors() public view {
+        string memory json = vm.readFile("test/fixtures/bitmap-golden.json");
+        uint256 count = vm.parseJsonUint(json, ".count");
+        assertGt(count, 0, "no golden vectors loaded");
+
+        for (uint256 i; i < count; ++i) {
+            string memory base = string.concat(".vectors[", vm.toString(i), "].");
+            bytes memory bm = vm.parseJsonBytes(json, string.concat(base, "bitmap"));
+            assertEq(bm.length, 200, "golden bitmap must be 200 bytes");
+
+            (uint256 lit, uint64 sig) = Bitmap.analyze(bm);
+            (uint256 tl, uint256 tr) = Bitmap.cornerDensity(bm);
+
+            assertEq(lit, vm.parseJsonUint(json, string.concat(base, "lit")), "lit diverged from Python");
+            assertEq(
+                uint256(sig), vm.parseJsonUint(json, string.concat(base, "signature")), "signature diverged from Python"
+            );
+            assertEq(
+                Bitmap.symmetryDistance(sig),
+                vm.parseJsonUint(json, string.concat(base, "symmetry")),
+                "symmetry diverged from Python"
+            );
+            assertEq(tl, vm.parseJsonUint(json, string.concat(base, "corner_tl")), "corner_tl diverged from Python");
+            assertEq(tr, vm.parseJsonUint(json, string.concat(base, "corner_tr")), "corner_tr diverged from Python");
+            assertEq(
+                Bitmap.isolationCount(bm),
+                vm.parseJsonUint(json, string.concat(base, "isolated")),
+                "isolation diverged from Python"
+            );
+        }
+    }
+
     function _light(bytes memory bm, uint256 count) internal pure {
         uint256 done;
         for (uint256 r = 0; r < 5 && done < count; ++r) {

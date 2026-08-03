@@ -579,7 +579,6 @@ def main():
     mint = sub.add_parser("mint", help="simulate then mint one or more drafts")
     _add_draft_arg(mint, multiple=True)
     mint.add_argument("--persona", action="append", help="defaults to the draft subject")
-    mint.add_argument("--accept-warnings", action="store_true", help=argparse.SUPPRESS)
     mint.add_argument("--census", help="defaults to config/sepolia.json")
     mint.add_argument("--rpc", help="defaults to environment or config/sepolia.json")
     mint.set_defaults(fn=cmd_mint)

@@ -130,6 +130,31 @@ class PipelineTest(unittest.TestCase):
             self.assertEqual(stats["density"], lit)
             self.assertEqual(stats["signature"], f"0x{signature:016x}")
 
+    def test_bitmap_metrics_match_cross_language_golden_vectors(self):
+        from binarize import (
+            corner_density,
+            density,
+            isolated_count,
+            signature,
+            symmetry_distance,
+        )
+
+        fixture = Path(__file__).resolve().parent.parent / "test" / "fixtures" / "bitmap-golden.json"
+        vectors = json.loads(fixture.read_text())["vectors"]
+        self.assertTrue(vectors)
+        for vector in vectors:
+            bitmap = bytes.fromhex(vector["bitmap"].removeprefix("0x"))
+            pixels = unpack_bitmap(bitmap)
+            sig = signature(pixels)
+            top_left, top_right = corner_density(pixels)
+            with self.subTest(vector=vector["name"]):
+                self.assertEqual(density(pixels), vector["lit"])
+                self.assertEqual(f"0x{sig:016x}", vector["signature"])
+                self.assertEqual(symmetry_distance(sig), vector["symmetry"])
+                self.assertEqual(top_left, vector["corner_tl"])
+                self.assertEqual(top_right, vector["corner_tr"])
+                self.assertEqual(isolated_count(pixels), vector["isolated"])
+
     def test_brief_persists_seed_and_assignment(self):
         with tempfile.TemporaryDirectory() as output:
             args = argparse.Namespace(

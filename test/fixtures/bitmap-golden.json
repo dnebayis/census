@@ -1,0 +1,76 @@
+{
+  "_comment": "Frozen cross-language golden vectors for Bitmap analysis. Both pipeline/test_pipeline.py and test/BitmapEquivalence.t.sol assert against these exact values, pinning the Python binarize.py and Solidity src/lib/Bitmap.sol implementations to each other. Regenerate only with a deliberate, reviewed change.",
+  "count": 7,
+  "vectors": [
+    {
+      "name": "all_zero",
+      "bitmap": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "lit": 0,
+      "signature": "0x0000000000000000",
+      "symmetry": 0,
+      "corner_tl": 0,
+      "corner_tr": 0,
+      "isolated": 0
+    },
+    {
+      "name": "all_full",
+      "bitmap": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "lit": 1600,
+      "signature": "0xffffffffffffffff",
+      "symmetry": 0,
+      "corner_tl": 64,
+      "corner_tr": 64,
+      "isolated": 0
+    },
+    {
+      "name": "mirror_symmetric",
+      "bitmap": "0x2c707e0e343c033cc03c0f3c813cf00c09ff9030568118816a30af99f50cb21d00b84d3638a51c6c900d24b009024a3c52403030000c0c03b0000dc0412299448222495a9244288b3cd1140812e7481047a3ffc5e277400002ee5a1442285a0d422442b04e6c3c3672d6f2424f6bc8094290134234242c42d5343c2cab806781e6013a76666e5c00c024030002585a1a4012b4662d4817b3c3cde88438241c2128a481251440c718e302e2814281478c20420431e5c0bd03a7641866182615643c26a8282abd5414",
+      "lit": 602,
+      "signature": "0x0000002400002418",
+      "symmetry": 0,
+      "corner_tl": 27,
+      "corner_tr": 27,
+      "isolated": 102
+    },
+    {
+      "name": "sparse_isolated",
+      "bitmap": "0x8000000000000000000004000000000000000000002000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "lit": 8,
+      "signature": "0x0000000000000000",
+      "symmetry": 0,
+      "corner_tl": 2,
+      "corner_tr": 0,
+      "isolated": 8
+    },
+    {
+      "name": "random_1",
+      "bitmap": "0xf5b165224a58b791df6af1d8303e61cdc4bb86c3d1c427103c344c4189eb2f1e7bd5d47e446fcec2a3d811736110e5781bcccea696762e6116c6e9c92d99bf358c2e0718822ce47ca8c74107e66cb0e4b2b3f4d58d82ca6386d2c96e760e819b85c924c3597164c4a6058a00581a22b22de50472433d2e44fed8b6b8357e44cd3129903ac1d45597a242fdf11f8f2b1a39f3c3e693114351dcbed407e3e6b605b99e8306dda748a61e029a8a3f415b024a146cf0d98a98e1cf999661f967bdafdf0e7337420c13f8",
+      "lit": 775,
+      "signature": "0xe39a33220e145243",
+      "symmetry": 16,
+      "corner_tl": 37,
+      "corner_tr": 31,
+      "isolated": 50
+    },
+    {
+      "name": "random_2",
+      "bitmap": "0x73a9bef499bbf4dc7bd2a4f2c8af5bd99f267a0ed3197217dd2bba1537436e5c2441e3d54410492b788768bcff2218cf8f7373abe8e394daf807e24e58c367402e281f9bddf85336d15b579b74e4250950c9c994752666ae81c78b283592edff935d406e8fdb72a34980be64d347bdcdda5117b919f538dcb77eacfe863e5282fa940bf3eb573f5fc12f4f8b12cd8aefd2f6e1716f7b8780ce6cab44e78db5e6265632094a04fcde45a00607b90c305da0480377e97e8dee32ee8651ab4f62e86fa84861a6c4716c",
+      "lit": 829,
+      "signature": "0xd71afaaf9bddc1ef",
+      "symmetry": 12,
+      "corner_tl": 38,
+      "corner_tr": 34,
+      "isolated": 45
+    },
+    {
+      "name": "random_3",
+      "bitmap": "0xfd3feb3c9250b7974a9b528b69636321a461b55ef55b7beafd809a9a9e925b79a6342fa0fdb8b294d97fc6103d92089b25fa5e039f52a8e8a95f64d6589c1f7844066542ec38008d331dfd3b272416317694e2fe860397b774306378b5437d8a755622d6d7a0b48cb048f279829caa652af899a3e1f16bdc45cc8e26863d5f3b7f3a86a244b9d026843738deb48d03ed3034ef8590e4d26399aec2bd13a8e003589fe1ab3edaf8c6515d6410246fce2892601bc222871ef56a4d5297d238f40a9fe01f4dd917b3c7",
+      "lit": 796,
+      "signature": "0xd0a9760a2e308cfd",
+      "symmetry": 16,
+      "corner_tl": 28,
+      "corner_tr": 35,
+      "isolated": 74
+    }
+  ]
+}
