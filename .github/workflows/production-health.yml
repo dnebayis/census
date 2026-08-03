@@ -36,3 +36,8 @@ jobs:
           curl --fail --silent --show-error --max-time 10 \
             "$RUNTIME_ORIGIN/a/$CENSUS_V6/2/.well-known/restap.json" \
             | jq -e '.canary.available == true' >/dev/null
+          curl --fail --silent --show-error --max-time 30 \
+            --request POST --header 'content-type: application/json' \
+            --data '{"chains":["eip155:11155111"],"timeWindowHours":1,"filters":{"minMints":1}}' \
+            "$RUNTIME_ORIGIN/a/$CENSUS_V6/3/talk" \
+            | jq -e '.skill == "Mint Scanner" and .result.reportOnly == true and .result.transactionCapability == "none"' >/dev/null

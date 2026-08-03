@@ -34,6 +34,10 @@ adapter binding, agent ID and Identity Registry URI were matched live. V5
 - Production v5 canaries: token 1 Arbitrageur discovery/talk and token 2 Mint Scanner
   discovery/talk/MCP returned 200; rate headers and report-only capability were present;
   a missing token returned 404.
+- Production v6 canaries: token 2 Arbitrageur discovery is available; token 3 Mint
+  Scanner `/talk` returns 200 with `reportOnly: true` and `transactionCapability: none`.
+  Arbitrageur market execution currently fails closed with `market data unavailable`
+  until the exposed OpenSea key is rotated.
 
 ## Locked boundaries
 

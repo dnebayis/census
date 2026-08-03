@@ -144,5 +144,7 @@ broader production activation.
 Archived v5 token 1 / agent 9247 Arbitrageur and token 2 / agent 9248 Mint Scanner
 passed production discovery, `/talk`, MCP, rate-limit, 404 and report-only checks on
 3 August 2026. Active v6 naturally contains Fraud Detector (token 1), Arbitrageur
-(tokens 2 and 4), Mint Scanner (token 3) and Tracker (token 5). V6 token 2 Arbitrageur
-is the production runtime health canary; no new runtime project is needed.
+(tokens 2 and 4), Mint Scanner (token 3) and Tracker (token 5). V6 token 2 discovery and
+token 3 Mint Scanner report execution are the production health canaries. Arbitrageur
+market execution fails closed until the exposed OpenSea key is rotated; no new runtime
+project is needed.
