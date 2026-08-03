@@ -62,6 +62,33 @@ STYLE
 ENTRY_EVENT_TOPIC = None
 PIPELINE_VERSION = 3
 BITMAP_FORMAT = "census-1bit-v2"
+MAX_CONTEXT_BYTES = 280
+
+
+def _validate_context(draft_id, persona):
+    """Reject a context the contract's _validContext would reject, before any gas is spent.
+
+    The onchain check requires 1-280 strict-UTF-8 bytes. A normal Python string always
+    encodes to strict UTF-8, so mirroring the full decoder is unnecessary; encoding fails
+    only on lone surrogates, which the contract also rejects.
+    """
+    if not isinstance(persona, str):
+        raise ValueError(f"draft {draft_id!r} context must be text")
+    try:
+        encoded = persona.encode("utf-8")
+    except UnicodeEncodeError:
+        raise ValueError(
+            f"draft {draft_id!r} context is not valid UTF-8; the contract will reject it"
+        )
+    if not encoded:
+        raise ValueError(
+            f"draft {draft_id!r} context is empty; the contract requires 1-280 UTF-8 bytes"
+        )
+    if len(encoded) > MAX_CONTEXT_BYTES:
+        raise ValueError(
+            f"draft {draft_id!r} context is {len(encoded)} UTF-8 bytes; the contract limit is "
+            f"{MAX_CONTEXT_BYTES}. Shorten the subject or pass a shorter --persona."
+        )
 
 
 def _run(cmd, *, timeout=120, check=False, env=None):
@@ -253,6 +280,7 @@ def _load_mint_drafts(args):
     for index, draft_id in enumerate(draft_ids):
         manifest = load_draft_manifest(args.output, draft_id)
         persona = personas[index] if personas else manifest["subject"]
+        _validate_context(draft_id, persona)
         build = manifest.get("build")
         if not build:
             raise ValueError(f"draft {draft_id!r} has not been built")

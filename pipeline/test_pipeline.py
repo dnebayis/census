@@ -327,6 +327,45 @@ class PipelineTest(unittest.TestCase):
                 generate._load_mint_drafts(args)[0]["persona"], "a plain portrait"
             )
 
+    def test_overlong_context_is_rejected_before_broadcast(self):
+        with tempfile.TemporaryDirectory() as output:
+            bitmap = bytes(200)
+            Path(output, "wordy.hex").write_text(bitmap.hex())
+            save_draft_manifest(
+                output,
+                "wordy",
+                {
+                    "version": generate.PIPELINE_VERSION,
+                    "subject": "a wordy portrait",
+                    "traits": VALID_TRAITS,
+                    "traits_hex": "0x000000000000000000",
+                    "visual_review": approved_review(bitmap),
+                    "build": {
+                        "bitmap_format": generate.BITMAP_FORMAT,
+                        "generator": "user:raster",
+                        "bitmap_sha256": generate._sha256(bitmap),
+                        "stats": {"mintable": True, "warnings": [], "signature": "0x01", "headroom_rows": 5},
+                    },
+                },
+            )
+            args = argparse.Namespace(
+                drafts=["wordy"],
+                legacy_ids=None,
+                persona=["x" * (generate.MAX_CONTEXT_BYTES + 1)],
+                output=output,
+                accept_warnings=False,
+            )
+            with self.assertRaisesRegex(ValueError, "UTF-8 bytes"):
+                generate._load_mint_drafts(args)
+
+    def test_empty_context_is_rejected_before_broadcast(self):
+        self.assertRaisesRegex(ValueError, "empty", generate._validate_context, "d", "")
+        self.assertRaisesRegex(
+            ValueError, "not valid UTF-8", generate._validate_context, "d", "\ud800"
+        )
+        # a boundary-length multibyte context stays acceptable
+        generate._validate_context("d", "é" * (generate.MAX_CONTEXT_BYTES // 2))
+
     def test_legacy_two_bit_draft_cannot_enter_mint(self):
         with tempfile.TemporaryDirectory() as output:
             bitmap = bytes(400)
