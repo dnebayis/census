@@ -17,7 +17,7 @@ const tokenUri =
   "data:application/json;base64," +
   Buffer.from(JSON.stringify({ image })).toString("base64");
 
-test("public docs expose preview, API links, and the local mint workflow", () => {
+test("public docs expose preview, API links, and the agent mint workflow", () => {
   const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
   assert.match(html, /role="tab"[^>]+>Docs</);
   assert.match(html, /role="tab"[^>]+>API</);
@@ -27,6 +27,7 @@ test("public docs expose preview, API links, and the local mint workflow", () =>
   assert.match(html, /github\.com\/dnebayis\/census\/tree\/main\/skills\/census-mint/);
   assert.match(html, /wait for my explicit approval before simulating or minting/);
   assert.match(html, /There is no hosted mint endpoint/);
+  assert.doesNotMatch(html, /localhost|127\.0\.0\.1|\blocal\b/i);
 });
 
 function fakeClient(overrides = {}) {

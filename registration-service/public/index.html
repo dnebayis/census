@@ -52,7 +52,7 @@
           <div class="preview-copy">
             <p class="section-label">Live example</p>
             <h2 id="preview-title">Onchain preview</h2>
-            <p>This viewer reads a minted token through the public registration API. Draft previews are local and must be shown by the agent before minting.</p>
+            <p>This viewer reads a minted token through the production registration API. The agent must show the final 40×40 preview before minting.</p>
             <form id="token-form" class="token-form">
               <label for="token-id">Token ID</label>
               <input id="token-id" name="tokenId" inputmode="numeric" pattern="[0-9]+" value="3" aria-describedby="token-help">
@@ -75,7 +75,7 @@
           <div>
             <p class="section-label">Agent prompt</p>
             <h2>Start from the official workflow</h2>
-            <p>The registration API is read-only. Minting runs locally through the repository skill so private keys never enter a hosted API.</p>
+            <p>The production registration API is read-only. Mint authorization stays user-controlled, and private keys never enter the public service.</p>
           </div>
           <div class="code-block">
             <pre id="prompt-text">Use the Census workflow at https://github.com/dnebayis/census/tree/main/skills/census-mint and the public API docs at https://census-registration-dnebayis.vercel.app/#api. Create a Census portrait for: &lt;character&gt;. Preserve the character’s role and identity, let Census assign and lock the immutable traits, display the final palette-exact 40×40 one-bit PNG in this conversation, and wait for my explicit approval before simulating or minting on Sepolia.</pre>
@@ -105,7 +105,7 @@
             <div><dt>Runtime origin</dt><dd><a href="https://census-runtime-dnebayis.vercel.app">census-runtime-dnebayis.vercel.app</a></dd></div>
             <div><dt>Census v6</dt><dd><code>0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab</code></dd></div>
             <div><dt>Chain</dt><dd><code>eip155:11155111</code></dd></div>
-            <div><dt>Local mint workflow</dt><dd><a href="https://github.com/dnebayis/census/tree/main/skills/census-mint">github.com/dnebayis/census/…/census-mint</a></dd></div>
+            <div><dt>Agent mint workflow</dt><dd><a href="https://github.com/dnebayis/census/tree/main/skills/census-mint">github.com/dnebayis/census/…/census-mint</a></dd></div>
           </dl>
         </section>
 
@@ -144,8 +144,8 @@
         </section>
 
         <section class="api-note">
-          <strong>Minting is intentionally local.</strong>
-          <p>The agent uses the repository's Census mint skill, an encrypted Cast keystore and exact transaction simulation. A public mint API would require custody or unsafe remote signing, so it is not provided.</p>
+          <strong>Mint authorization stays user-controlled.</strong>
+          <p>The Census agent workflow uses an encrypted signer and exact transaction simulation. The public API never receives private keys or submits transactions on a user's behalf.</p>
         </section>
       </section>
     </main>
