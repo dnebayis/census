@@ -1,4 +1,4 @@
-const contract = "0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab";
+const contract = "0x7519855640cDBe8600CFF13fd98983A1bBFE46e0";
 const panels = [...document.querySelectorAll("[data-panel]")];
 const tabs = [...document.querySelectorAll("[data-tab]")];
 const portrait = document.querySelector("#portrait");

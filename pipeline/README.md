@@ -4,11 +4,13 @@ An IDE agent can generate the artwork, or a user can supply a raster directly. T
 assigns persistent visual traits, converts raster art into the exact onchain bitmap,
 and simulates the exact transaction before minting. It is not an image generator.
 
-Active Sepolia Census v6 is `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`; its
+Active Sepolia Census v7 is `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`; its
 registration origin is `https://census-registration-dnebayis.vercel.app`. Supply is
-5,000, minting is open and owner-pausable, and tokens 1–5 bind agents 9256–9260. The adapter is
-`0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
-ERC-8217 and ERC-2981 in the mint contract. The separate runtime is report-only.
+5,000, minting is owner-pausable, and v7 rejects the retired trait indices at the contract
+level. The adapter is `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. The archived v6
+`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab` (tokens 1–5, agents 9256–9260) stays
+immutable. This phase covers ERC-8004, ERC-8048, ERC-8217 and ERC-2981 in the mint
+contract. The separate runtime is report-only.
 
 ## Setup
 

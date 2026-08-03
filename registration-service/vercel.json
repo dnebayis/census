@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "env": {
-    "ACTIVE_CENSUS_ADDRESS": "0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab"
+    "ACTIVE_CENSUS_ADDRESS": "0x7519855640cDBe8600CFF13fd98983A1bBFE46e0"
   },
   "rewrites": [
     {

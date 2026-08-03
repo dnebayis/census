@@ -102,11 +102,11 @@
               <input id="token-id" name="tokenId" inputmode="numeric" pattern="[0-9]+" value="3" aria-describedby="token-help">
               <button type="submit">Load</button>
             </form>
-            <p id="token-help" class="muted">Active v6 currently contains tokens 1–5.</p>
+            <p id="token-help" class="muted">Active v7 is newly deployed; tokens appear here once minted.</p>
             <dl class="preview-meta">
               <div><dt>Status</dt><dd id="portrait-status">Loading from chain…</dd></div>
               <div><dt>Agent</dt><dd id="portrait-agent">—</dd></div>
-              <div><dt>Contract</dt><dd><code>0xEC36…B4ab</code></dd></div>
+              <div><dt>Contract</dt><dd><code>0x7519…46e0</code></dd></div>
             </dl>
           </div>
           <figure class="portrait-frame">
@@ -135,7 +135,7 @@
           <dl class="address-list">
             <div><dt>Registration origin</dt><dd><a href="https://census-registration-dnebayis.vercel.app">census-registration-dnebayis.vercel.app</a></dd></div>
             <div><dt>Runtime origin</dt><dd><a href="https://census-runtime-dnebayis.vercel.app">census-runtime-dnebayis.vercel.app</a></dd></div>
-            <div><dt>Census v6</dt><dd><code>0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab</code></dd></div>
+            <div><dt>Census v7</dt><dd><code>0x7519855640cDBe8600CFF13fd98983A1bBFE46e0</code></dd></div>
             <div><dt>Chain</dt><dd><code>eip155:11155111</code></dd></div>
             <div><dt>Agent mint workflow</dt><dd><a href="https://github.com/dnebayis/census/tree/main/skills/census-mint">github.com/dnebayis/census/…/census-mint</a></dd></div>
           </dl>
@@ -145,19 +145,19 @@
           <article class="endpoint">
             <div class="endpoint-head"><span class="method">GET</span><h2>Registration</h2><span>Public</span></div>
             <p>Returns the ERC-8004 registration-v1 document, immutable image and actual agent binding.</p>
-            <div class="code-block"><pre id="registration-url">https://census-registration-dnebayis.vercel.app/a/0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab/3/registration.json</pre><button class="copy" type="button" data-copy-target="registration-url">Copy</button></div>
+            <div class="code-block"><pre id="registration-url">https://census-registration-dnebayis.vercel.app/a/0x7519855640cDBe8600CFF13fd98983A1bBFE46e0/3/registration.json</pre><button class="copy" type="button" data-copy-target="registration-url">Copy</button></div>
           </article>
 
           <article class="endpoint">
             <div class="endpoint-head"><span class="method">GET</span><h2>Agent discovery</h2><span>Public</span></div>
             <p>Describes the token's assigned report-only skill and input schema.</p>
-            <div class="code-block"><pre id="discovery-url">https://census-runtime-dnebayis.vercel.app/a/0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab/3/.well-known/restap.json</pre><button class="copy" type="button" data-copy-target="discovery-url">Copy</button></div>
+            <div class="code-block"><pre id="discovery-url">https://census-runtime-dnebayis.vercel.app/a/0x7519855640cDBe8600CFF13fd98983A1bBFE46e0/3/.well-known/restap.json</pre><button class="copy" type="button" data-copy-target="discovery-url">Copy</button></div>
           </article>
 
           <article class="endpoint">
             <div class="endpoint-head"><span class="method post">POST</span><h2>Report-only talk</h2><span>Rate limited</span></div>
             <p>Runs only the token's immutable skill. Responses cannot contain or submit transactions.</p>
-            <div class="code-block"><pre id="talk-example">curl -X POST 'https://census-runtime-dnebayis.vercel.app/a/0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab/3/talk' \
+            <div class="code-block"><pre id="talk-example">curl -X POST 'https://census-runtime-dnebayis.vercel.app/a/0x7519855640cDBe8600CFF13fd98983A1bBFE46e0/3/talk' \
   -H 'content-type: application/json' \
   -d '{"chains":["eip155:11155111"],"timeWindowHours":1,"filters":{"minMints":1}}'</pre><button class="copy" type="button" data-copy-target="talk-example">Copy</button></div>
           </article>
@@ -165,7 +165,7 @@
           <article class="endpoint">
             <div class="endpoint-head"><span class="method post">POST</span><h2>MCP</h2><span>Streamable HTTP</span></div>
             <p>IDE clients can initialize the assigned report tool through the shared MCP endpoint.</p>
-            <div class="code-block"><pre id="mcp-url">https://census-runtime-dnebayis.vercel.app/mcp/0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab/3</pre><button class="copy" type="button" data-copy-target="mcp-url">Copy</button></div>
+            <div class="code-block"><pre id="mcp-url">https://census-runtime-dnebayis.vercel.app/mcp/0x7519855640cDBe8600CFF13fd98983A1bBFE46e0/3</pre><button class="copy" type="button" data-copy-target="mcp-url">Copy</button></div>
           </article>
 
           <article class="endpoint">
@@ -182,6 +182,6 @@
       </section>
     </main>
 
-    <footer><span>Census v6</span><a href="https://github.com/dnebayis/census">Source and workflow</a></footer>
+    <footer><span>Census v7</span><a href="https://github.com/dnebayis/census">Source and workflow</a></footer>
   </body>
 </html>

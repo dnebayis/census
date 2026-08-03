@@ -1,6 +1,6 @@
 {
   "chainId": 11155111,
-  "census": "0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab",
+  "census": "0x7519855640cDBe8600CFF13fd98983A1bBFE46e0",
   "adapter": "0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92",
   "identityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
   "toolRegistry": "0xd61aa597398a83122fce07a94beddb91fce8f42e",
@@ -58,39 +58,44 @@
   "artRecordBytes": 209,
   "supply": 5000,
   "royaltyBps": 500,
-  "mintingOpen": true,
+  "mintingOpen": false,
   "paused": false,
-  "deploymentTransaction": "0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b",
-  "deploymentBlock": 11407058,
-  "openMintTransaction": "0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52",
-  "openMintBlock": 11407077,
-  "rolloutTokenId": 1,
-  "rolloutAgentId": 9256,
-  "rolloutTransaction": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f",
-  "productionBatches": [
-    {
-      "transaction": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f",
-      "blockNumber": 11407080,
-      "drafts": [
-        "v6-botanical-astronaut",
-        "v6-midnight-radio-host",
-        "v6-desert-cartographer",
-        "v6-street-racer",
-        "v6-orbital-archivist"
-      ],
-      "tokens": [1, 2, 3, 4, 5],
-      "agents": [9256, 9257, 9258, 9259, 9260],
-      "skills": [
-        "Fraud Detector",
-        "Arbitrageur",
-        "Mint Scanner",
-        "Arbitrageur",
-        "Tracker"
-      ],
-      "classes": ["Alien", "Alien", "Agent", "Alien", "Agent"]
-    }
-  ],
+  "deploymentTransaction": "0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e",
+  "deploymentBlock": 11411049,
+  "openMintTransaction": null,
+  "openMintBlock": null,
+  "productionBatches": [],
   "archivedCensus": [
+    {
+      "address": "0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab",
+      "canonicalHost": "https://census-registration-dnebayis.vercel.app",
+      "reason": "v6 archived after v7 added contract-level rejection of the retired trait indices (Aquatic Humanoid, One Eye Scarred Shut, Single Large Eye, Eyepatch); v6 remains irreversibly deployed and open, and its tokens 1-5 stay immutable",
+      "deploymentTransaction": "0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b",
+      "openMintTransaction": "0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52",
+      "productionBatches": [
+        {
+          "transaction": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f",
+          "blockNumber": 11407080,
+          "drafts": [
+            "v6-botanical-astronaut",
+            "v6-midnight-radio-host",
+            "v6-desert-cartographer",
+            "v6-street-racer",
+            "v6-orbital-archivist"
+          ],
+          "tokens": [1, 2, 3, 4, 5],
+          "agents": [9256, 9257, 9258, 9259, 9260],
+          "skills": [
+            "Fraud Detector",
+            "Arbitrageur",
+            "Mint Scanner",
+            "Arbitrageur",
+            "Tracker"
+          ],
+          "classes": ["Alien", "Alien", "Agent", "Alien", "Agent"]
+        }
+      ]
+    },
     {
       "address": "0x5863E1d0539c659204B097359AC1a75C51144E78",
       "canonicalHost": "https://census-registration-dnebayis.vercel.app",

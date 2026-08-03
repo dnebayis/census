@@ -76,12 +76,12 @@ Ritual Markings, Facial Piercings, Focused, Curious, Stern, Pilot Cap, Antenna C
 Tech Hood, Open-face Space Helmet, Techwear Jacket, Flight Suit, Ceremonial Armour,
 Utility Vest, Holographic Earpiece, Respirator, Data Cable and Neck Interface.
 
-Aquatic Humanoid, One Eye Scarred Shut, Single Large Eye and Eyepatch remain at their
-immutable v6 indices for historical decoding but have zero assignment weight and are
-rejected by the official build/mint flow. Existing tokens are not mutated. The prepared
-v7 candidate in `src` additionally rejects these indices at the contract level
-(`TraitData.retired`, `RetiredTraits`, `ERR_RETIRED`); it is not yet deployed, so the
-live v6 contract still accepts them for direct callers. See DECISIONS.md D29.
+Aquatic Humanoid, One Eye Scarred Shut, Single Large Eye and Eyepatch keep their indices
+for historical decoding but have zero assignment weight and are rejected by the official
+build/mint flow. Existing tokens are not mutated. The active v7 contract also rejects
+these indices at the contract level (`TraitData.retired`, `RetiredTraits`, `ERR_RETIRED`),
+so direct callers cannot mint them either; the archived v6 contract still accepts them.
+See DECISIONS.md D29.
 
 The manifest hides seed and Species selection from normal user options and has no
 reroll. The subject determines role and identity; assigned Species determines anatomy.
@@ -132,14 +132,15 @@ out after five seconds and concurrent reads for the same token are coalesced.
 
 ## 8. Active rollout
 
-Active v6: `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`, Sepolia. Tokens 1–5
-are agents 9256–9260. The full transaction and deployment record is in
-`docs/DEPLOYMENT.md` and `config/sepolia.json`. V5
-`0x5863E1d0539c659204B097359AC1a75C51144E78` is archived and must not be used by the
+Active v7: `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`, Sepolia. It holds no tokens yet
+and adds contract-level rejection of the retired indices to v6. The full transaction and
+deployment record is in `docs/DEPLOYMENT.md` and `config/sepolia.json`. Archived v6
+`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab` (tokens 1–5, agents 9256–9260) and v5
+`0x5863E1d0539c659204B097359AC1a75C51144E78` are archive-only and must not be used by the
 mint pipeline.
 
-As verified on 3 August 2026, v6 minting is open and not paused, the production Docs/API
-origin and token registration route are healthy, and the missing-token route returns
-404. `docs/NEXT-STEPS.md` owns all unfinished operational work. V7 is not deployed or
-assumed; it remains the explicit option for removing retired trait indices at contract
+v7 deployed closed; live reads confirm `SUPPLY = 5000`, `mintingOpen = false`,
+`paused = false`, and `ERR_RETIRED` on each retired index. `docs/NEXT-STEPS.md` owns all
+unfinished operational work. The contract-level retirement that v7 delivers was the
+explicit option for removing retired trait indices at contract
 level.

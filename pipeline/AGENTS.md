@@ -4,12 +4,13 @@ You create the portrait with the IDE's image generator; this CLI assigns persist
 traits, reduces the raster image to the onchain format, and safely submits it. Use the
 repo skill at `skills/census-mint/SKILL.md` for the complete autonomous loop.
 
-Active Sepolia Census v6: `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`.
+Active Sepolia Census v7: `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`.
 Canonical host: `https://census-registration-dnebayis.vercel.app`. Supply is 5,000;
-minting is open and owner-pausable. This release implements ERC-8004 + ERC-8048 +
-ERC-8217 + ERC-2981. ERC-8257, MCP, and RESTAP
-are report-only discovery/runtime surfaces; no skill builds, signs, or submits transactions,
-and no payment runtime exists.
+minting is owner-pausable; v7 rejects the retired trait indices (Species 8, Eyes {4, 8,
+11}) at the contract level. The archived v6 `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`
+stays immutable. This release implements ERC-8004 + ERC-8048 + ERC-8217 + ERC-2981.
+ERC-8257, MCP, and RESTAP are report-only discovery/runtime surfaces; no skill builds,
+signs, or submits transactions, and no payment runtime exists.
 
 `skill` describes function. `class` is derived only from immutable Species: human
 variants are Human, android is Agent, skull-faced is Skull, and other non-human species

@@ -9,18 +9,20 @@ ERC-8004 identity.
 
 | Component | Sepolia / production |
 | --- | --- |
-| Census v6 | [`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`](https://sepolia.etherscan.io/address/0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab) |
+| Census v7 | [`0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`](https://sepolia.etherscan.io/address/0x7519855640cDBe8600CFF13fd98983A1bBFE46e0) |
 | Adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
 | Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
 | Registration | https://census-registration-dnebayis.vercel.app |
 | Network | Ethereum Sepolia (`11155111`) |
 
-V6 deployed closed in transaction
-[`0x5ffc…d5b`](https://sepolia.etherscan.io/tx/0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b),
-opened in [`0xca2d…c52`](https://sepolia.etherscan.io/tx/0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52),
-and minted its five-entry rollout batch in
-[`0x08be…50f`](https://sepolia.etherscan.io/tx/0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f).
-Tokens 1–5 bind to agents 9256–9260. V5 remains open on Sepolia but is archive-only.
+V7 deployed closed in transaction
+[`0xffc9…137e`](https://sepolia.etherscan.io/tx/0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e).
+It is v6 with contract-level rejection of the retired trait indices (Aquatic Humanoid and
+the one-eye Eyes values); everything else — supply, caps, pause, duplicate protection and
+ERC-2981 — is unchanged. The archived v6
+[`0xEC36…B4ab`](https://sepolia.etherscan.io/address/0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab)
+remains irreversibly deployed and open; its tokens 1–5 (agents 9256–9260) stay immutable.
+Older v5 and earlier deployments remain archive-only.
 
 ## What v6 guarantees
 

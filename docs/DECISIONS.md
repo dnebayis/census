@@ -256,42 +256,39 @@ V7 is not assumed. It is justified only if Aquatic Humanoid and one-eye indices 
 invalid even for direct contract callers. Pipeline retirement, frontend copy, RPC
 rotation and art improvements do not independently require a new contract.
 
-### D29 — The v7 candidate retires the unreadable indices at the contract level
+### D29 — v7 retires the unreadable indices at the contract level
 
-The deployed v6 contract accepts every in-range trait index, so a direct caller can
-still mint Aquatic Humanoid (Species 8) or the one-eye Eyes values 4, 8 and 11 that the
-official pipeline refuses. The v7 candidate closes that gap in the contract itself:
-`TraitData.retired` flags Species 8 and Eyes {4, 8, 11}, `mint`/`mintBatch` revert
-`RetiredTraits`, and both `validate` views return the new `ERR_RETIRED` (13). The trait
-string decoders are untouched, so any existing token that already carries those indices
-still renders.
+The v6 contract accepts every in-range trait index, so a direct caller could still mint
+Aquatic Humanoid (Species 8) or the one-eye Eyes values 4, 8 and 11 that the official
+pipeline refuses. v7 closes that gap in the contract itself: `TraitData.retired` flags
+Species 8 and Eyes {4, 8, 11}, `mint`/`mintBatch` revert `RetiredTraits`, and both
+`validate` views return the new `ERR_RETIRED` (13). The trait string decoders are
+untouched, so any existing token that already carries those indices still renders.
 
-This lives in `src` as a prepared, tested candidate only. Deployed v6
-`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab` is immutable and unchanged — it still
-accepts the historical indices. Deployment stays gated by D28 and NEXT-STEPS 9: v7 must
-ship closed, repoint the two existing production projects, pass external registration and
-OpenSea checks, then open minting and archive v6. Pipeline `RETIRED_ASSIGNMENTS` already
-covers the same set, so the offchain flow and the v7 contract agree.
+v7 is deployed on Sepolia at `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`
+(tx `0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e`, block 11411049),
+closed at deploy per D4. The archived v6 `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab` is
+immutable and unchanged — it still accepts the historical indices. Pipeline
+`RETIRED_ASSIGNMENTS` already covers the same set, so the offchain flow and the v7
+contract agree.
 
 ## Active Sepolia record
 
-- Census v6: `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`
+- Census v7: `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - supply: 5,000; wallet/batch cap: 5
-- minting: open and not paused; owner may pause/unpause new mints
+- retired at contract level: Species 8, Eyes {4, 8, 11} → `RetiredTraits` / `ERR_RETIRED`
 - royalty: ERC-2981, 500 bps, no transfer enforcement
 - deploy transaction:
-  `0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b`
-- open-mint transaction:
-  `0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52`
-- first v6 batch: tokens `1–5`, agents `9256–9260`, transaction
-  `0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f`
+  `0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e` (block 11411049)
 
-Archived v5 is `0x5863E1d0539c659204B097359AC1a75C51144E78`; tokens 1–2 /
-agents 9247–9248 remain preserved. Earlier v4 and older addresses are retained in config.
+Archived v6 is `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`; tokens 1–5 / agents
+9256–9260 remain immutable and its minting stays irreversibly open. Archived v5 is
+`0x5863E1d0539c659204B097359AC1a75C51144E78`; tokens 1–2 / agents 9247–9248 remain
+preserved. Earlier v4 and older addresses are retained in config.
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains available through the permanent address-routed host.

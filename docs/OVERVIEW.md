@@ -4,10 +4,12 @@ Census records up to 5,000 user-directed characters as immutable 40×40 one-bit
 portraits. Census, not the user-facing flow, assigns nine locked visual traits and one
 quota-backed skill. Every mint is registered through the ERC-8004 adapter.
 
-Active Sepolia v6 is `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`. Its canonical
-registration origin is `https://census-registration-dnebayis.vercel.app`, the adapter is
+Active Sepolia v7 is `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`, which adds
+contract-level rejection of the retired trait indices to v6. Its canonical registration
+origin is `https://census-registration-dnebayis.vercel.app`, the adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`, and the Identity Registry is
-`0x8004a818bfb912233c491871b3d84c89a494bd9e`.
+`0x8004a818bfb912233c491871b3d84c89a494bd9e`. The archived v6
+`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab` stays deployed and immutable.
 
 ## System map
 

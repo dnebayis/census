@@ -39,14 +39,15 @@ The following list is the single source of truth for unfinished work.
 
 ## Product decision - v7
 
-8. Decided: retired values should be impossible even for direct contract callers. The
-   v7 candidate implementing this is prepared and tested in `src` (`TraitData.retired`,
-   `RetiredTraits`, `ERR_RETIRED`; see DECISIONS.md D29). It is not deployed — the live
-   v6 contract is immutable and still accepts those historical indices.
-9. Remaining v7 work is the gated deploy cycle only: deploy the candidate with minting
-   closed, repoint the two existing production projects and documentation, verify
-   registration/OpenSea reads, then open minting and archive v6. This requires an
-   explicit deploy decision; do not deploy for a pipeline or frontend change alone.
+8. Done: retired values are now impossible for direct contract callers. v7
+   (`TraitData.retired`, `RetiredTraits`, `ERR_RETIRED`; DECISIONS.md D29) is deployed
+   closed on Sepolia at `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`
+   (tx `0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e`, block
+   11411049). The archived v6 stays immutable and still accepts those historical indices.
+9. Remaining v7 activation: repoint the two existing production projects to the v7 address
+   and redeploy, verify registration/runtime reads against v7, then `openMinting()` and
+   record the open tx. Archive v6 in config (done). Do not create a new Vercel project or
+   deploy for a pipeline/frontend change alone.
 
 ## Continuous operations
 

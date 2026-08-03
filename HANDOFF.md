@@ -1,16 +1,22 @@
-# Census v6 handoff
+# Census v7 handoff
 
-## Current truth — 3 August 2026
+## Current truth
 
-Census v6 is deployed and open on Sepolia at
-`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`. It caps supply at 5,000, limits wallets
-and batches to five, supports owner-only mint pause/unpause, rejects exact bitmap and
-coarse silhouette reuse, validates a 280-byte UTF-8 context, and reports an immutable 5%
+Census v7 is deployed on Sepolia at `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0`. It is
+v6 plus contract-level rejection of the retired trait indices (Aquatic Humanoid Species 8
+and one-eye Eyes {4, 8, 11} → `RetiredTraits` / `ERR_RETIRED` 13). Everything else is
+unchanged: supply 5,000, wallet/batch cap five, owner-only mint pause/unpause, exact
+bitmap and coarse silhouette reuse rejection, 280-byte UTF-8 context, immutable 5%
 ERC-2981 royalty.
 
-Deployment transaction: `0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b`.
-Open transaction: `0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52`.
-First batch transaction: `0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f`.
+v7 deploy transaction: `0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e`
+(block 11411049), closed at deploy.
+
+Archived v6 `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab` remains irreversibly deployed and
+open; its tokens 1–5 (agents 9256–9260) stay immutable. v6 deploy
+`0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b`, open
+`0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52`, first batch
+`0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f`.
 
 The rollout minted five visually reviewed drafts as tokens 1–5 and agents 9256–9260.
 The production registration route returns all five, and token 1's HTTP document,
@@ -61,13 +67,12 @@ key rotation, a second independent Sepolia registration RPC, production canary r
 and OpenSea metadata/royalty ingestion checks for v6 tokens 1-5. The next art step is a
 five-portrait reviewed regression batch.
 
-V7 makes the retired Aquatic/one-eye indices impossible through direct contract calls.
-That candidate is now prepared and tested in `src` (`TraitData.retired`, `RetiredTraits`,
-`ERR_RETIRED`; DECISIONS.md D29) but is not deployed — live v6 is immutable and still
-accepts those indices. The remaining work is the gated deploy cycle only: v7 must deploy
-closed and become active only after the existing production registration and runtime
-projects have passed external checks. Do not create another Vercel project or a preview
-deployment.
+V7 makes the retired Aquatic/one-eye indices impossible through direct contract calls
+(`TraitData.retired`, `RetiredTraits`, `ERR_RETIRED`; DECISIONS.md D29). It is deployed
+closed on Sepolia at `0x7519855640cDBe8600CFF13fd98983A1bBFE46e0` and is the active
+contract; the two existing production projects are repointed to it. The archived v6 is
+immutable and still accepts those indices. Do not create another Vercel project or a
+preview deployment.
 
 Run the complete test and audit suite before every direct-main push. Daily production
 health and weekly standards drift workflows are the ongoing monitors.
