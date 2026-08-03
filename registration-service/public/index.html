@@ -34,6 +34,18 @@
           </div>
         </div>
 
+        <section class="doc-section prompt-section" id="agent-prompt">
+          <div>
+            <p class="section-label">Start here · agent prompt</p>
+            <h2>Hand this to your IDE agent</h2>
+            <p>Paste this into any image-capable IDE agent to begin. The production registration API is read-only. Mint authorization stays user-controlled, and private keys never enter the public service.</p>
+          </div>
+          <div class="code-block">
+            <pre id="prompt-text">Use the Census workflow at https://github.com/dnebayis/census/tree/main/skills/census-mint and the public API docs at https://census-registration-dnebayis.vercel.app/#api. Create a Census portrait for: &lt;character&gt;. Preserve the character’s role and identity, let Census assign and lock the immutable traits, display the final palette-exact 40×40 one-bit PNG in this conversation, and wait for my explicit approval before simulating or minting on Sepolia.</pre>
+            <button class="copy" type="button" data-copy-target="prompt-text">Copy prompt</button>
+          </div>
+        </section>
+
         <section id="workflow" class="doc-section split">
           <div>
             <p class="section-label">Workflow</p>
@@ -45,6 +57,38 @@
             <li><span>03</span><div><strong>Preview</strong><p>The agent must display the real palette-exact 40×40 PNG in the conversation.</p></div></li>
             <li><span>04</span><div><strong>Approve</strong><p>Check readability, complete head framing and Species anatomy. Nothing is sent before approval.</p></div></li>
             <li><span>05</span><div><strong>Mint</strong><p>The same sender simulates the exact Sepolia transaction, then submits it.</p></div></li>
+          </ol>
+        </section>
+
+        <section id="standards" class="doc-section split">
+          <div>
+            <p class="section-label">Standards</p>
+            <h2>Five ERCs, one token</h2>
+            <p>Each portrait is a single fully-onchain token that combines ownership, agent identity, immutable metadata, agent control and royalty signalling.</p>
+          </div>
+          <ol class="steps">
+            <li><span>721</span><div><strong>ERC-721</strong><p>Ownership and transfer of each 40×40 portrait. Holding the token is the only control surface.</p></div></li>
+            <li><span>8004</span><div><strong>ERC-8004</strong><p>Agent identity. Every token binds to an agent ID in the Sepolia Identity Registry and resolves through the read-only registration document.</p></div></li>
+            <li><span>8048</span><div><strong>ERC-8048</strong><p>Immutable onchain metadata. Skill, class, context and all nine trait namespaces are written once and can never change.</p></div></li>
+            <li><span>8217</span><div><strong>ERC-8217</strong><p>NFT-bound agent control through the adapter. The current owner is the controller — there is no separate agent wallet.</p></div></li>
+            <li><span>2981</span><div><strong>ERC-2981</strong><p>Royalty signalling of 5% to the immutable deployer receiver. Marketplace signalling only; transfers are never restricted.</p></div></li>
+          </ol>
+        </section>
+
+        <section id="skills" class="doc-section split">
+          <div>
+            <p class="section-label">Report-only skills</p>
+            <h2>Each token owns one</h2>
+            <p>Every token carries one immutable skill, served by the runtime as a bounded, read-only report. No skill builds, signs or submits a transaction, requests an approval, or moves funds.</p>
+          </div>
+          <ol class="steps">
+            <li><span>01</span><div><strong>Mint Scanner</strong><p>Bounded Sepolia ERC-721 mint logs as evidence.</p></div></li>
+            <li><span>02</span><div><strong>Arbitrageur</strong><p>Bounded OpenSea listings and offers; gross comparison only, never an order.</p></div></li>
+            <li><span>03</span><div><strong>Tracker</strong><p>Bounded OpenSea account events; no ownership or trading conclusion.</p></div></li>
+            <li><span>04</span><div><strong>Token Hunter</strong><p>OpenSea trending-token and detail records; volume is not liquidity.</p></div></li>
+            <li><span>05</span><div><strong>Trend Reader</strong><p>OpenSea collection rank and interval statistics; no invented score.</p></div></li>
+            <li><span>06</span><div><strong>Fraud Detector</strong><p>OpenSea collection and account labels; no fraud score or accusation.</p></div></li>
+            <li><span>07</span><div><strong>Advisor</strong><p>User-supplied HTTPS evidence; suggestions and links only.</p></div></li>
           </ol>
         </section>
 
@@ -69,18 +113,6 @@
             <div class="pixel-grid" aria-hidden="true"></div>
             <img id="portrait" alt="Live Census one-bit onchain portrait" width="640" height="640">
           </figure>
-        </section>
-
-        <section class="doc-section prompt-section" id="agent-prompt">
-          <div>
-            <p class="section-label">Agent prompt</p>
-            <h2>Start from the official workflow</h2>
-            <p>The production registration API is read-only. Mint authorization stays user-controlled, and private keys never enter the public service.</p>
-          </div>
-          <div class="code-block">
-            <pre id="prompt-text">Use the Census workflow at https://github.com/dnebayis/census/tree/main/skills/census-mint and the public API docs at https://census-registration-dnebayis.vercel.app/#api. Create a Census portrait for: &lt;character&gt;. Preserve the character’s role and identity, let Census assign and lock the immutable traits, display the final palette-exact 40×40 one-bit PNG in this conversation, and wait for my explicit approval before simulating or minting on Sepolia.</pre>
-            <button class="copy" type="button" data-copy-target="prompt-text">Copy prompt</button>
-          </div>
         </section>
 
         <section class="doc-section facts">
