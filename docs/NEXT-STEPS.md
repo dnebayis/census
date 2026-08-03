@@ -4,9 +4,9 @@ V6 contract, calibration, five-portrait regression set, first batch and live
 registration binding are complete. Remaining work is operational rather than a new
 contract design.
 
-1. Re-authenticate the existing `dnebayis` Vercel project and set
-   `ACTIVE_CENSUS_ADDRESS=0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`. Configure two
-   Sepolia RPC URLs in `SEPOLIA_RPC_URLS`, then deploy production only.
+1. Re-authenticate the existing `dnebayis` Vercel project and configure a second
+   Sepolia endpoint in secret-managed `SEPOLIA_RPC_URLS`. The public active v6 address
+   is already pinned in both project configurations.
 2. Revoke the OpenSea key previously exposed in chat, create a replacement in OpenSea,
    store it only as the runtime production secret, and production-redeploy. Never put
    the key in the frontend, repository, CLI output or logs.

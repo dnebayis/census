@@ -118,7 +118,7 @@ until storage, rate-limit, skill-execution, and external checks pass.
 Current deployment state: the stable production project is a bounded report-only runtime. The
 official free Redis resource `census-runtime-free` is connected only to production,
 the real queue and distributed limiter integration test passed. The Vercel production
-environment must be switched from archived v5 to active v6 at
+configuration is pinned to active v6 at
 `https://census-runtime-dnebayis.vercel.app`. Registration remains inactive.
 
 Historical v3 production checks passed on 2 August 2026: token 2 discovery, `/talk`, MCP
@@ -144,6 +144,5 @@ broader production activation.
 Archived v5 token 1 / agent 9247 Arbitrageur and token 2 / agent 9248 Mint Scanner
 passed production discovery, `/talk`, MCP, rate-limit, 404 and report-only checks on
 3 August 2026. Active v6 naturally contains Fraud Detector (token 1), Arbitrageur
-(tokens 2 and 4), Mint Scanner (token 3) and Tracker (token 5). They become the current
-canaries after `ACTIVE_CENSUS_ADDRESS` is switched to v6 in the existing production
-project; no new runtime project is needed.
+(tokens 2 and 4), Mint Scanner (token 3) and Tracker (token 5). V6 token 2 Arbitrageur
+is the production runtime health canary; no new runtime project is needed.

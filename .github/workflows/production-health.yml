@@ -30,9 +30,9 @@ jobs:
       - name: Report-only runtime discovery
         env:
           RUNTIME_ORIGIN: "https://census-runtime-dnebayis.vercel.app"
-          ARCHIVED_V5: "0x5863E1d0539c659204B097359AC1a75C51144E78"
+          CENSUS_V6: "0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab"
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --max-time 10 \
-            "$RUNTIME_ORIGIN/a/$ARCHIVED_V5/1/.well-known/restap.json" \
+            "$RUNTIME_ORIGIN/a/$CENSUS_V6/2/.well-known/restap.json" \
             | jq -e '.canary.available == true' >/dev/null

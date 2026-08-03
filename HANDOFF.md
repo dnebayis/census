@@ -48,10 +48,10 @@ ERC-8257 integration in v6.
 
 ## Remaining operator actions
 
-The current Vercel CLI credential is not authenticated for environment mutation. Once
-the existing dnebayis project is re-authenticated, set registration
-`ACTIVE_CENSUS_ADDRESS` to v6, configure two `SEPOLIA_RPC_URLS`, and deploy production
-only. Do not create a preview or another Vercel project.
+The non-secret active address is pinned to v6 in both existing Vercel project
+configurations. Dashboard authentication is still needed to configure a second secret
+RPC endpoint in `SEPOLIA_RPC_URLS`. Deploy production only; do not create a preview or
+another Vercel project.
 
 The OpenSea key shared in chat must be revoked in the OpenSea dashboard and replaced as
 a production-only runtime secret. Do not remove the old production value before a new

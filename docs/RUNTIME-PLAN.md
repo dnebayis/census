@@ -60,8 +60,8 @@ Sepolia fork.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
-   `census-runtime-free`. The resource is production-only; its active-address environment
-   switch from archived v5 to v6 remains an operator action. The earlier v3 RESTAP, MCP,
+   `census-runtime-free`. The resource is production-only and its active address is
+   pinned to v6. The earlier v3 RESTAP, MCP,
    inactive-token, missing-token, chain-read, and Redis rate-limit checks passed on
    2 August 2026; v5 token 1 and token 2 external canaries passed on 3 August 2026.
    This bounded canary does not make the non-persistent free database a durability gate

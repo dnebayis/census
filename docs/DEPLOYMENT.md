@@ -47,7 +47,7 @@ is archive-only. Earlier v4, v3, v2, v1 and prototype addresses remain in
 
 ## Production state note
 
-The existing registration host already serves address-routed v6 JSON. Updating
-`ACTIVE_CENSUS_ADDRESS` to v6 enables the intended short CDN cache; until that Vercel
-environment change is authenticated, v6 responses remain correct but conservative
-`no-store`. No new Vercel project or preview deployment is permitted.
+The existing registration and runtime projects pin the non-secret
+`ACTIVE_CENSUS_ADDRESS` to v6 in their production configuration. Registration uses the
+intended short CDN cache and runtime rejects archived collections. No new Vercel project
+or preview deployment is permitted.

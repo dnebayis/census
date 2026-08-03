@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "env": {
+    "ACTIVE_CENSUS_ADDRESS": "0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab"
+  },
   "functions": {
     "api/talk.js": {
       "maxDuration": 60
