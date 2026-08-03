@@ -8,16 +8,18 @@
 - Identity Registry: `0x8004a818bfb912233c491871b3d84c89a494bd9e`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - deploy tx / block: `0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e` / `11411049`
-- open tx / block: `<pending openMinting()>`
+- open tx / block: `0x2187ac3d297412dd1f3aa9db97f26b3b783983dd76b8611b7813e52c3c5122c0` / `11411209`
 - change from v6: rejects retired trait indices (Species 8, Eyes {4, 8, 11}) via
   `TraitData.retired` → `RetiredTraits` / `ERR_RETIRED` (13); all other behaviour identical
 - supply / wallet / batch caps: `5000 / 5 / 5`
 - royalty: ERC-2981, 500 bps, immutable deployer receiver
-- state at deploy: mint closed, not paused
+- state: minting open, not paused
 
-v7 deployed closed and holds no tokens yet. Live reads confirm `SUPPLY = 5000`,
-`mintingOpen = false`, `paused = false`, and `validate()` returns `ERR_RETIRED` (13) for
-each retired index.
+v7 deployed closed, then opened; it holds no tokens yet. Live reads confirm `SUPPLY = 5000`,
+`mintingOpen = true`, `paused = false`, and `validate()` returns `ERR_RETIRED` (13) for
+each retired index. Both production services are repointed to v7: registration serves the
+v7 address (missing tokens 404), and the runtime treats v7 as the active collection while
+rejecting archived-v6 execution (v6 `/talk` returns 503, discovery `active: false`).
 
 ## Archived v6 rollout — Sepolia
 

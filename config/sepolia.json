@@ -58,12 +58,12 @@
   "artRecordBytes": 209,
   "supply": 5000,
   "royaltyBps": 500,
-  "mintingOpen": false,
+  "mintingOpen": true,
   "paused": false,
   "deploymentTransaction": "0xffc9f0a71a6b13219b7dff5867d83ed06639f2c4b0e346f74670e8bd8af1137e",
   "deploymentBlock": 11411049,
-  "openMintTransaction": null,
-  "openMintBlock": null,
+  "openMintTransaction": "0x2187ac3d297412dd1f3aa9db97f26b3b783983dd76b8611b7813e52c3c5122c0",
+  "openMintBlock": 11411209,
   "productionBatches": [],
   "archivedCensus": [
     {
