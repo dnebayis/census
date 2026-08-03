@@ -39,14 +39,14 @@ The following list is the single source of truth for unfinished work.
 
 ## Product decision - v7
 
-8. Decide whether retired values must be impossible even for direct contract callers.
-   V6 already assigns zero weight to Aquatic Humanoid, One Eye Scarred Shut, Single
-   Large Eye and Eyepatch and rejects them in the official pipeline. Existing v6 tokens
-   are immutable, and the deployed contract still accepts those historical indices.
-9. If contract-level removal is required, specify and test v7, deploy it with minting
-   closed, update the two existing production projects and documentation, verify
-   registration/OpenSea reads, then open minting and archive v6. Do not deploy v7 solely
-   for a pipeline or frontend change.
+8. Decided: retired values should be impossible even for direct contract callers. The
+   v7 candidate implementing this is prepared and tested in `src` (`TraitData.retired`,
+   `RetiredTraits`, `ERR_RETIRED`; see DECISIONS.md D29). It is not deployed — the live
+   v6 contract is immutable and still accepts those historical indices.
+9. Remaining v7 work is the gated deploy cycle only: deploy the candidate with minting
+   closed, repoint the two existing production projects and documentation, verify
+   registration/OpenSea reads, then open minting and archive v6. This requires an
+   explicit deploy decision; do not deploy for a pipeline or frontend change alone.
 
 ## Continuous operations
 

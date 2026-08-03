@@ -12,6 +12,18 @@ library TraitData {
             && uint8(traits_[8]) < 16;
     }
 
+    /// @notice True when any category holds a v7-retired index.
+    /// @dev These indices decode into the same immutable labels as always, so existing
+    ///      v6 tokens that carry them still render — only new v7 mints are refused. The
+    ///      retired set is Species "Aquatic Humanoid" (8) and the three unreadable one-eye
+    ///      Eyes values "One Eye Scarred Shut" (4), "Single Large Eye" (8) and "Eyepatch"
+    ///      (11). See DECISIONS.md D27/D29.
+    function retired(bytes9 traits_) internal pure returns (bool) {
+        uint8 species = uint8(traits_[0]);
+        uint8 eyes = uint8(traits_[3]);
+        return species == 8 || eyes == 4 || eyes == 8 || eyes == 11;
+    }
+
     function key(uint256 category) internal pure returns (string memory) {
         if (category == 0) return "trait[species]";
         if (category == 1) return "trait[age]";

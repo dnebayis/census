@@ -78,8 +78,10 @@ Utility Vest, Holographic Earpiece, Respirator, Data Cable and Neck Interface.
 
 Aquatic Humanoid, One Eye Scarred Shut, Single Large Eye and Eyepatch remain at their
 immutable v6 indices for historical decoding but have zero assignment weight and are
-rejected by the official build/mint flow. Existing tokens are not mutated. Absolute
-contract-level removal would require a new deployment.
+rejected by the official build/mint flow. Existing tokens are not mutated. The prepared
+v7 candidate in `src` additionally rejects these indices at the contract level
+(`TraitData.retired`, `RetiredTraits`, `ERR_RETIRED`); it is not yet deployed, so the
+live v6 contract still accepts them for direct callers. See DECISIONS.md D29.
 
 The manifest hides seed and Species selection from normal user options and has no
 reroll. The subject determines role and identity; assigned Species determines anatomy.

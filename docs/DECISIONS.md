@@ -256,6 +256,23 @@ V7 is not assumed. It is justified only if Aquatic Humanoid and one-eye indices 
 invalid even for direct contract callers. Pipeline retirement, frontend copy, RPC
 rotation and art improvements do not independently require a new contract.
 
+### D29 — The v7 candidate retires the unreadable indices at the contract level
+
+The deployed v6 contract accepts every in-range trait index, so a direct caller can
+still mint Aquatic Humanoid (Species 8) or the one-eye Eyes values 4, 8 and 11 that the
+official pipeline refuses. The v7 candidate closes that gap in the contract itself:
+`TraitData.retired` flags Species 8 and Eyes {4, 8, 11}, `mint`/`mintBatch` revert
+`RetiredTraits`, and both `validate` views return the new `ERR_RETIRED` (13). The trait
+string decoders are untouched, so any existing token that already carries those indices
+still renders.
+
+This lives in `src` as a prepared, tested candidate only. Deployed v6
+`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab` is immutable and unchanged — it still
+accepts the historical indices. Deployment stays gated by D28 and NEXT-STEPS 9: v7 must
+ship closed, repoint the two existing production projects, pass external registration and
+OpenSea checks, then open minting and archive v6. Pipeline `RETIRED_ASSIGNMENTS` already
+covers the same set, so the offchain flow and the v7 contract agree.
+
 ## Active Sepolia record
 
 - Census v6: `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`

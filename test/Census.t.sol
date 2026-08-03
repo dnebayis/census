@@ -129,6 +129,41 @@ contract CensusTest is Test {
         assertEq(reason, census.ERR_TRAITS());
     }
 
+    function test_V7RejectsRetiredSpecies() public {
+        // Species index 8 = Aquatic Humanoid, retired at the contract level in v7.
+        bytes9 aquatic = hex"080000000000000000";
+        (bool ok, uint8 reason,) = census.validate(_bitmap(1), aquatic, alice);
+        assertFalse(ok);
+        assertEq(reason, census.ERR_RETIRED());
+
+        vm.prank(alice);
+        vm.expectRevert(Census.RetiredTraits.selector);
+        census.mint(_bitmap(1), aquatic, "ctx");
+    }
+
+    function test_V7RejectsRetiredEyes() public {
+        // Eyes index 4 (One Eye Scarred Shut), 8 (Single Large Eye), 11 (Eyepatch).
+        bytes9[3] memory retired =
+            [bytes9(hex"000000040000000000"), bytes9(hex"000000080000000000"), bytes9(hex"0000000b0000000000")];
+        for (uint256 i; i < retired.length; ++i) {
+            (bool ok, uint8 reason,) = census.validate(_bitmap(i + 1), retired[i], alice);
+            assertFalse(ok, "retired eyes must fail preflight");
+            assertEq(reason, census.ERR_RETIRED());
+        }
+
+        vm.prank(alice);
+        vm.expectRevert(Census.RetiredTraits.selector);
+        census.mint(_bitmap(1), retired[2], "ctx");
+    }
+
+    function test_V7AcceptsTheReadableEyesNextToRetiredOnes() public view {
+        // The same layout with a readable Eyes value (0 = Plain Eyes) still passes preflight,
+        // proving the retired index — not some unrelated field — is what gets rejected.
+        (bool ok, uint8 reason,) = census.validate(_bitmap(1), TRAITS, alice);
+        assertTrue(ok);
+        assertEq(reason, census.OK());
+    }
+
     function test_ValidateRejectsWrongLength() public view {
         (bool ok, uint8 reason,) = census.validate(new bytes(199), TRAITS, alice);
         assertFalse(ok);

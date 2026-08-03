@@ -61,11 +61,13 @@ key rotation, a second independent Sepolia registration RPC, production canary r
 and OpenSea metadata/royalty ingestion checks for v6 tokens 1-5. The next art step is a
 five-portrait reviewed regression batch.
 
-V7 is a product decision, not an assumed deployment. It is needed only if retired
-Aquatic/one-eye indices must also become impossible through direct contract calls. If
-selected, v7 must deploy closed and become active only after the existing production
-registration and runtime projects have passed external checks. Do not create another
-Vercel project or a preview deployment.
+V7 makes the retired Aquatic/one-eye indices impossible through direct contract calls.
+That candidate is now prepared and tested in `src` (`TraitData.retired`, `RetiredTraits`,
+`ERR_RETIRED`; DECISIONS.md D29) but is not deployed — live v6 is immutable and still
+accepts those indices. The remaining work is the gated deploy cycle only: v7 must deploy
+closed and become active only after the existing production registration and runtime
+projects have passed external checks. Do not create another Vercel project or a preview
+deployment.
 
 Run the complete test and audit suite before every direct-main push. Daily production
 health and weekly standards drift workflows are the ongoing monitors.

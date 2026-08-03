@@ -53,6 +53,7 @@ contract Census is ERC721, Ownable, ReentrancyGuard, IERC8048 {
     uint8 public constant ERR_EXACT_DUPLICATE = 10;
     uint8 public constant ERR_CONTEXT = 11;
     uint8 public constant ERR_BATCH = 12;
+    uint8 public constant ERR_RETIRED = 13;
 
     // advisory warning codes
     uint8 public constant WARN_ASYMMETRIC = 1;
@@ -79,6 +80,7 @@ contract Census is ERC721, Ownable, ReentrancyGuard, IERC8048 {
     error MintingNotPaused();
     error InvalidContext();
     error InvalidBatch();
+    error RetiredTraits();
 
     // ---------------------------------------------------------------- immutables
 
@@ -237,6 +239,7 @@ contract Census is ERC721, Ownable, ReentrancyGuard, IERC8048 {
         warnings = new uint8[](0);
         if (bitmap.length != Bitmap.BYTE_LEN) return (false, ERR_LENGTH, warnings);
         if (!TraitData.valid(traits_)) return (false, ERR_TRAITS, warnings);
+        if (TraitData.retired(traits_)) return (false, ERR_RETIRED, warnings);
         if (!mintingOpen) return (false, ERR_MINT_CLOSED, warnings);
         if (paused) return (false, ERR_PAUSED, warnings);
         if (checkContext && !_validContext(context_)) return (false, ERR_CONTEXT, warnings);
@@ -313,6 +316,7 @@ contract Census is ERC721, Ownable, ReentrancyGuard, IERC8048 {
         if (paused) revert MintingPaused();
         if (bitmap.length != Bitmap.BYTE_LEN) revert InvalidBitmap(ERR_LENGTH);
         if (!TraitData.valid(traits_)) revert InvalidTraits();
+        if (TraitData.retired(traits_)) revert RetiredTraits();
         if (!_validContext(context_)) revert InvalidContext();
         if (_pool[7] == 0) revert SoldOut();
         if (mintedBy[msg.sender] >= MAX_PER_WALLET) revert WalletCapReached();

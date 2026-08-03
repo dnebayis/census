@@ -13,7 +13,9 @@ interface IIdentityRegistry {
 contract SepoliaForkTest is Test {
     address internal constant ADAPTER = 0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92;
     address internal constant IDENTITY = 0x8004A818BFB912233c491871b3d84c89A494BD9e;
-    bytes9 internal constant TRAITS = hex"09020c0b0a080b090b";
+    // Eyes index 0 (Plain Eyes); the earlier fixture used the now-retired Eyepatch (11),
+    // which the v7 candidate rejects at mint time.
+    bytes9 internal constant TRAITS = hex"09020c000a080b090b";
 
     function testFork_RegisterUriAndOwnershipControl() public {
         string memory rpc = vm.envOr("SEPOLIA_RPC_URL", string(""));
