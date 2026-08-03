@@ -67,9 +67,9 @@ Start with:
 
 > Use the Census workflow at `https://github.com/dnebayis/census/tree/main/skills/census-mint` and the public API docs at `https://census-registration-dnebayis.vercel.app/#api`. Create a Census portrait for: `<character>`. Preserve the character’s role and identity, let Census assign and lock the immutable traits, display the final palette-exact 40×40 one-bit PNG in this conversation, and wait for my explicit approval before simulating or minting on Sepolia.
 
-The agent uses an encrypted local Cast keystore and displays only the public address for
+The agent uses an encrypted Cast keystore and displays only the public address for
 funding. Private keys, mnemonic phrases and passwords must never be pasted into chat,
-written to artifacts or logged.
+written to artifacts, sent to a public API or logged.
 
 ## Repository
 
@@ -81,5 +81,10 @@ written to artifacts or logged.
 - `skills/census-mint/` — IDE-agent mint workflow
 - `docs/` — specification, decisions, deployment record and remaining work
 
-The implemented standards scope is ERC-8004, ERC-8048, ERC-8217 and ERC-2981.
-ERC-8257, RESTAP, x402 payments and transaction executors are not part of Census v6.
+The mint contract implements ERC-8004, ERC-8048, ERC-8217 and ERC-2981. The separate
+production runtime exposes report-only RESTAP, MCP and ERC-8257 discovery; none of them
+can transact. X402 payments and transaction executors are absent.
+
+Current unfinished work is maintained only in [`docs/NEXT-STEPS.md`](docs/NEXT-STEPS.md).
+It covers OpenSea key rotation, a second production RPC, marketplace ingestion checks,
+the next five-portrait regression batch and the optional v7 product decision.

@@ -23,11 +23,13 @@ Census mints temporarily to itself, calls the controller-gated ERC-8217 adapter,
 transfers to the minter. There is no activation transaction. This creates two ERC-721
 `Transfer` events and is required by the real adapter.
 
-### D4 — Immutable canonical host and one-way launch
+### D4 — Immutable canonical host and one-way initial launch
 
 The Vercel production project URL is constructor state. It must be HTTPS with no
 trailing slash. Deployment starts closed. `openMinting()` is owner-only and one-way;
-there is no admin pause or close power.
+the initial closed state cannot be restored. D26 supersedes the original no-pause rule
+for v6 by adding owner-only emergency pause/unpause for new mints; it never pauses
+transfers or reads.
 
 ### D5 — One 209-byte immutable art record
 
@@ -55,21 +57,23 @@ execution wallet. The owner can fully opt out of the shared host through adapter
 
 ### D9 — Draft IDs and receipts are different identities
 
-`draftId` identifies local work. Only decoded `EntryMinted` receipts establish actual
+`draftId` identifies pre-mint work. Only decoded `EntryMinted` receipts establish actual
 `tokenId` and `agentId`. Legacy numbered output files remain artifacts and are never
 silently treated as minted tokens.
 
 ### D10 — Exact simulation is mandatory
 
-The sender is derived locally from `PRIVATE_KEY`, never logged as a key or written to a
-file. The exact single or batch transaction is simulated with the same sender before
-broadcast. Chain failures stop; visual warnings are informational.
+The sender is derived from an encrypted Cast keystore; `PRIVATE_KEY` is a legacy
+environment-only fallback. Neither form is logged or written to an artifact. The exact
+single or batch transaction is simulated with the same sender before broadcast. Chain
+failures stop; visual warnings are informational.
 
 ### D11 — Registration is truthful and read-only
 
 The service reads live chain state, confirms adapter binding, uses the onchain SVG and
-current context, disables caching, and returns inactive discovery-only
-`registration-v1` JSON. It contains no runtime.
+current context, and returns inactive discovery-only `registration-v1` JSON. Errors use
+`no-store`; missing tokens and successful active-v6 responses use bounded caches. It
+contains no transaction runtime.
 
 ### D12 — Production URL precedes contract deployment
 
@@ -99,7 +103,7 @@ the warning has no confirmation flag and is not a mint blocker by itself.
 The source is aspect-preserving cover-cropped once to 40×36 and placed at y=4 on the
 40×40 canvas. This keeps a four-pixel top margin while anchoring shoulders to the
 bottom and both sides. Threshold 128 is the reproducible baseline conversion; D25
-defines the pending draft-local exception for a dense source. Every selected result is
+defines the implemented draft-local exception for a dense source. Every selected result is
 a 200-byte MSB-first bitmap. The onchain renderer uses only charcoal `#34343A` and warm
 pastel `#E9DDC7`.
 
@@ -120,9 +124,10 @@ and `runtime-service`; the monorepo root is never a deployment source.
 
 ### D18 — OpenSea supplies bounded Arbitrageur market observations
 
-OpenSea remains the future MCP tool-discovery integration and is also the direct
-read-only market source for Arbitrageur. The runtime uses active listing and best-offer
-REST endpoints rather than wallet/trading SDK methods or a long-lived Stream socket.
+OpenSea is the direct read-only market source for Arbitrageur. ERC-8257 discovery is
+registered independently on Sepolia, which OpenSea does not currently index. The
+runtime uses active listing and best-offer REST endpoints rather than wallet/trading SDK
+methods or a long-lived Stream socket.
 The origin is fixed to `api.opensea.io`, the instant key stays in Vercel secrets and is
 rotated before its 30-day expiry, and each call is bounded to 20 combined OpenSea slugs
 or `slug:tokenId` targets. Reports compare raw amounts only when currencies and decimals
@@ -139,10 +144,9 @@ types, and a start timestamp. Each wallet receives one request capped at 200 eve
 pagination is disclosed as truncation rather than followed. Reports carry direction,
 NFT and transaction evidence but make no ownership or trading conclusion.
 
-Tracker runtime code may deploy inactive, but its canary cannot be attached to a token
-with another skill. No current v5 token has skill index 2. Draft seeds and trait indices
-will not be rerolled or selected to force one; activation waits for a naturally assigned
-Tracker entry on the active Census contract.
+Tracker cannot be attached to a token with another skill. Draft seeds and trait indices
+are never rerolled or selected to force one. V6 token 5 is the naturally assigned active
+Tracker entry.
 
 ### D20 — Token Hunter uses age, volume, and safety evidence without inventing liquidity
 
@@ -164,9 +168,9 @@ documented category, and a maximum of 10 results. Output preserves provider rank
 attaches total and exact matching interval statistics. A missing interval remains null;
 Census does not infer it from another window or claim an independent momentum score.
 
-No current v5 token has skill index 4, so the engine deploys inactive. The archived v2
-`night-ledger` identity is not promoted back into the active canary set merely to fill
-the gap. Activation waits for a naturally assigned current-v5 entry.
+No current v6 token has skill index 4, so the engine is unreachable through the active
+collection. The archived v2 `night-ledger` identity is not promoted into the active
+canary set merely to fill the gap. Activation waits for a naturally assigned v6 entry.
 
 ### D22 — Report-only access is collection-scoped
 
@@ -203,9 +207,9 @@ which labelled visually human tokens as Skull.
 ### D25 — Density correction is draft-local
 
 The default crop, palette, threshold 128, and onchain 1%–95% hard band remain collection
-constants. One dense portrait does not justify changing every normal portrait. Future
-calibration first renders the default bitmap, leaves results at or below 45% unchanged,
-and creates lighter candidates only for that draft. Selection must preserve recognizable
+constants. One dense portrait does not justify changing every normal portrait. The
+implemented calibration first renders the default bitmap, leaves results at or below
+45% unchanged, and creates lighter candidates only for that draft. Selection must preserve recognizable
 facial and primary-trait shapes, and the chosen threshold and candidate statistics must
 be persisted. Token 2 is immutable and remains a testnet regression fixture. This
 pipeline change requires no Census redeployment.
@@ -241,6 +245,17 @@ explicit approval. At least one extra blank row is required after the four reser
 rows. Direct contract calls remain outside this pipeline guarantee; absolute vocabulary
 removal would require a new deployment.
 
+### D28 — Production-only public documentation and explicit v7 gate
+
+The permanent registration origin serves only production project/API information and
+the official agent-workflow link. It does not publish development-host instructions or
+a hosted signing endpoint. Deployments continue directly to the two existing production
+projects.
+
+V7 is not assumed. It is justified only if Aquatic Humanoid and one-eye indices must be
+invalid even for direct contract callers. Pipeline retirement, frontend copy, RPC
+rotation and art improvements do not independently require a new contract.
+
 ## Active Sepolia record
 
 - Census v6: `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`
@@ -264,9 +279,9 @@ agents 9247–9248 remain preserved. Earlier v4 and older addresses are retained
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains available through the permanent address-routed host.
 
-Gas figures in project documents are Foundry mock comparisons: about 710k per separate
-mint and 429k per entry in a four-entry batch, a 40% saving. They are not live adapter
-estimates.
+Gas figures in project documents are 3 August 2026 Foundry mock comparisons: about 739k
+per separate mint and 454k per entry in a four-entry batch, a 39% saving. They are not
+live adapter estimates.
 
 ## V6 collection constants
 

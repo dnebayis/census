@@ -4,8 +4,9 @@
 
 Census v6 combines ERC-721 portraits, ERC-8004 identity registration, ERC-8048
 immutable metadata conventions, ERC-8217 ownership control and ERC-2981 royalty
-reporting. ERC-8257, RESTAP, MCP transaction execution, x402 payments, separate agent
-wallets and enforced royalties are out of scope.
+reporting. ERC-8257, RESTAP and MCP are not part of the mint contract; the separate
+runtime may expose them only for report-only discovery. MCP transaction execution, x402
+payments, separate agent wallets and enforced royalties are out of scope.
 
 ## 2. Collection and mint state
 
@@ -134,3 +135,9 @@ are agents 9256–9260. The full transaction and deployment record is in
 `docs/DEPLOYMENT.md` and `config/sepolia.json`. V5
 `0x5863E1d0539c659204B097359AC1a75C51144E78` is archived and must not be used by the
 mint pipeline.
+
+As verified on 3 August 2026, v6 minting is open and not paused, the production Docs/API
+origin and token registration route are healthy, and the missing-token route returns
+404. `docs/NEXT-STEPS.md` owns all unfinished operational work. V7 is not deployed or
+assumed; it remains the explicit option for removing retired trait indices at contract
+level.

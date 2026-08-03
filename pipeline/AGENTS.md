@@ -46,7 +46,7 @@ transaction, and they can never be overridden.
 
 - Say `draftId`, never token ID, before a successful receipt.
 - Never delete or edit the stored seed to obtain other traits. Create a new draft.
-- Prefer an encrypted local Cast keystore. Never print, paste, or persist a private key,
+- Prefer an encrypted Cast keystore. Never print, paste, or persist a private key,
   mnemonic or wallet password.
 - Never offer `--species`, seed, threshold, RPC or ABI selection to a normal user.
 - Never infer token or agent IDs from filenames or counters.

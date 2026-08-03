@@ -729,9 +729,8 @@ contract HighIdAdapter is IAdapter8004 {
             observedBitmapNonZero = ICensusProbe(probe).bitmapOf(tid).length == 200;
         }
         if (reenter) {
-            (bool ok,) = probe.call(
-                abi.encodeWithSignature("mint(bytes,bytes9,string)", new bytes(200), bytes9(0), "reentrant")
-            );
+            (bool ok,) =
+                probe.call(abi.encodeWithSignature("mint(bytes,bytes9,string)", new bytes(200), bytes9(0), "reentrant"));
             reentrantMintBlocked = !ok;
         }
         agentId = nextAgentId++;

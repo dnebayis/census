@@ -47,8 +47,13 @@ the warm pastel background color. `agentURI` is permanently rooted at the produc
 registration host and returns registration-v1 JSON with `active: false`, empty services
 and trust arrays, and `x402Support: false` as a compatibility field.
 
+The same production origin serves the dark, compact Docs/API page. It contains project
+and endpoint documentation, a live onchain preview and the official agent-workflow URL;
+it has no wallet connection or hosted mint endpoint.
+
 Runtime skills are report-only: they can explain, assess and link to sources but cannot
 trade, approve, transfer or act financially for a user. X402 payments and Executor
 authorization are absent.
 
 The archived v5 address is `0x5863E1d0539c659204B097359AC1a75C51144E78`.
+Operational work and the optional v7 decision are tracked only in `NEXT-STEPS.md`.

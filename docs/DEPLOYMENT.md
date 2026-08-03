@@ -28,6 +28,9 @@ simulation succeeded and minted:
 
 All five production registration documents returned HTTP 200. Token 1 was independently
 matched to agent 9256, adapter binding, Identity Registry URI, chain ID and contract.
+On 3 August 2026 the production root and token 3 registration route returned 200, a
+missing token returned 404, and live contract reads reported `mintingOpen = true` and
+`paused = false`.
 
 ## Operational controls
 
@@ -50,4 +53,5 @@ is archive-only. Earlier v4, v3, v2, v1 and prototype addresses remain in
 The existing registration and runtime projects pin the non-secret
 `ACTIVE_CENSUS_ADDRESS` to v6 in their production configuration. Registration uses the
 intended short CDN cache and runtime rejects archived collections. No new Vercel project
-or preview deployment is permitted.
+or preview deployment is permitted. No v7 address exists; see `NEXT-STEPS.md` for the
+decision gate that would justify another deployment.

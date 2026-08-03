@@ -62,10 +62,11 @@ Inspect the source image, then run:
 ```sh
 python3 generate.py build \
   --draft <draftId> \
-  --file <output>/<draftId>.png
+  --file <output>/<draftId>.agent-v<attempt>.png \
+  --generator agent:<ide-name>
 ```
 
-Use the actual agent identifier when another image-capable IDE agent generated it.
+Use the actual agent identifier for the image-capable IDE agent that generated it.
 Inspect both `<draftId>.compare.png` and the palette-exact 1-bit `<draftId>.png` with an
 image viewer. In Codex, render the actual PNG directly in the conversation; do not
 replace it with a text description or ASCII preview. Also read `<draftId>.json`.
@@ -93,7 +94,7 @@ checks, wallet limits, invalid traits, and failed exact simulation remain hard f
 
 ## Mint only on explicit instruction
 
-Prefer an encrypted local Cast keystore selected by `ETH_KEYSTORE_ACCOUNT` or
+Prefer an encrypted Cast keystore selected by `ETH_KEYSTORE_ACCOUNT` or
 `ETH_KEYSTORE`; its password is requested interactively and must never enter chat or a
 file. `PRIVATE_KEY` is a legacy environment-only fallback and must never be printed,
 persisted or passed anywhere except the existing pipeline command. Prefer

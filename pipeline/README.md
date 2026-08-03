@@ -8,7 +8,7 @@ Active Sepolia Census v6 is `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`; its
 registration origin is `https://census-registration-dnebayis.vercel.app`. Supply is
 5,000, minting is open and owner-pausable, and tokens 1–5 bind agents 9256–9260. The adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
-and ERC-8217 only.
+ERC-8217 and ERC-2981 in the mint contract. The separate runtime is report-only.
 
 ## Setup
 
@@ -27,7 +27,8 @@ python3 generate.py brief \
 # The IDE agent generates a raster from the printed brief, then:
 python3 generate.py build \
   --draft tired-bureaucrat \
-  --file output/tired-bureaucrat.png
+  --file output/tired-bureaucrat.agent-v1.png \
+  --generator agent:<ide-name>
 
 # The agent displays output/tired-bureaucrat.png. After explicit user approval:
 python3 generate.py review \
@@ -42,8 +43,8 @@ For multiple drafts, repeat `--draft`; the CLI automatically uses `mintBatch`. C
 defaults to each draft subject. `--persona`, `--generator`, `--census`, and `--rpc`
 remain optional overrides.
 
-The Foundry mock comparison is about 710k gas per separate mint and 429k per entry in a
-four-entry batch, a 40% saving. It is directional, not a live fee quote.
+The 3 August 2026 Foundry mock comparison is about 739k gas per separate mint and 454k
+per entry in a four-entry batch, a 39% saving. It is directional, not a live fee quote.
 
 ```sh
 ETH_KEYSTORE_ACCOUNT=census python3 generate.py mint \
@@ -93,7 +94,7 @@ The pipeline:
 - requires a current, readable, completely framed, user-approved 40×40 PNG;
 - refuses only effectively blank or solid drafts;
 - reports advisory warnings without blocking, including a >35% density readability risk;
-- derives the sender locally from an encrypted Cast keystore; `PRIVATE_KEY` remains a
+- derives the sender from an encrypted Cast keystore; `PRIVATE_KEY` remains a
   legacy environment-only option;
 - simulates the exact `mint` or `mintBatch` call with that sender;
 - broadcasts only after simulation succeeds.

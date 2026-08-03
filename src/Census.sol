@@ -423,10 +423,9 @@ contract Census is ERC721, Ownable, ReentrancyGuard, IERC8048 {
     function setMetadata(uint256 tokenId, string calldata key, bytes calldata value) external {
         if (ownerOf(tokenId) != msg.sender) revert NotEntryOwner();
         bytes32 h = keccak256(bytes(key));
-        if (
-            h == keccak256("skill") || h == keccak256("class") || h == keccak256("context")
-                || _hasTraitPrefix(key)
-        ) revert ImmutableKey();
+        if (h == keccak256("skill") || h == keccak256("class") || h == keccak256("context") || _hasTraitPrefix(key)) {
+            revert ImmutableKey();
+        }
         _meta[tokenId][h] = value;
         emit MetadataSet(tokenId, key, key, value);
     }

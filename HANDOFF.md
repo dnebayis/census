@@ -50,24 +50,25 @@ cannot be absolutely prevented. Similarity protection beyond the coarse signatur
 property of the official pipeline.
 
 Pause stops only new mints. ERC-2981 announces but does not force royalty payment.
-There is no x402 payment flow, executor, ERC721-C, separate agent wallet, RESTAP or
-ERC-8257 integration in v6.
+The v6 mint contract has no x402 payment flow, executor, ERC721-C, separate agent wallet,
+RESTAP or ERC-8257 integration. The separate production runtime exposes report-only
+RESTAP/MCP routes and ERC-8257 discovery without transaction authority.
 
-## Remaining operator actions
+## Remaining work
 
-The non-secret active address is pinned to v6 in both existing Vercel project
-configurations. Dashboard authentication is still needed to configure a second secret
-RPC endpoint in `SEPOLIA_RPC_URLS`. Deploy production only; do not create a preview or
-another Vercel project.
+`docs/NEXT-STEPS.md` is the only active backlog. Immediate operator actions are OpenSea
+key rotation, a second independent Sepolia registration RPC, production canary reruns,
+and OpenSea metadata/royalty ingestion checks for v6 tokens 1-5. The next art step is a
+five-portrait reviewed regression batch.
 
-The OpenSea key shared in chat must be revoked in the OpenSea dashboard and replaced as
-a production-only runtime secret. Do not remove the old production value before a new
-one is ready, and never place the replacement in repository files or frontend code.
-After rotation, production-redeploy runtime and verify OpenSea ingestion for v6 token
-1–5.
+V7 is a product decision, not an assumed deployment. It is needed only if retired
+Aquatic/one-eye indices must also become impossible through direct contract calls. If
+selected, v7 must deploy closed and become active only after the existing production
+registration and runtime projects have passed external checks. Do not create another
+Vercel project or a preview deployment.
 
-Run the complete local suite before every direct-main push. Daily production health and
-weekly standards drift workflows are the ongoing monitors.
+Run the complete test and audit suite before every direct-main push. Daily production
+health and weekly standards drift workflows are the ongoing monitors.
 
 ## User flow
 
