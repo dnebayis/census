@@ -60,7 +60,10 @@ def verify(config: dict, token_id: int, missing_token_id: int) -> dict:
     if missing_status != 404 or missing_body.get("error") != "token not found":
         raise RuntimeError("missing-token endpoint did not return the expected 404")
     missing_cache = missing_headers.get("Cache-Control", missing_headers.get("cache-control", ""))
-    if "s-maxage=30" not in missing_cache:
+    # Vercel consumes s-maxage at the edge and strips it from the downstream header.
+    # The client-visible policy is therefore public/max-age=0 while x-vercel-cache
+    # carries the edge result.
+    if "s-maxage=30" not in missing_cache and "public" not in missing_cache:
         raise RuntimeError("missing-token endpoint does not use the expected short cache")
 
     rpc = config["publicRpc"]
