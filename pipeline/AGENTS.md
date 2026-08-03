@@ -55,6 +55,10 @@ cover-crops it once without distortion to 40×36, places it at y=4 on a 40×40 c
 bit. Fine detail, gradients, dithering, halftone, thin lines, text, and watermarks
 collapse or create noise.
 
+Use only the self-contained Census visual rules. Never name another collection or
+project as a style reference. Prefer flat light face planes and sparse deliberate
+linework; avoid hatching, stippling, texture fill, and large merged dark masses.
+
 Prefer:
 
 - head and shoulders, directly forward;
@@ -64,8 +68,10 @@ Prefer:
 - solid eyes, brows, and mouth;
 - shoulders cut by the bottom edge.
 
-`build` prints and saves the exact reduced portrait. Warnings are informational. Redraw
-only when the output is effectively blank/solid or when the user asks for a revision.
+`build` prints and saves the exact reduced portrait. Warnings are informational. If a
+preview is visibly too dark, revise only that draft's source; never change the global
+threshold to repair it. Redraw when output is effectively blank/solid, visually merged,
+or when the user asks for a revision.
 
 ## Contract checks
 

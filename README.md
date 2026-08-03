@@ -62,6 +62,12 @@ can reach both side edges, then generates the one-bit 40×40
 result and reports visual statistics without forcing iterative redraws. Procedural
 Python/SVG smoke art is not a production input.
 
+Source prompts use a self-contained Census visual language: clean graphic portraits,
+flat light face planes, sparse deliberate linework, and no hatching or unrelated
+collection references. Dense-art correction is planned as a draft-local calibration;
+the contract band and normal portraits will not be changed to repair one image. See
+[`docs/NEXT-STEPS.md`](docs/NEXT-STEPS.md).
+
 The approved v2 visual fixture is
 [the 40×40 one-bit preview](docs/assets/census-v2-1bit-preview-v2.png), with its
 [source comparison](docs/assets/census-v2-source-vs-1bit-v2.png). It records the locked
@@ -111,6 +117,7 @@ adapter and are comparison figures, not a prediction of production transaction c
 - [Plain-language overview](docs/OVERVIEW.md)
 - [Standards lock](docs/standards-lock.md)
 - [Sepolia deployment record](docs/DEPLOYMENT.md)
+- [Remaining ordered work](docs/NEXT-STEPS.md)
 - [ERC-8257 discovery record](docs/ERC8257.md)
 - [Pipeline guide](pipeline/README.md)
 - [Agent-native mint skill](skills/census-mint/SKILL.md)

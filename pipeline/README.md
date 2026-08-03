@@ -4,9 +4,9 @@ An IDE agent can generate the artwork, or a user can supply a raster directly. T
 assigns persistent visual traits, converts raster art into the exact onchain bitmap,
 and simulates the exact transaction before minting. It is not an image generator.
 
-Active Sepolia Census is `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`; its
+Active Sepolia Census v5 is `0x5863E1d0539c659204B097359AC1a75C51144E78`; its
 registration origin is `https://census-registration-dnebayis.vercel.app`. Minting is
-irreversibly open and the deployment has tokens 1–5. The adapter is
+irreversibly open and the deployment has tokens 1–2 / agents 9247–9248. The adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
 and ERC-8217 only.
 
@@ -56,6 +56,9 @@ rejected. Production build inputs are raster-only:
 PNG, JPEG, or WebP. Python drawings, SVG, ASCII, and the historical rollout smoke image
 are not accepted as production art.
 
+Generated prompts use only the Census visual rules: clean graphic portrait, flat light
+face planes, sparse deliberate linework, and no hatching or unrelated collection name.
+
 ## Persistent assignment
 
 The first `brief` uses a cryptographically secure 128-bit seed. It writes
@@ -94,6 +97,11 @@ transaction hash, and block number.
 
 Hard mintability, duplicate, wallet, trait, and simulation failures remain
 non-bypassable.
+
+The fixed threshold remains the normal path. Do not lower it globally to repair one
+dense portrait. The pending calibration in `../docs/NEXT-STEPS.md` will leave default
+results at or below 45% unchanged and create lighter, reproducible candidates only for
+the dense draft.
 
 ## Bitmap and traits
 

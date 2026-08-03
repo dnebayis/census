@@ -98,8 +98,9 @@ the warning has no confirmation flag and is not a mint blocker by itself.
 
 The source is aspect-preserving cover-cropped once to 40×36 and placed at y=4 on the
 40×40 canvas. This keeps a four-pixel top margin while anchoring shoulders to the
-bottom and both sides. Threshold 128 produces a
-200-byte MSB-first bitmap. The onchain renderer uses only charcoal `#34343A` and warm
+bottom and both sides. Threshold 128 is the reproducible baseline conversion; D25
+defines the pending draft-local exception for a dense source. Every selected result is
+a 200-byte MSB-first bitmap. The onchain renderer uses only charcoal `#34343A` and warm
 pastel `#E9DDC7`.
 
 ### D16 — One permanent registration project
@@ -139,7 +140,7 @@ pagination is disclosed as truncation rather than followed. Reports carry direct
 NFT and transaction evidence but make no ownership or trading conclusion.
 
 Tracker runtime code may deploy inactive, but its canary cannot be attached to a token
-with another skill. No current v3 token has skill index 2. Draft seeds and trait indices
+with another skill. No current v5 token has skill index 2. Draft seeds and trait indices
 will not be rerolled or selected to force one; activation waits for a naturally assigned
 Tracker entry on the active Census contract.
 
@@ -163,9 +164,9 @@ documented category, and a maximum of 10 results. Output preserves provider rank
 attaches total and exact matching interval statistics. A missing interval remains null;
 Census does not infer it from another window or claim an independent momentum score.
 
-No current v3 token has skill index 4, so the engine deploys inactive. The archived v2
+No current v5 token has skill index 4, so the engine deploys inactive. The archived v2
 `night-ledger` identity is not promoted back into the active canary set merely to fill
-the gap. Activation waits for a naturally assigned current-v3 entry.
+the gap. Activation waits for a naturally assigned current-v5 entry.
 
 ### D22 — Report-only access is collection-scoped
 
@@ -198,6 +199,16 @@ map to `Human`, android maps to `Agent`, skull-faced maps to `Skull`, and every 
 non-human species maps to `Alien`. `classOf`, ERC-8048 `class` metadata, and tokenURI all
 read that same stored Species byte. V4 is archived because it derived class from skill,
 which labelled visually human tokens as Skull.
+
+### D25 — Density correction is draft-local
+
+The default crop, palette, threshold 128, and onchain 1%–95% hard band remain collection
+constants. One dense portrait does not justify changing every normal portrait. Future
+calibration first renders the default bitmap, leaves results at or below 45% unchanged,
+and creates lighter candidates only for that draft. Selection must preserve recognizable
+facial and primary-trait shapes, and the chosen threshold and candidate statistics must
+be persisted. Token 2 is immutable and remains a testnet regression fixture. This
+pipeline change requires no Census redeployment.
 
 ## Active Sepolia record
 

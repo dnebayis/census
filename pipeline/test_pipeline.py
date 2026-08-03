@@ -31,6 +31,12 @@ VALID_TRAITS = {
 
 
 class PipelineTest(unittest.TestCase):
+    def test_brief_uses_self_contained_sparse_visual_language(self):
+        brief = generate.BRIEF.lower()
+        self.assertIn("broad flat shapes", brief)
+        self.assertIn("no hatching", brief)
+        self.assertIn("clean graphic portrait", brief)
+
     def test_one_bit_threshold_packing_and_census_palette(self):
         gray = Image.new("L", (40, 40), 255)
         gray.putpixel((0, 0), 128)

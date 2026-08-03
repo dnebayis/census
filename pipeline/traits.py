@@ -1,16 +1,7 @@
-"""Trait assignment: deterministic from seed + uniqueness check.
+"""Deterministic Census trait assignment, validation, and serialization.
 
-Adapted from Basies. Same three jobs — generate, validate, serialise — with Gender
-dropped (DECISIONS D12) and one addition: `describe()`, which turns a trait set into
-the English clause the image prompt is built from.
-
-That addition is the point. In Basies traits were metadata and only the character type
-ever reached the generator, so every image was drawn from the same short prompt. Here
-the traits are the description, so an entry's hat, eyes and expression are actually in
-the picture rather than only in the JSON.
-
-Serialisation is key-value, not a packed bytes8: the contract has an ERC-8048 store,
-so there is nothing to pack.
+Every assigned trait reaches the image prompt and the same ordered indices are committed
+onchain, keeping the visible portrait and immutable metadata aligned.
 """
 
 import random

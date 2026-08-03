@@ -12,12 +12,12 @@ to observations, suggestions, evidence, and links. Payment protocols, transactio
 construction, signatures, contract calls, and execution wallets are out of scope. OpenSea search awaits upstream Sepolia indexing. Delivery
 gates are in `RUNTIME-PLAN.md`. A frontend remains outside the product direction.
 
-The inactive `runtime-service/` shell implements address-routed RESTAP discovery,
-`/talk`, passive `/news`, and MCP without claiming service activation. Registration
-continues to return `active: false` and empty services. The ERC-8004 registration
+The production `runtime-service/` implements address-routed RESTAP discovery, `/talk`,
+passive `/news`, and MCP for adapter-bound tokens whose immutable skill and collection
+gate match. Registration continues to return `active: false` and empty services. The ERC-8004 registration
 compatibility field `x402Support` remains fixed to `false`; there is no implementation.
-Its local Mint Scanner engine is report-only and evidence-backed; it remains unavailable
-through public runtime routes until the Phase 2 integration gates pass.
+Its Mint Scanner and all other engines remain report-only and evidence-backed; runtime
+availability does not grant transaction capability or make registration active.
 
 The normative standards and upstream commits are in `standards-lock.md`.
 
@@ -129,7 +129,8 @@ PNG, JPEG, or WebP. The build stores optional `agent:*`, `user:*`, or `tool:*`
 provenance. Python, SVG, ASCII, procedural smoke art, and the rollout artifact are
 excluded from the production mint path.
 
-The agent creates a normal high-contrast portrait, then inspects the original,
+The agent creates a normal high-contrast clean graphic portrait with flat light face
+planes, sparse linework, and no external collection reference, then inspects the original,
 side-by-side comparison, and exact one-bit 40×40 PNG. The pipeline cover-crops the source
 without distortion once to 40×36, places it at y=4 on a 40×40 canvas, thresholds at 128, and packs the
 result into 200 bytes. The locked render palette is charcoal `#34343A` on warm pastel
@@ -139,6 +140,12 @@ metrics and secondary-trait visibility never block minting. Build records source
 filename and SHA-256, bitmap SHA-256, bitmap/stats filenames, all analysis statistics,
 signature, warnings, and mintability. Existing artifacts and same-batch signatures are
 checked separately.
+
+Threshold 128 remains the default. A planned draft-local calibration may create lighter
+candidates only when the default result exceeds 45% foreground. Normal drafts remain
+byte-for-byte unchanged, and the selected threshold and candidate statistics must be
+persisted. This is pipeline-only work and requires no contract redeployment; see
+`NEXT-STEPS.md`.
 
 Mint:
 

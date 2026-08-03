@@ -1,4 +1,4 @@
-"""RAO-compatible image processing for Census: 40×40, one bit per pixel.
+"""Census image processing: 40×40, one bit per pixel.
 
 The conversion is deliberately small and exact: one aspect-preserving LANCZOS cover
 crop to 40×36, placement at y=4 on a 40×40 canvas, grayscale, one fixed threshold,

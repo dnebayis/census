@@ -9,7 +9,7 @@ RESTAP/MCP runtime exposes seven bounded report-only skills for the active colle
 OpenSea does not currently index Sepolia tool registries. The archived v3 Executor has
 no implementation or authorization path; v4 and v5 replace it with report-only Advisor.
 
-`runtime-service/` contains the inactive protocol shell: `llms.txt`,
+`runtime-service/` contains the production report-only protocol shell: `llms.txt`,
 address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
 Vercel assigned its first deployment to the stable
@@ -35,8 +35,8 @@ scans and emits ranked candidates with transaction/block evidence and explicit
 limitations. A live read-only scan and the Redis-backed integration passed; it remains
 available only to matching immutable-skill entries on the active v5 Census contract.
 
-External production verification passed on 2 August 2026. Token 2 RESTAP discovery
-returned its live agent 9121 binding and `canary.available: true`; `/talk` and the MCP
+Historical v3 production verification passed on 2 August 2026. Token 2 RESTAP discovery
+returned agent 9121 and `canary.available: true`; `/talk` and the MCP
 `mint-scanner` tool returned evidence-backed reports over Sepolia. Token 3 returned
 `runtime_inactive` through both surfaces, a missing token returned 404, and MCP emitted
 Redis-backed rate-limit headers. The runtime uses the public dRPC Sepolia endpoint;
@@ -50,11 +50,16 @@ expires after 30 days and must be rotated before 2026-09-02. Its independent ski
 flag is enabled for the active v5 Census contract; registration remains
 inactive and the engine has no transaction capability.
 
-External production checks passed on 3 August 2026 for token 3: RESTAP discovery
+Historical v3 production checks passed on 3 August 2026 for token 3: RESTAP discovery
 returned agent 9122 with the Arbitrageur canary available, `/talk` returned an OpenSea
 report, and MCP exposed and invoked only the `arbitrageur` tool. Same-currency and
 two-sided-order requirements correctly produced non-qualified observations rather than
 false opportunities.
+
+The equivalent external production checks for active v5 token 1 / agent 9247
+(`Arbitrageur`) and token 2 / agent 9248 (`Mint Scanner`) remain pending and are the
+third item in `docs/NEXT-STEPS.md`. Their registration endpoints and adapter bindings
+already pass independently.
 
 Mainnet ETH and canonical WETH now form the only allowed cross-currency comparison.
 The output marks `currencyConversion.required: true`, states the 1:1 basis, and excludes
@@ -63,8 +68,8 @@ exact matching.
 
 Tracker is implemented as the third report-only engine using bounded OpenSea account
 events: at most 10 wallets, transfer/sale/mint filters, one 200-event page per wallet,
-transaction/source evidence, and explicit cursor truncation. Its independent gate is
-historically had no v3 token with skill index 2. Do not bind
+transaction/source evidence, and explicit cursor truncation. The archived v3 collection
+had no token with skill index 2. Do not bind
 it to token 4 (Token Hunter) or reroll draft traits to force a Tracker token.
 
 Token Hunter was production-verified with archived v3 token 4 / agent 9123. It reads one
@@ -100,6 +105,7 @@ Read, in order:
 3. `docs/SPEC.md`
 4. `pipeline/AGENTS.md`
 5. `docs/RUNTIME-PLAN.md`
+6. `docs/NEXT-STEPS.md`
 
 ## Fixed infrastructure
 
@@ -172,6 +178,11 @@ real raster image generation and can inspect the source/comparison/palette previ
 Only effectively blank or solid output requires regeneration. Art metrics are
 informational and never block minting; PNG/JPEG/WebP user uploads are also accepted.
 Python/SVG smoke drawings are archive proof, not collection art.
+
+User-facing prompts must use only the self-contained Census visual language. Do not
+mention unrelated collections or historical source projects. Token 2 is the regression
+example for the pending draft-local density calibration described in
+`docs/NEXT-STEPS.md`; do not change the global threshold or contract to repair it.
 
 ## Safety-critical rollout order
 

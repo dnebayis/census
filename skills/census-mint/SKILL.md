@@ -48,8 +48,10 @@ Read [quality-gate.md](references/quality-gate.md) before generating.
 ## Generate and inspect
 
 Use the installed `imagegen` skill and its built-in image-generation path. Produce a
-normal high-resolution, high-contrast square portrait source; do not ask the generator
-for pixel art. The pipeline performs the only aspect-preserving 40×36 cover crop,
+normal high-resolution, high-contrast square portrait source with flat light face
+planes, sparse deliberate linework, and no hatching or texture fill; do not ask the
+generator for pixel art or name an unrelated collection as a style reference. The
+pipeline performs the only aspect-preserving 40×36 cover crop,
 places it at y=4 on the 40×40 canvas, and applies the Census one-bit geometry with its
 two-color palette. Copy the chosen output into the project as
 `<output>/<draftId>.agent-v<attempt>.png`. Do not substitute Python, SVG, ASCII art, a
@@ -75,9 +77,10 @@ Redraw the same draft only when:
 
 The deliberately broad density band rejects only effectively blank or solid output.
 All advisory warnings and secondary-trait losses are informational. A warning requires
-one look at the actual palette preview, not a CLI confirmation flag or an automatic
-retry loop. Duplicate checks, wallet limits, invalid traits, and failed exact
-simulation remain hard failures.
+one look at the actual palette preview, not a CLI confirmation flag. When a portrait is
+visibly too dark, revise only that draft's source with lighter flat planes and less
+texture. Do not change the collection-wide threshold to repair one draft. Duplicate
+checks, wallet limits, invalid traits, and failed exact simulation remain hard failures.
 
 ## Mint only on explicit instruction
 

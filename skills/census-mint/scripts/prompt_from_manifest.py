@@ -36,12 +36,12 @@ Primary request: Create one distinctive portrait of {subject.strip()}.
 Assigned traits (all are mandatory):
 {trait_lines}
 Scene/backdrop: pale clean background
-Style/medium: a normal high-resolution vintage ink or woodcut portrait prepared for later reduction
+Style/medium: a normal high-resolution clean graphic portrait prepared for later reduction; self-contained Census visual language with no external collection reference
 Composition/framing: exact 1:1 square canvas; close-up portrait headshot, directly front-facing and centered; leave clean space above the hair; shoulders must reach the bottom and both side edges
-Color: high-contrast grayscale or charcoal source with clearly separated light and dark masses
-Constraints: strong anatomy; broad strokes; rich but controlled facial detail; express every assigned trait with a large unmistakable shape
+Color: high-contrast grayscale or charcoal source with a pale background, light face planes, and clearly separated dark shapes
+Constraints: strong anatomy; broad flat shapes; sparse deliberate linework; express every assigned trait with a large unmistakable shape
 Downstream: the pipeline—not the image generator—owns the single 40×40 reduction, thresholding, 1-bit packing, and Census palette
-Avoid: pixel-art source, tiny hairline detail, profile, scenery, border, text, logo, watermark
+Avoid: pixel-art source, hatching, cross-hatching, stippling, texture fill, large merged dark masses, tiny hairline detail, profile, scenery, border, text, logo, watermark
 {correction}"""
 
 

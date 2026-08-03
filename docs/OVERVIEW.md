@@ -31,6 +31,11 @@ Minting is the product boundary:
 The shipped `census-mint` skill orchestrates this loop. Procedural Python/SVG deployment
 smoke art is deliberately outside the production path.
 
+Portrait prompts use only Census-owned visual rules, not the names of unrelated
+collections. A dense portrait is corrected at the individual draft level; global
+threshold and contract changes are intentionally avoided. The ordered implementation
+work is recorded in `NEXT-STEPS.md`.
+
 The registration JSON starts with `active: false`, empty `services`, and empty
 `supportedTrust`. Its ERC-8004-required `x402Support` compatibility field is always
 `false`; Census implements no payment protocol. An identity is not evidence that a

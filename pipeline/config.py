@@ -17,7 +17,7 @@ BITMAP_BYTES = TOTAL_PIXELS // 8  # 200 — eight pixels per byte, one bit each
 PORTRAIT_SIZE = 36
 PORTRAIT_TOP = 4
 
-# RAO's fixed binary threshold. Values <=128 are foreground.
+# Census default binary threshold. Values <=128 are foreground.
 THRESHOLD = 128
 
 # ---------------------------------------------------------------- contract limits
@@ -51,10 +51,8 @@ ACCEPTED_INPUTS = (".png", ".jpg", ".jpeg", ".webp")
 
 # ---------------------------------------------------------------- traits
 #
-# Named options, not just counts: in Basies the traits were metadata and only the
-# character type reached the prompt. Here the traits ARE the description, which is what
-# makes ten thousand entries read as one collection instead of ten thousand unrelated
-# drawings.
+# Named options, not just counts. Every trait reaches the prompt, so the visible
+# portrait and immutable onchain vocabulary describe the same entry.
 #
 # Option 0 is the plain or absent case in most categories, so accessories stay
 # genuinely uncommon and the average face stays readable at 40x40.

@@ -1,13 +1,4 @@
-"""Output: save the bitmap, traits, preview and stats for one entry.
-
-Adapted from Basies. Same two jobs — write a token, reload what already exists so a
-batch stays unique — with three changes:
-
-  - `.bin` becomes `.hex`, because what you actually do next is paste it into a
-    `cast send` as calldata.
-  - A `.png` preview is written, because at 40×40 you want to look at it before paying.
-  - `.traits` holds readable JSON beside the packed bytes9 indices committed at mint.
-"""
+"""Save and reload Census bitmaps, traits, previews, manifests, and batch state."""
 
 import json
 import os

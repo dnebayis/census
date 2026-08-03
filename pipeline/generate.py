@@ -40,13 +40,14 @@ TRAITS — assigned once for this draft; draw all of them
 COMPOSITION
   - Exact 1:1 square canvas; close-up headshot, directly front-facing, with clean space above the hair.
   - Keep shoulders reaching the bottom and both side edges.
-  - Broad ink shapes and controlled facial detail that survive at 40x40.
-  - Pale clean background with clearly separated light and dark masses.
+  - Broad flat shapes and sparse controlled facial detail that survive at 40x40.
+  - Pale clean background, light face planes, and separated dark features.
 
 STYLE
-  - Normal vintage ink or woodcut portrait source, not source pixel art.
+  - Normal high-resolution clean graphic portrait, not source pixel art.
   - The final preview uses the locked Census charcoal/pastel two-color palette.
-  - No border, frame, text, signature, watermark or scenery.
+  - No hatching, stippling, texture fill, large merged dark masses, border, frame,
+    text, signature, watermark or scenery.
 
 `build` prints the real 40x40 result. Warnings are informational.
 """

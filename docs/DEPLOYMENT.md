@@ -11,8 +11,8 @@
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - registration project: `dnebayis` account / `0xshawtys-projects` scope /
   `census-registration-dnebayis`
-- registration production deployment: `dpl_G3fxrGdcyW4QVLmbp3vnZZxrYttk`
-- runtime production deployment: `dpl_AqCWKJGitdk4xAG4t2QVJAswqLMP`
+- rollout-verified registration production deployment: `dpl_G3fxrGdcyW4QVLmbp3vnZZxrYttk`
+- rollout-verified runtime production deployment: `dpl_AqCWKJGitdk4xAG4t2QVJAswqLMP`
 - repeatable deployment: native Vercel GitHub connection, production branch `main`,
   Root Directory `registration-service`
 - open-mint transaction:
@@ -28,6 +28,8 @@
   `Mint Scanner`, classes `Alien`, `Alien`, transaction
   `0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318`,
   block `11406745`
+- token 1 and token 2 registration responses: HTTP 200, `no-store`, matching adapter
+  bindings and Identity Registry URIs; missing-token probe: 404
 
 The permanent route is:
 

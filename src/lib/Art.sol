@@ -9,8 +9,7 @@ import {Base64} from "solady/utils/Base64.sol";
 
 /// @title Art
 /// @notice Renders a 40x40 one-bit entry to SVG entirely onchain, with no external host.
-/// @dev The bitmap geometry matches the RAO/Basies 1-bit style. Only the Census palette
-///      differs: charcoal #34343A foreground on warm pastel #E9DDC7.
+/// @dev Census uses charcoal #34343A foreground on warm pastel #E9DDC7.
 library Art {
     using DynamicBufferLib for DynamicBufferLib.DynamicBuffer;
 

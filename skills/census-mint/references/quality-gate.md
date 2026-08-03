@@ -5,15 +5,17 @@ not sufficient if its important forms disappear after reduction.
 
 ## Prompt contract
 
-Match the RAO/Basies final visual language, but generate a normal source illustration
-before reduction. Require:
+Use the self-contained Census visual language and generate a normal source illustration
+before reduction. Do not name or imitate an unrelated collection in user-facing prompts.
+Require:
 
 - exact square close-up portrait headshot, directly front-facing;
 - the head is centered with clean space above the hair and shoulders reaching the
   bottom;
-- a high-resolution vintage ink/woodcut source, not source pixel art;
+- a high-resolution clean graphic portrait, not source pixel art;
 - broad high-contrast shapes and controlled facial detail that survive reduction;
-- a final chunky 1-bit bitmap aesthetic like Macintosh 1984 icons;
+- flat light face planes, sparse deliberate linework, and no texture fill or hatching;
+- a final chunky 1-bit bitmap aesthetic defined only by Census geometry and palette;
 - detailed facial features clearly visible in the final 40×40 preview;
 - exactly two final colors: Census charcoal `#34343A` and warm pastel `#E9DDC7`;
 - every assigned trait expressed with a large unmistakable pixel shape;
@@ -39,15 +41,17 @@ The following are quality suggestions, not mint requirements:
 6. The result looks intentionally illustrated, not procedurally filled.
 
 Density above 35% emits a non-blocking readability warning. When it appears, inspect
-the palette-exact 40×40 preview once. Redraw only if the dark regions actually merge
-the face, eyes, mouth, or primary traits; do not treat the number alone as a failure.
+the palette-exact 40×40 preview once. If dark texture or filled clothing overwhelms the
+face, revise only that draft's source: remove hatching and texture, lighten the face and
+clothing planes, and preserve the silhouette and assigned traits. Never change the
+global threshold merely to repair one portrait.
 
 ## Retry order
 
 Correct only the most important failure each attempt:
 
 1. composition and crop;
-2. silhouette and density;
+2. draft-local dark fill and density;
 3. face readability;
 4. missing assigned trait;
 5. stray detail or tonal noise.

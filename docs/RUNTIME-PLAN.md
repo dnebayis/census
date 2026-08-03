@@ -60,19 +60,20 @@ Sepolia fork.
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
    `census-runtime-free`. The resource is production-only and the active v5 Census
-   collection is enabled for report-only execution. External RESTAP, MCP, inactive-token,
-   missing-token, chain-read, and Redis rate-limit checks passed on 2 August 2026.
+   collection is enabled for report-only execution. The earlier v3 RESTAP, MCP,
+   inactive-token, missing-token, chain-read, and Redis rate-limit checks passed on
+   2 August 2026; v5 token 1 and token 2 external canary verification remains pending.
    This bounded canary does not make the non-persistent free database a durability gate
    for broader activation.
 2. Implement Mint Scanner end to end, then the other six report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
    evidence and limitations; invocation is collection-scoped and skill-gated.
    Arbitrageur's bounded OpenSea listing/offer comparison
-   engine and independent token 3 gate are implemented and enabled as the bounded
+   engine and independent v5 token 1 gate are implemented and enabled as the bounded
    production canary with the secret-managed instant key. Tracker's bounded OpenSea
    account-event engine and independent gate are implemented but unreachable until
    a naturally assigned matching v5 token exists. Token Hunter's bounded OpenSea
-   trending/detail engine and token 4 verification are implemented. The remaining
+   trending/detail engine and archived v3 token 4 verification are implemented. The remaining
    Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
    implemented but remain unreachable until a matching v5 token exists. The
    Fraud Detector's bounded provider-label assessment is implemented as the sixth and
