@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "nose ring",
+    "Age": "middle-aged",
+    "Attire": "hoodie",
+    "Expression": "slight frown",
+    "Eyes": "dark sunglasses",
+    "Facial": "a scar across one cheek",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "helmet",
+    "Species": "ape-like humanoid"
+  },
+  "indices": [
+    9,
+    1,
+    2,
+    7,
+    7,
+    2,
+    11,
+    2,
+    6
+  ]
+}

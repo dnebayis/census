@@ -26,8 +26,12 @@ suggestions, evidence, and links; see
 | Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
 | Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
 
-V5 permissionless minting is irreversibly open and starts with zero tokens. V4 is
-archive-only because its class label followed skill rather than Species. Its preserved
+V5 permissionless minting is irreversibly open. Its first batch minted
+`v5-silent-curator` and `v5-border-observer` as tokens 1–2 / agents 9247–9248 with
+skills Arbitrageur and Mint Scanner; both Species-derived classes are Alien, in
+transaction
+[`0x442d85…2318`](https://sepolia.etherscan.io/tx/0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318).
+V4 is archive-only because its class label followed skill rather than Species. Its preserved
 first batch minted
 `v4-ember-librarian`, `v4-quiet-navigator`, and `v4-pastel-analyst` as tokens 1–3 /
 agents 9244–9246 with skills Advisor, Advisor, and Tracker in transaction

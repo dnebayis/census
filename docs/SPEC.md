@@ -206,7 +206,9 @@ Active rollout:
   `0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9`
 - open-mint transaction:
   `0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280`
-- minted supply at rollout: `0`
+- first v5 batch: tokens `1–2`, agents `9247–9248`, skills `Arbitrageur`,
+  `Mint Scanner`, classes `Alien`, `Alien`, transaction
+  `0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318`
 
 Archived v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`; tokens 1–3 remain
 registered, but its skill-derived visual class semantics are historical.

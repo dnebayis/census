@@ -1,0 +1,27 @@
+{
+  "draft_id": "v5-silent-curator",
+  "bytes": 200,
+  "density": 817,
+  "density_pct": 51.1,
+  "isolated_pct": 0.1,
+  "symmetry": 2,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xfe7e267e7e3c1800",
+  "mintable": true,
+  "warnings": [
+    "dense \u2014 facial detail may merge"
+  ],
+  "subject": "a silent curator",
+  "traits": {
+    "Accessory": "none",
+    "Age": "old",
+    "Attire": "turtleneck",
+    "Expression": "exhausted",
+    "Eyes": "wide staring eyes",
+    "Facial": "face tattoo",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "wide-brim hat",
+    "Species": "cat-like humanoid"
+  }
+}

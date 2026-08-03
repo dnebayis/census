@@ -24,7 +24,10 @@
 - palette: `#34343A` foreground / `#E9DDC7` background
 - seventh skill: Advisor, 300 exact quota, report-only
 - class: derived from immutable Species, never from skill
-- minted supply at rollout: `0`
+- first v5 batch: tokens `1–2`, agents `9247–9248`, skills `Arbitrageur`,
+  `Mint Scanner`, classes `Alien`, `Alien`, transaction
+  `0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318`,
+  block `11406745`
 
 The permanent route is:
 

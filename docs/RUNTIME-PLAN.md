@@ -53,8 +53,9 @@ Sepolia fork.
 1. Build the shared protocol shell: `llms.txt`, RESTAP catalog, JSON `/talk`, passive
    `/news`, MCP projection, address-routed chain reads, and schemas. This local shell is
    implemented under `runtime-service/`; matching report-only skills are scoped to
-   active v5 entries. V5 currently has no tokens; archived v4 tokens 1 and 2 expose
-   Advisor and token 3 exposes Tracker but are no longer accepted by the active gate.
+   active v5 entries. V5 token 1 exposes Arbitrageur and token 2 exposes Mint Scanner;
+   archived v4 tokens 1 and 2 expose Advisor and token 3 exposes Tracker but are no
+   longer accepted by the active gate.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against

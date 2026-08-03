@@ -1,0 +1,27 @@
+{
+  "draft_id": "v5-border-observer",
+  "bytes": 200,
+  "density": 928,
+  "density_pct": 58.0,
+  "isolated_pct": 0.2,
+  "symmetry": 3,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xffff6e6e7c3c3c00",
+  "mintable": true,
+  "warnings": [
+    "dense \u2014 facial detail may merge"
+  ],
+  "subject": "a border observer",
+  "traits": {
+    "Accessory": "nose ring",
+    "Age": "middle-aged",
+    "Attire": "hoodie",
+    "Expression": "slight frown",
+    "Eyes": "dark sunglasses",
+    "Facial": "a scar across one cheek",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "helmet",
+    "Species": "ape-like humanoid"
+  }
+}

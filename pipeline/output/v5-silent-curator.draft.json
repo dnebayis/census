@@ -1,0 +1,73 @@
+{
+  "build": {
+    "bitmap_file": "v5-silent-curator.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0xed78f376261f970aefa7050ae82046cd02c61cf4fcfa9b17ae2d207bd82532dd",
+    "generator": "agent:codex-imagegen",
+    "source_file": "v5-silent-curator.agent-v1.png",
+    "source_sha256": "0x0242b094ceb9bd90991d6336ec52348974dae4bb724d7d0d8d12066bd63f65fa",
+    "stats": {
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 817,
+      "density_pct": 51.1,
+      "isolated_pct": 0.1,
+      "mintable": true,
+      "signature": "0xfe7e267e7e3c1800",
+      "subject": "a silent curator",
+      "symmetry": 2,
+      "traits": {
+        "Accessory": "none",
+        "Age": "old",
+        "Attire": "turtleneck",
+        "Expression": "exhausted",
+        "Eyes": "wide staring eyes",
+        "Facial": "face tattoo",
+        "Hair": "messy shoulder-length hair",
+        "Headwear": "wide-brim hat",
+        "Species": "cat-like humanoid"
+      },
+      "warnings": [
+        "dense \u2014 facial detail may merge"
+      ]
+    },
+    "stats_file": "v5-silent-curator.json"
+  },
+  "draft_id": "v5-silent-curator",
+  "mint": {
+    "agent_id": 9247,
+    "block_number": 11406745,
+    "draft_id": "v5-silent-curator",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0xfe7e267e7e3c1800",
+    "skill": 1,
+    "token_id": 1,
+    "transaction_hash": "0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318"
+  },
+  "seed": "0x61a86654bc9cbfad1b707a4151f1be8f",
+  "subject": "a silent curator",
+  "trait_indices": [
+    4,
+    2,
+    2,
+    2,
+    8,
+    6,
+    5,
+    4,
+    0
+  ],
+  "traits": {
+    "Accessory": "none",
+    "Age": "old",
+    "Attire": "turtleneck",
+    "Expression": "exhausted",
+    "Eyes": "wide staring eyes",
+    "Facial": "face tattoo",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "wide-brim hat",
+    "Species": "cat-like humanoid"
+  },
+  "traits_hex": "0x040202020806050400",
+  "version": 2
+}

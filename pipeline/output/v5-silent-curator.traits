@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "none",
+    "Age": "old",
+    "Attire": "turtleneck",
+    "Expression": "exhausted",
+    "Eyes": "wide staring eyes",
+    "Facial": "face tattoo",
+    "Hair": "messy shoulder-length hair",
+    "Headwear": "wide-brim hat",
+    "Species": "cat-like humanoid"
+  },
+  "indices": [
+    4,
+    2,
+    2,
+    2,
+    8,
+    6,
+    5,
+    4,
+    0
+  ]
+}

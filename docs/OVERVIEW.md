@@ -8,8 +8,9 @@ Active Sepolia Census v5 is `0x5863E1d0539c659204B097359AC1a75C51144E78`.
 Registration is served from `https://census-registration-dnebayis.vercel.app`; adapter and
 Identity Registry are `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` and
 `0x8004a818bfb912233c491871b3d84c89a494bd9e`. Permissionless minting is irreversibly
-open. V5 starts with zero tokens. Archived v4 tokens 1–3 / agents 9244–9246 retain
-skills Advisor, Advisor, and Tracker, but their skill-derived class labels are historical.
+open. V5 tokens 1–2 / agents 9247–9248 have skills Arbitrageur and Mint Scanner; both
+have immutable Species-derived Alien class. Archived v4 tokens 1–3 / agents 9244–9246
+retain skills Advisor, Advisor, and Tracker, but their skill-derived class labels are historical.
 Archived v3 tokens 1–5 and v2 tokens 1–4 remain
 available through the same address-routed registration project.
 

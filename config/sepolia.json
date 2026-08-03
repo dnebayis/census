@@ -60,10 +60,20 @@
   "deploymentBlock": 11406675,
   "openMintTransaction": "0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280",
   "openMintBlock": 11406691,
-  "rolloutTokenId": null,
-  "rolloutAgentId": null,
-  "rolloutTransaction": null,
-  "productionBatches": [],
+  "rolloutTokenId": 1,
+  "rolloutAgentId": 9247,
+  "rolloutTransaction": "0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318",
+  "productionBatches": [
+    {
+      "transaction": "0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318",
+      "blockNumber": 11406745,
+      "drafts": ["v5-silent-curator", "v5-border-observer"],
+      "tokens": [1, 2],
+      "agents": [9247, 9248],
+      "skills": ["Arbitrageur", "Mint Scanner"],
+      "classes": ["Alien", "Alien"]
+    }
+  ],
   "archivedCensus": [
     {
       "address": "0x629B4534D07F1E35a70a403f4521Cd95f34eb030",

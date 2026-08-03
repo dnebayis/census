@@ -14,8 +14,9 @@ address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-
 Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
 Vercel assigned its first deployment to the stable
 `https://census-runtime-dnebayis.vercel.app` alias; its report-only engines are active
-for matching active-v5 skills but are not advertised in registration JSON. V5 currently
-has no tokens; archived v4 tokens 1 and 2 are Advisor entries and token 3 is Tracker. Its bounded news queue and
+for matching active-v5 skills but are not advertised in registration JSON. V5 token 1
+is Arbitrageur and token 2 is Mint Scanner; both have Species-derived Alien class.
+Archived v4 tokens 1 and 2 are Advisor entries and token 3 is Tracker. Its bounded news queue and
 sliding-window limits use Redis. The official 30 MB free Redis resource
 `census-runtime-free` is connected to production only; its real queue and distributed
 rate-limit integration test passed. Access is scoped to the active v5 Census contract
@@ -119,8 +120,10 @@ V5 minting is irreversibly open. Deploy transaction:
 `0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9`;
 open-mint transaction:
 `0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280`.
-It uses the broad 1%–95% density band and derives class from Species. It starts with
-zero tokens. Archived v4 minted tokens 1–3 / agents
+It uses the broad 1%–95% density band and derives class from Species. Its first batch
+minted tokens 1–2 / agents 9247–9248 with skills Arbitrageur and Mint Scanner in
+transaction `0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318`.
+Archived v4 minted tokens 1–3 / agents
 9244–9246 with skills Advisor, Advisor, and Tracker in transaction
 `0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`
 at block `11406617`. All three production registration URLs returned HTTP 200 with
