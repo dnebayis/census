@@ -49,8 +49,8 @@ account-events endpoint for at most 10 exact wallet addresses, a caller-supplied
 time, and transfer/sale/mint filters. Each wallet request is capped at one 200-event
 page; a returned cursor is reported as `truncated` and is never followed automatically.
 The engine emits direction, NFT details, transaction evidence, source URLs, and explicit
-limitations. No active v5 Tracker entry exists yet, so no entry can currently reach it.
-Census trait selection is never bypassed to manufacture a canary.
+limitations. V6 token 5 / agent 9260 is the naturally assigned Tracker entry. Census
+trait selection is never bypassed to manufacture a canary.
 
 Token Hunter is the fourth implemented report-only engine and was verified with archived v3 token
 4 / agent 9123. It reads at most 100 OpenSea trending-token summaries, filters them by
@@ -64,7 +64,7 @@ Trend Reader is the fifth implemented report-only engine. It reads one OpenSea t
 collection page for `1h`, `24h`, or `7d`, optionally filters one documented category,
 and attaches at most 10 collection-stat responses. It preserves OpenSea's rank, reports
 the exact matching interval when available, leaves missing intervals null, and never
-invents a Census momentum score. No active v5 Trend Reader entry exists yet; the archived
+invents a Census momentum score. No active v6 Trend Reader entry exists yet; the archived
 v2 `night-ledger` is not reused as an
 active canary.
 
@@ -72,8 +72,8 @@ Fraud Detector is the sixth market-data report engine. A collection assessment r
 OpenSea collection metadata and stats; a wallet assessment reads one public OpenSea
 profile. It reports provider enforcement, verification, safelist, NSFW, profile-age,
 and self-declared-agent fields without assigning a fraud score or making an accusation.
-Missing profiles and non-verification are explicitly insufficient evidence. The active
-v5 collection has no token with skill index 5.
+Missing profiles and non-verification are explicitly insufficient evidence. V6 token 1
+/ agent 9256 is the naturally assigned Fraud Detector entry.
 
 All seven report-only feature flags are enabled in production. Every valid token on the
 active Census contract can invoke only its immutable report skill after the adapter binding
@@ -117,8 +117,8 @@ until storage, rate-limit, skill-execution, and external checks pass.
 
 Current deployment state: the stable production project is a bounded report-only runtime. The
 official free Redis resource `census-runtime-free` is connected only to production,
-the real queue and distributed limiter integration test passed, and the active v5
-collection is enabled at
+the real queue and distributed limiter integration test passed. The Vercel production
+environment must be switched from archived v5 to active v6 at
 `https://census-runtime-dnebayis.vercel.app`. Registration remains inactive.
 
 Historical v3 production checks passed on 2 August 2026: token 2 discovery, `/talk`, MCP
@@ -128,8 +128,9 @@ Sepolia endpoint because Mint Scanner requires addressless ERC-721 `eth_getLogs`
 queries, which some public providers reject.
 
 Arbitrageur code, deterministic provider fixtures, and fail-closed checks pass. Its
-production gate is limited to agents with the matching immutable skill on the active
-v5 Census contract. Rotate the current OpenSea instant key before 2026-09-02.
+production gate is limited to agents with the matching immutable skill on the configured
+active Census contract. The OpenSea key exposed in chat must be revoked immediately and
+replaced only as a production secret.
 
 Historical v3 production checks passed on 3 August 2026: token 3 RESTAP discovery returned
 agent 9122 and `canary.available: true`; `/talk` returned a report-only OpenSea result;
@@ -140,6 +141,9 @@ The official 30 MB free plan is currently used for the bounded production canary
 the owner's direction. It does not provide the persistence guarantees required for
 broader production activation.
 
-Active v5 token 1 / agent 9247 is Arbitrageur and token 2 / agent 9248 is Mint Scanner.
-Their current production RESTAP, `/talk`, MCP, rate-limit, and report-only checks remain
-the next canary verification task in `../docs/NEXT-STEPS.md`.
+Archived v5 token 1 / agent 9247 Arbitrageur and token 2 / agent 9248 Mint Scanner
+passed production discovery, `/talk`, MCP, rate-limit, 404 and report-only checks on
+3 August 2026. Active v6 naturally contains Fraud Detector (token 1), Arbitrageur
+(tokens 2 and 4), Mint Scanner (token 3) and Tracker (token 5). They become the current
+canaries after `ACTIVE_CENSUS_ADDRESS` is switched to v6 in the existing production
+project; no new runtime project is needed.

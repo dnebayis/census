@@ -1,0 +1,46 @@
+{
+  "transaction_hash": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f",
+  "block_number": 11407080,
+  "entries": [
+    {
+      "draft_id": "v6-botanical-astronaut",
+      "token_id": 1,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 5,
+      "signature": "0x7e3c002400000000",
+      "agent_id": 9256
+    },
+    {
+      "draft_id": "v6-midnight-radio-host",
+      "token_id": 2,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 1,
+      "signature": "0xffff666630000000",
+      "agent_id": 9257
+    },
+    {
+      "draft_id": "v6-desert-cartographer",
+      "token_id": 3,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 0,
+      "signature": "0x7e040442463c3c00",
+      "agent_id": 9258
+    },
+    {
+      "draft_id": "v6-street-racer",
+      "token_id": 4,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 1,
+      "signature": "0xff242424243c1800",
+      "agent_id": 9259
+    },
+    {
+      "draft_id": "v6-orbital-archivist",
+      "token_id": 5,
+      "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+      "skill": 2,
+      "signature": "0x7e243c2c24000000",
+      "agent_id": 9260
+    }
+  ]
+}

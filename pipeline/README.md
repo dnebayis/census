@@ -4,9 +4,9 @@ An IDE agent can generate the artwork, or a user can supply a raster directly. T
 assigns persistent visual traits, converts raster art into the exact onchain bitmap,
 and simulates the exact transaction before minting. It is not an image generator.
 
-Active Sepolia Census v5 is `0x5863E1d0539c659204B097359AC1a75C51144E78`; its
-registration origin is `https://census-registration-dnebayis.vercel.app`. Minting is
-irreversibly open and the deployment has tokens 1–2 / agents 9247–9248. The adapter is
+Active Sepolia Census v6 is `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`; its
+registration origin is `https://census-registration-dnebayis.vercel.app`. Supply is
+5,000, minting is open and owner-pausable, and tokens 1–5 bind agents 9256–9260. The adapter is
 `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`. This phase covers ERC-8004, ERC-8048,
 and ERC-8217 only.
 
@@ -29,7 +29,7 @@ python3 generate.py build \
   --draft tired-bureaucrat \
   --file output/tired-bureaucrat.png
 
-PRIVATE_KEY=… python3 generate.py mint \
+ETH_KEYSTORE_ACCOUNT=census python3 generate.py mint \
   --draft tired-bureaucrat
 ```
 
@@ -41,7 +41,7 @@ The Foundry mock comparison is about 710k gas per separate mint and 429k per ent
 four-entry batch, a 40% saving. It is directional, not a live fee quote.
 
 ```sh
-PRIVATE_KEY=… python3 generate.py mint \
+ETH_KEYSTORE_ACCOUNT=census python3 generate.py mint \
   --draft one \
   --draft two
 ```
@@ -85,7 +85,8 @@ The pipeline:
 - checks duplicates against existing artifacts and separately inside a batch;
 - refuses only effectively blank or solid drafts;
 - reports advisory warnings without blocking, including a >35% density readability risk;
-- derives the sender locally from `PRIVATE_KEY`;
+- derives the sender locally from an encrypted Cast keystore; `PRIVATE_KEY` remains a
+  legacy environment-only option;
 - simulates the exact `mint` or `mintBatch` call with that sender;
 - broadcasts only after simulation succeeds.
 
@@ -95,24 +96,26 @@ After success, the pipeline decodes `EntryMinted` events and writes
 `output/mints/<transactionHash>.json` with each `draftId`, actual `tokenId`, `agentId`,
 transaction hash, and block number.
 
-Hard mintability, duplicate, wallet, trait, and simulation failures remain
+Paused minting, invalid context, exact/coarse/near duplicate, wallet, trait, and
+simulation failures remain
 non-bypassable.
 
-The fixed threshold remains the normal path. Do not lower it globally to repair one
-dense portrait. The pending calibration in `../docs/NEXT-STEPS.md` will leave default
-results at or below 45% unchanged and create lighter, reproducible candidates only for
-the dense draft.
+Threshold 128 remains the normal path. Results at or below 45% remain byte-for-byte
+unchanged. Denser drafts alone evaluate descending candidates and select the highest
+threshold reaching 32–42% while preserving Species and primary facial readability.
+The chosen mode, threshold, candidates and bitmap hash are persisted.
 
 ## Bitmap and traits
 
 The source portrait is aspect-preserving cover-cropped once to 40×36 and placed at y=4
 on the 40×40 canvas, leaving four empty rows above the head while keeping the shoulders
 at the bottom and both side edges. A
-fixed threshold of 128 produces a row-major, MSB-first, one-bit bitmap of exactly 200
+default threshold of 128 produces a row-major, MSB-first, one-bit bitmap of exactly 200
 bytes. Signature and density calculations mirror `src/lib/Bitmap.sol`. The preview and
 onchain SVG use charcoal `#34343A` on warm pastel `#E9DDC7`.
 
-Nine category indices are packed as `bytes9` in this order:
+Nine category indices are packed as `bytes9` in this order. Normal use does not expose
+seed, Species or reroll choices:
 
 1. Species
 2. Age

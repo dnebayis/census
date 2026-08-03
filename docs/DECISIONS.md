@@ -210,24 +210,42 @@ facial and primary-trait shapes, and the chosen threshold and candidate statisti
 be persisted. Token 2 is immutable and remains a testnet regression fixture. This
 pipeline change requires no Census redeployment.
 
+### D26 — V6 is a 5K collection with emergency mint pause and optional royalty
+
+V6 is a new Sepolia deployment rather than an upgrade. Supply is 5,000, wallet and
+batch caps are five, and skill quotas are `[1500,1500,750,500,350,250,150]`. The owner
+may pause and unpause only new mints; transfers and all reads remain available. Exact
+bitmap hashes are globally reserved onchain in addition to coarse signatures, while
+the official pipeline adds source-hash and 24-pixel near-copy protection.
+
+ERC-2981 reports 500 bps to the immutable deployer receiver. Census does not restrict
+transfers or promise marketplace enforcement. A central validator and two-phase trait
+reservation remain rejected, so direct valid trait selection and targeted bitmap edits
+are documented boundaries.
+
+Species expands to twelve weighted values and the nine-category layout remains bytes9.
+User-facing flow hides Species, seed, threshold, RPC and ABI choices. The user's role
+and identity control the subject while assigned Species controls anatomy.
+
 ## Active Sepolia record
 
-- Census v5: `0x5863E1d0539c659204B097359AC1a75C51144E78`
+- Census v6: `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`
 - canonical host: `https://census-registration-dnebayis.vercel.app`
 - ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
 - ERC-8004 Identity Registry:
   `0x8004a818bfb912233c491871b3d84c89a494bd9e`
-- minting: irreversibly open
+- supply: 5,000; wallet/batch cap: 5
+- minting: open and not paused; owner may pause/unpause new mints
+- royalty: ERC-2981, 500 bps, no transfer enforcement
 - deploy transaction:
-  `0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9`
+  `0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b`
 - open-mint transaction:
-  `0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280`
-- first v5 batch: tokens `1–2`, agents `9247–9248`, skills `Arbitrageur`,
-  `Mint Scanner`, Species-derived classes `Alien`, `Alien`, transaction
-  `0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318`
+  `0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52`
+- first v6 batch: tokens `1–5`, agents `9256–9260`, transaction
+  `0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f`
 
-Archived v4 is `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`; tokens 1–3 /
-agents 9244–9246 remain preserved, but its skill-derived class labels are historical.
+Archived v5 is `0x5863E1d0539c659204B097359AC1a75C51144E78`; tokens 1–2 /
+agents 9247–9248 remain preserved. Earlier v4 and older addresses are retained in config.
 
 The archived v1 address is `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`; its
 token/agent `1 / 9100` remains available through the permanent address-routed host.
@@ -236,21 +254,25 @@ Gas figures in project documents are Foundry mock comparisons: about 710k per se
 mint and 429k per entry in a four-entry batch, a 40% saving. They are not live adapter
 estimates.
 
-## Collection constants retained
+## V6 collection constants
 
-- supply 10,000
+- supply 5,000
 - maximum five mints per address
+- maximum five entries per batch
 - free mint apart from gas
 - one capped skill per token
 - immutable onchain artwork
 - 40×40, one bit, 200 bitmap bytes
-- exact skill quotas: 3000, 3000, 1500, 1000, 700, 500, 300
+- exact skill quotas: 1500, 1500, 750, 500, 350, 250, 150
+- exact hash and coarse-signature duplicate rejection
+- owner-only emergency pause for new minting
+- ERC-2981 5% royalty signalling
 
 ## Rejected for the mint-core deployment
 
 - automatic ABI upgrades after upstream drift
 - mutable canonical host
-- admin pause after launch
+- pausing transfers or metadata reads
 - a placeholder deployment host
 - creating or funding a separate agent wallet
 - treating identity registration as a claim that runtime services are active

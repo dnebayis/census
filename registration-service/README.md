@@ -1,20 +1,26 @@
 # Census registration service
 
-This directory is intentionally a read-only ERC-8004 registration API. It has no
-frontend, agent runtime, MCP, RESTAP, transaction execution, payment, or wallet service.
+This directory serves the read-only ERC-8004 registration API and the static Census
+project page. It has no wallet connection, transaction path, dashboard, agent runtime,
+MCP, RESTAP or payment service.
 
-`GET /a/<censusAddress>/<tokenId>/registration.json` reads Sepolia, verifies that the
-Census token is bound to the expected ERC-8217 adapter agent, and returns the current
-context and fully-onchain SVG in an ERC-8004 `registration-v1` document. Including the
-collection address lets every Census deployment share one permanent Vercel project
-without token-ID collisions.
+`GET /a/<censusAddress>/<tokenId>/registration.json` reads Sepolia, verifies the Census
+token's ERC-8217 adapter binding, and returns the current context and fully-onchain SVG
+as ERC-8004 `registration-v1`. Address routing lets all archived deployments share the
+one permanent Vercel project without token-ID collisions.
 
-Required Vercel environment variables:
+Required Vercel production environment variables:
 
-- `SEPOLIA_RPC_URL`
+- `SEPOLIA_RPC_URLS` — two comma-separated RPC endpoints; `SEPOLIA_RPC_URL` is fallback
 - `ADAPTER_ADDRESS`
 - `IDENTITY_REGISTRY_ADDRESS`
 - `CHAIN_ID` (`11155111`)
+- `ACTIVE_CENSUS_ADDRESS` — v6 address eligible for short successful-response cache
 
-Responses are never cached because the NFT owner can update context and can opt out by
-calling the adapter's `setAgentURI`.
+Active-v6 successes use a short CDN cache; archived collections use `no-store`.
+Unknown tokens use a short 404 cache. Binding/chain failures return 502 with `no-store`.
+The public client is reused, requests time out after five seconds, RPC fallback is
+supported and concurrent reads for one token are coalesced.
+
+Deploy only to the existing `census-registration-dnebayis` production project. Do not
+create preview deployments or additional Vercel projects.

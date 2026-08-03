@@ -52,16 +52,16 @@ def verify(config: dict, token_id: int, missing_token_id: int) -> dict:
     status, headers, body = http_json(token_url)
     if status != 200:
         raise RuntimeError(f"token endpoint returned {status}")
-    if "no-store" not in headers.get("Cache-Control", headers.get("cache-control", "")):
-        raise RuntimeError("token endpoint is cacheable")
+    token_cache = headers.get("Cache-Control", headers.get("cache-control", ""))
+    if "no-store" not in token_cache and "s-maxage=300" not in token_cache:
+        raise RuntimeError("token endpoint has an unexpected cache policy")
 
     missing_status, missing_headers, missing_body = http_json(missing_url)
     if missing_status != 404 or missing_body.get("error") != "token not found":
         raise RuntimeError("missing-token endpoint did not return the expected 404")
-    if "no-store" not in missing_headers.get(
-        "Cache-Control", missing_headers.get("cache-control", "")
-    ):
-        raise RuntimeError("missing-token endpoint is cacheable")
+    missing_cache = missing_headers.get("Cache-Control", missing_headers.get("cache-control", ""))
+    if "s-maxage=30" not in missing_cache:
+        raise RuntimeError("missing-token endpoint does not use the expected short cache")
 
     rpc = config["publicRpc"]
     chain_id = int(
@@ -112,7 +112,7 @@ def verify(config: dict, token_id: int, missing_token_id: int) -> dict:
         "ok": True,
         "tokenUrl": token_url,
         "httpStatus": status,
-        "cacheControl": headers.get("Cache-Control", headers.get("cache-control")),
+        "cacheControl": token_cache,
         "missingTokenStatus": missing_status,
         "chainId": chain_id,
         "agentId": agent_id,

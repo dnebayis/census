@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "Nose Ring",
+    "Age": "Middle-aged",
+    "Attire": "Armoured Shoulders",
+    "Expression": "Curious",
+    "Eyes": "Mirrored Visor",
+    "Facial": "Scar Across One Cheek",
+    "Hair": "Bald",
+    "Headwear": "Tech Hood",
+    "Species": "Cat-like Humanoid"
+  },
+  "indices": [
+    1,
+    1,
+    0,
+    10,
+    6,
+    9,
+    12,
+    6,
+    3
+  ]
+}

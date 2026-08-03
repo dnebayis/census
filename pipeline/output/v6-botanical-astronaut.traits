@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "Bandaged Jaw",
+    "Age": "Old",
+    "Attire": "Utility Vest",
+    "Expression": "Calm",
+    "Eyes": "Single Large Eye",
+    "Facial": "Goatee",
+    "Hair": "High Ponytail",
+    "Headwear": "Crown",
+    "Species": "Aquatic Humanoid"
+  },
+  "indices": [
+    8,
+    2,
+    4,
+    8,
+    3,
+    11,
+    7,
+    13,
+    5
+  ]
+}

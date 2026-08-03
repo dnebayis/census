@@ -74,6 +74,7 @@ library Art {
                     LibString.escapeJSON(context_, true),
                     ',"image":"',
                     image,
+                    '","background_color":"E9DDC7',
                     '","attributes":[{"trait_type":"Class","value":"',
                     class_,
                     '"},{"trait_type":"Skill","value":"',

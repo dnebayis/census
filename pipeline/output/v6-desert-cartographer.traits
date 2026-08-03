@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "Bandaged Jaw",
+    "Age": "Young",
+    "Attire": "Plain Collar",
+    "Expression": "Exhausted",
+    "Eyes": "Plain Eyes",
+    "Facial": "Stubble",
+    "Hair": "Wild Curly Hair",
+    "Headwear": "Beanie",
+    "Species": "Android with Visible Seams"
+  },
+  "indices": [
+    3,
+    0,
+    12,
+    0,
+    1,
+    5,
+    2,
+    0,
+    5
+  ]
+}

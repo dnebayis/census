@@ -7,9 +7,9 @@ library TraitData {
     uint256 internal constant COUNT = 9;
 
     function valid(bytes9 traits_) internal pure returns (bool) {
-        return uint8(traits_[0]) < 10 && uint8(traits_[1]) < 3 && uint8(traits_[2]) < 13 && uint8(traits_[3]) < 12
-            && uint8(traits_[4]) < 11 && uint8(traits_[5]) < 9 && uint8(traits_[6]) < 12 && uint8(traits_[7]) < 10
-            && uint8(traits_[8]) < 12;
+        return uint8(traits_[0]) < 12 && uint8(traits_[1]) < 3 && uint8(traits_[2]) < 17 && uint8(traits_[3]) < 16
+            && uint8(traits_[4]) < 14 && uint8(traits_[5]) < 12 && uint8(traits_[6]) < 16 && uint8(traits_[7]) < 14
+            && uint8(traits_[8]) < 16;
     }
 
     function key(uint256 category) internal pure returns (string memory) {
@@ -52,131 +52,169 @@ library TraitData {
     }
 
     /// @notice Visual class derived only from the immutable Species trait.
-    /// @dev Human variants occupy 0-3, android is 6, and skull-faced is 7.
-    ///      Every other non-human biological species belongs to Alien.
+    /// @dev Human is 0, android is 3, and skull-faced is 4. Every other
+    ///      non-human species belongs to Alien.
     function className(uint8 species) internal pure returns (string memory) {
-        if (species < 4) return "Human";
-        if (species == 6) return "Agent";
-        if (species == 7) return "Skull";
-        if (species < 10) return "Alien";
+        if (species == 0) return "Human";
+        if (species == 3) return "Agent";
+        if (species == 4) return "Skull";
+        if (species < 12) return "Alien";
         revert();
     }
 
     function _species(uint8 i) private pure returns (string memory) {
-        if (i < 4) return "human";
-        if (i == 4) return "cat-like humanoid";
-        if (i == 5) return "grey alien";
-        if (i == 6) return "android with visible seams";
-        if (i == 7) return "skull-faced figure";
-        if (i == 8) return "reptilian humanoid";
-        if (i == 9) return "ape-like humanoid";
+        if (i == 0) return "Human";
+        if (i == 1) return "Cat-like Humanoid";
+        if (i == 2) return "Grey Alien";
+        if (i == 3) return "Android with Visible Seams";
+        if (i == 4) return "Skull-faced Figure";
+        if (i == 5) return "Reptilian Humanoid";
+        if (i == 6) return "Ape-like Humanoid";
+        if (i == 7) return "Insectoid Humanoid";
+        if (i == 8) return "Aquatic Humanoid";
+        if (i == 9) return "Horned Alien";
+        if (i == 10) return "Crystalline Being";
+        if (i == 11) return "Avian Humanoid";
         revert();
     }
 
     function _age(uint8 i) private pure returns (string memory) {
-        if (i == 0) return "young";
-        if (i == 1) return "middle-aged";
-        if (i == 2) return "old";
+        if (i == 0) return "Young";
+        if (i == 1) return "Middle-aged";
+        if (i == 2) return "Old";
         revert();
     }
 
     function _hair(uint8 i) private pure returns (string memory) {
-        if (i == 0) return "bald";
-        if (i == 1) return "short cropped hair";
-        if (i == 2) return "messy shoulder-length hair";
-        if (i == 3) return "long straight hair";
-        if (i == 4) return "high ponytail";
-        if (i == 5) return "buzz cut";
-        if (i == 6) return "afro";
-        if (i == 7) return "mohawk";
-        if (i == 8) return "slicked-back hair";
-        if (i == 9) return "twin braids";
-        if (i == 10) return "topknot";
-        if (i == 11) return "receding hairline";
-        if (i == 12) return "wild curly hair";
+        if (i == 0) return "Bald";
+        if (i == 1) return "Short Cropped Hair";
+        if (i == 2) return "Messy Shoulder-length Hair";
+        if (i == 3) return "Long Straight Hair";
+        if (i == 4) return "High Ponytail";
+        if (i == 5) return "Buzz Cut";
+        if (i == 6) return "Afro";
+        if (i == 7) return "Mohawk";
+        if (i == 8) return "Slicked-back Hair";
+        if (i == 9) return "Twin Braids";
+        if (i == 10) return "Topknot";
+        if (i == 11) return "Receding Hairline";
+        if (i == 12) return "Wild Curly Hair";
+        if (i == 13) return "Textured Crop";
+        if (i == 14) return "Dreadlocks";
+        if (i == 15) return "Bob Cut";
+        if (i == 16) return "Shaved Geometric Pattern";
         revert();
     }
 
     function _eyes(uint8 i) private pure returns (string memory) {
-        if (i == 0) return "plain eyes";
-        if (i == 1) return "narrow eyes";
-        if (i == 2) return "wide staring eyes";
-        if (i == 3) return "heavy-lidded tired eyes";
-        if (i == 4) return "one eye scarred shut";
-        if (i == 5) return "round spectacles";
-        if (i == 6) return "thick square glasses";
-        if (i == 7) return "dark sunglasses";
-        if (i == 8) return "a single large eye";
-        if (i == 9) return "goggles pushed up onto the forehead";
-        if (i == 10) return "mirrored visor";
-        if (i == 11) return "eyepatch";
+        if (i == 0) return "Plain Eyes";
+        if (i == 1) return "Narrow Eyes";
+        if (i == 2) return "Wide Staring Eyes";
+        if (i == 3) return "Heavy-lidded Tired Eyes";
+        if (i == 4) return "One Eye Scarred Shut";
+        if (i == 5) return "Round Spectacles";
+        if (i == 6) return "Thick Square Glasses";
+        if (i == 7) return "Dark Sunglasses";
+        if (i == 8) return "Single Large Eye";
+        if (i == 9) return "Forehead Goggles";
+        if (i == 10) return "Mirrored Visor";
+        if (i == 11) return "Eyepatch";
+        if (i == 12) return "VR Headset";
+        if (i == 13) return "Cybernetic Lens";
+        if (i == 14) return "Luminous Eyes";
+        if (i == 15) return "Wraparound Glasses";
         revert();
     }
 
     function _facial(uint8 i) private pure returns (string memory) {
-        if (i < 2) return "clean shaven";
-        if (i == 2) return "stubble";
-        if (i == 3) return "full beard";
-        if (i == 4) return "goatee";
-        if (i == 5) return "thick moustache";
-        if (i == 6) return "muttonchops";
-        if (i == 7) return "a scar across one cheek";
-        if (i == 8) return "face tattoo";
-        if (i == 9) return "freckles";
-        if (i == 10) return "gaunt hollow cheeks";
+        if (i == 0) return "Clean Shaven";
+        if (i == 1) return "Stubble";
+        if (i == 2) return "Full Beard";
+        if (i == 3) return "Goatee";
+        if (i == 4) return "Thick Moustache";
+        if (i == 5) return "Muttonchops";
+        if (i == 6) return "Scar Across One Cheek";
+        if (i == 7) return "Face Tattoo";
+        if (i == 8) return "Freckles";
+        if (i == 9) return "Gaunt Hollow Cheeks";
+        if (i == 10) return "Circuit Seams";
+        if (i == 11) return "Ritual Markings";
+        if (i == 12) return "Facial Piercings";
+        if (i == 13) return "Split Brow Scar";
         revert();
     }
 
     function _expression(uint8 i) private pure returns (string memory) {
-        if (i < 2) return "neutral";
-        if (i == 2) return "slight frown";
-        if (i == 3) return "faint smile";
-        if (i == 4) return "grim set jaw";
-        if (i == 5) return "one raised eyebrow";
-        if (i == 6) return "exhausted";
-        if (i == 7) return "smirk";
-        if (i == 8) return "wide-eyed alarm";
+        if (i == 0) return "Neutral";
+        if (i == 1) return "Slight Frown";
+        if (i == 2) return "Faint Smile";
+        if (i == 3) return "Grim Set Jaw";
+        if (i == 4) return "One Raised Eyebrow";
+        if (i == 5) return "Exhausted";
+        if (i == 6) return "Smirk";
+        if (i == 7) return "Wide-eyed Alarm";
+        if (i == 8) return "Focused";
+        if (i == 9) return "Curious";
+        if (i == 10) return "Stern";
+        if (i == 11) return "Calm";
         revert();
     }
 
     function _headwear(uint8 i) private pure returns (string memory) {
-        if (i < 3) return "bare head";
-        if (i == 3) return "flat cap";
-        if (i == 4) return "beanie";
-        if (i == 5) return "wide-brim hat";
-        if (i == 6) return "hood up";
-        if (i == 7) return "bandana";
-        if (i == 8) return "headphones";
-        if (i == 9) return "crown";
-        if (i == 10) return "bucket hat";
-        if (i == 11) return "helmet";
+        if (i == 0) return "Bare Head";
+        if (i == 1) return "Flat Cap";
+        if (i == 2) return "Beanie";
+        if (i == 3) return "Wide-brim Hat";
+        if (i == 4) return "Hood Up";
+        if (i == 5) return "Bandana";
+        if (i == 6) return "Headphones";
+        if (i == 7) return "Crown";
+        if (i == 8) return "Bucket Hat";
+        if (i == 9) return "Helmet";
+        if (i == 10) return "Pilot Cap";
+        if (i == 11) return "Antenna Crown";
+        if (i == 12) return "Tech Hood";
+        if (i == 13) return "Open-face Space Helmet";
+        if (i == 14) return "Head Wrap";
+        if (i == 15) return "Visored Cap";
         revert();
     }
 
     function _attire(uint8 i) private pure returns (string memory) {
-        if (i == 0) return "plain collar";
-        if (i == 1) return "high collar coat";
-        if (i == 2) return "hoodie";
-        if (i == 3) return "suit and tie";
-        if (i == 4) return "turtleneck";
-        if (i == 5) return "worker overalls";
-        if (i == 6) return "armoured shoulders";
-        if (i == 7) return "robe";
-        if (i == 8) return "bare shoulders";
-        if (i == 9) return "scarf wrapped high";
+        if (i == 0) return "Plain Collar";
+        if (i == 1) return "High Collar Coat";
+        if (i == 2) return "Hoodie";
+        if (i == 3) return "Suit and Tie";
+        if (i == 4) return "Turtleneck";
+        if (i == 5) return "Worker Overalls";
+        if (i == 6) return "Armoured Shoulders";
+        if (i == 7) return "Robe";
+        if (i == 8) return "Bare Shoulders";
+        if (i == 9) return "Scarf Wrapped High";
+        if (i == 10) return "Techwear Jacket";
+        if (i == 11) return "Flight Suit";
+        if (i == 12) return "Ceremonial Armour";
+        if (i == 13) return "Utility Vest";
         revert();
     }
 
     function _accessory(uint8 i) private pure returns (string memory) {
-        if (i < 4) return "none";
-        if (i == 4) return "cigarette";
-        if (i == 5) return "earring";
-        if (i == 6) return "nose ring";
-        if (i == 7) return "neck tattoo";
-        if (i == 8) return "bandaged jaw";
-        if (i == 9) return "monocle";
-        if (i == 10) return "breathing mask";
-        if (i == 11) return "collar tag";
+        if (i == 0) return "None";
+        if (i == 1) return "Cigarette";
+        if (i == 2) return "Earring";
+        if (i == 3) return "Nose Ring";
+        if (i == 4) return "Neck Tattoo";
+        if (i == 5) return "Bandaged Jaw";
+        if (i == 6) return "Monocle";
+        if (i == 7) return "Breathing Mask";
+        if (i == 8) return "Collar Tag";
+        if (i == 9) return "Holographic Earpiece";
+        if (i == 10) return "Respirator";
+        if (i == 11) return "Data Cable";
+        if (i == 12) return "Neck Interface";
+        if (i == 13) return "Ear Cuff";
+        if (i == 14) return "Temple Implant";
+        if (i == 15) return "Shoulder Badge";
         revert();
     }
 }

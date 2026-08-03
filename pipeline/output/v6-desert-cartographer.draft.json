@@ -1,0 +1,105 @@
+{
+  "build": {
+    "bitmap_file": "v6-desert-cartographer.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0x9bf0d86e7243680f9574ec0dd6ed50ae476669ca2c9f4680897f7ef30c095888",
+    "generator": "agent:codex-imagegen",
+    "source_file": "v6-desert-cartographer.agent-v2.png",
+    "source_sha256": "0x3b309e175508465450bee75ea10900fa0929efd7a19c5e92d083be9afbd81175",
+    "stats": {
+      "calibration": {
+        "candidates": [
+          {
+            "corner_tl_pct": 0.0,
+            "corner_tr_pct": 0.0,
+            "density": 568,
+            "density_pct": 35.5,
+            "isolated_pct": 0.4,
+            "mintable": true,
+            "signature": "0x7e040442463c3c00",
+            "symmetry": 3,
+            "threshold": 128,
+            "warnings": [
+              "dense \u2014 facial detail may merge"
+            ]
+          }
+        ],
+        "mode": "default",
+        "selected_threshold": 128,
+        "target_pct": [
+          32,
+          42
+        ],
+        "trigger_pct": 45
+      },
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 568,
+      "density_pct": 35.5,
+      "isolated_pct": 0.4,
+      "mintable": true,
+      "signature": "0x7e040442463c3c00",
+      "subject": "a desert cartographer who maps vanished roads",
+      "symmetry": 3,
+      "traits": {
+        "Accessory": "Bandaged Jaw",
+        "Age": "Young",
+        "Attire": "Plain Collar",
+        "Expression": "Exhausted",
+        "Eyes": "Plain Eyes",
+        "Facial": "Stubble",
+        "Hair": "Wild Curly Hair",
+        "Headwear": "Beanie",
+        "Species": "Android with Visible Seams"
+      },
+      "warnings": [
+        "dense \u2014 facial detail may merge"
+      ]
+    },
+    "stats_file": "v6-desert-cartographer.json"
+  },
+  "draft_id": "v6-desert-cartographer",
+  "mint": {
+    "agent_id": 9258,
+    "block_number": 11407080,
+    "draft_id": "v6-desert-cartographer",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0x7e040442463c3c00",
+    "skill": 0,
+    "token_id": 3,
+    "transaction_hash": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f"
+  },
+  "seed": "0x7b2b3eeeaa4c657e67e6cadfc2a39ecb",
+  "subject": "a desert cartographer who maps vanished roads",
+  "trait_indices": [
+    3,
+    0,
+    12,
+    0,
+    1,
+    5,
+    2,
+    0,
+    5
+  ],
+  "traits": {
+    "Accessory": "Bandaged Jaw",
+    "Age": "Young",
+    "Attire": "Plain Collar",
+    "Expression": "Exhausted",
+    "Eyes": "Plain Eyes",
+    "Facial": "Stubble",
+    "Hair": "Wild Curly Hair",
+    "Headwear": "Beanie",
+    "Species": "Android with Visible Seams"
+  },
+  "traits_hex": "0x03000c000105020005",
+  "version": 3,
+  "visual_review": {
+    "bitmap_sha256": "0x9bf0d86e7243680f9574ec0dd6ed50ae476669ca2c9f4680897f7ef30c095888",
+    "reviewed_at": "2026-08-03T00:58:10.808285+00:00",
+    "reviewer": "agent:codex-visual",
+    "species": "Android with Visible Seams",
+    "species_match": true
+  }
+}

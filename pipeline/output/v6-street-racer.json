@@ -1,0 +1,48 @@
+{
+  "draft_id": "v6-street-racer",
+  "bytes": 200,
+  "density": 553,
+  "density_pct": 34.6,
+  "isolated_pct": 0.4,
+  "symmetry": 0,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0xff242424243c1800",
+  "mintable": true,
+  "warnings": [],
+  "calibration": {
+    "mode": "default",
+    "selected_threshold": 128,
+    "trigger_pct": 45,
+    "target_pct": [
+      32,
+      42
+    ],
+    "candidates": [
+      {
+        "threshold": 128,
+        "density": 553,
+        "density_pct": 34.6,
+        "isolated_pct": 0.4,
+        "symmetry": 0,
+        "corner_tl_pct": 0.0,
+        "corner_tr_pct": 0.0,
+        "signature": "0xff242424243c1800",
+        "mintable": true,
+        "warnings": []
+      }
+    ]
+  },
+  "subject": "a precise street racer waiting before dawn",
+  "traits": {
+    "Accessory": "None",
+    "Age": "Middle-aged",
+    "Attire": "Armoured Shoulders",
+    "Expression": "One Raised Eyebrow",
+    "Eyes": "Plain Eyes",
+    "Facial": "Clean Shaven",
+    "Hair": "Wild Curly Hair",
+    "Headwear": "Headphones",
+    "Species": "Aquatic Humanoid"
+  }
+}

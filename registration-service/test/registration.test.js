@@ -160,19 +160,19 @@ test("does not misclassify an RPC outage as a 404", async () => {
   );
 });
 
-test("HTTP handler returns uncached 404 for an invalid token path", async () => {
+test("HTTP handler returns a short cached 404 for an invalid token path", async () => {
   const response = fakeResponse();
   await handler({ query: { censusAddress: census, tokenId: "-1" } }, response);
   assert.equal(response.statusCode, 404);
-  assert.equal(response.headers["Cache-Control"], "no-store, max-age=0");
+  assert.equal(response.headers["Cache-Control"], "public, max-age=0, s-maxage=30");
 });
 
-test("HTTP handler returns uncached 404 for an invalid collection path", async () => {
+test("HTTP handler returns a short cached 404 for an invalid collection path", async () => {
   const response = fakeResponse();
   await handler({ query: { censusAddress: "not-an-address", tokenId: "1" } }, response);
   assert.equal(response.statusCode, 404);
   assert.equal(response.body.error, "collection not found");
-  assert.equal(response.headers["Cache-Control"], "no-store, max-age=0");
+  assert.equal(response.headers["Cache-Control"], "public, max-age=0, s-maxage=30");
 });
 
 test("HTTP handler returns 502 when chain configuration is absent", async () => {

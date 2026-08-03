@@ -2,6 +2,7 @@
 """Census art pipeline: persistent drafts, preflight simulation, and mint records."""
 
 import argparse
+import getpass
 import hashlib
 import json
 import os
@@ -9,10 +10,11 @@ import re
 import secrets
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from binarize import binarize_image, preview
-from config import ACCEPTED_INPUTS, TRAIT_CATEGORIES
+from config import ACCEPTED_INPUTS, BITMAP_BYTES, NEAR_DUPLICATE_PIXELS, TRAIT_CATEGORIES
 from output import (
     load_draft_manifest,
     load_existing_traits,
@@ -37,6 +39,10 @@ SUBJECT
 TRAITS — assigned once for this draft; draw all of them
   {trait_lines}
 
+IDENTITY
+  - Preserve the requested character's role, attitude, and personal style.
+  - Species controls anatomy and must be unmistakable in the face and silhouette.
+
 COMPOSITION
   - Exact 1:1 square canvas; close-up headshot, directly front-facing, with clean space above the hair.
   - Keep shoulders reaching the bottom and both side edges.
@@ -53,12 +59,12 @@ STYLE
 """
 
 ENTRY_EVENT_TOPIC = None
-PIPELINE_VERSION = 2
+PIPELINE_VERSION = 3
 BITMAP_FORMAT = "census-1bit-v2"
 
 
-def _run(cmd, *, timeout=120, check=False):
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+def _run(cmd, *, timeout=120, check=False, env=None):
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, env=env)
     if check and result.returncode:
         raise RuntimeError((result.stderr or result.stdout).strip())
     return result
@@ -102,11 +108,7 @@ def cmd_brief(args):
         traits = manifest["traits"]
     else:
         seed = secrets.randbits(128)
-        traits = generate_traits(
-            seed,
-            load_existing_traits(args.output),
-            {"Species": args.species} if args.species is not None else None,
-        )
+        traits = generate_traits(seed, load_existing_traits(args.output))
         manifest = {
             "version": PIPELINE_VERSION,
             "draft_id": draft_id,
@@ -149,6 +151,17 @@ def cmd_build(args):
     manifest = load_draft_manifest(args.output, draft_id)
     generator = _generator_provenance(args.generator)
     source = _read_drawing(args.file)
+    source_hash = _sha256(source)
+    for other in Path(args.output).glob("*.draft.json"):
+        if other.name == f"{draft_id}.draft.json":
+            continue
+        try:
+            if json.loads(other.read_text()).get("build", {}).get("source_sha256") == source_hash:
+                print(f"error: identical source image already belongs to draft {other.name[:-11]}")
+                return 1
+        except (OSError, ValueError, AttributeError):
+            continue
+
     bitmap, px, stats = binarize_image(source)
     source_bytes = source
 
@@ -159,6 +172,23 @@ def cmd_build(args):
             f"{', '.join(owners)}; draw a visibly different silhouette"
         )
         return 1
+
+    for other in Path(args.output).glob("*.hex"):
+        if other.stem == draft_id:
+            continue
+        try:
+            candidate = bytes.fromhex(other.read_text().strip())
+        except (OSError, ValueError):
+            continue
+        if len(candidate) != BITMAP_BYTES:
+            continue
+        distance = sum(bin(left ^ right).count("1") for left, right in zip(bitmap, candidate))
+        if distance <= NEAR_DUPLICATE_PIXELS:
+            print(
+                f"error: portrait is only {distance} pixels different from draft {other.stem}; "
+                "draw a genuinely different character"
+            )
+            return 1
 
     print(preview(px))
     print()
@@ -183,7 +213,7 @@ def cmd_build(args):
         "bitmap_format": BITMAP_FORMAT,
         "generator": generator,
         "source_file": os.path.basename(args.file),
-        "source_sha256": _sha256(source_bytes),
+        "source_sha256": source_hash,
         "bitmap_sha256": _sha256(bitmap),
         "bitmap_file": f"{draft_id}.hex",
         "stats_file": f"{draft_id}.json",
@@ -226,6 +256,12 @@ def _load_mint_drafts(args):
         bitmap = bytes.fromhex((Path(args.output) / f"{draft_id}.hex").read_text().strip())
         if _sha256(bitmap) != build["bitmap_sha256"]:
             raise ValueError(f"draft {draft_id!r} bitmap changed after build")
+        review = manifest.get("visual_review") or {}
+        if not review.get("species_match") or review.get("bitmap_sha256") != build["bitmap_sha256"]:
+            raise ValueError(
+                f"draft {draft_id!r} has no Species/Class review for its current preview; "
+                f"run `review --draft {draft_id} --species-match` after inspecting it"
+            )
         stats = build["stats"]
         if not stats["mintable"]:
             raise ValueError(f"draft {draft_id!r} is not locally mintable")
@@ -258,9 +294,43 @@ def _mint_call(drafts):
     )
 
 
-def _sender(private_key):
-    result = _run(["cast", "wallet", "address", "--private-key", private_key], check=True)
+def _wallet_credentials():
+    private_key = os.environ.get("PRIVATE_KEY")
+    if private_key:
+        return ["--private-key", private_key], None
+
+    keystore = os.environ.get("ETH_KEYSTORE")
+    account = os.environ.get("ETH_KEYSTORE_ACCOUNT")
+    if not keystore and not account:
+        raise ValueError(
+            "no signing wallet configured; create an encrypted local wallet with "
+            "`cast wallet new ~/.foundry/keystores census` and set ETH_KEYSTORE_ACCOUNT=census"
+        )
+    args = ["--keystore", keystore] if keystore else ["--account", account]
+    child_env = os.environ.copy()
+    if not child_env.get("ETH_PASSWORD"):
+        child_env["ETH_PASSWORD"] = getpass.getpass("Encrypted Cast wallet password: ")
+    return args, child_env
+
+
+def _sender(wallet_args, wallet_env):
+    result = _run(["cast", "wallet", "address", *wallet_args], check=True, env=wallet_env)
     return result.stdout.strip()
+
+
+def _require_v6(census, rpc):
+    result = _run(["cast", "call", census, "SUPPLY()(uint256)", "--rpc-url", rpc], check=True)
+    if int(result.stdout.strip()) != 5000:
+        raise RuntimeError("configured contract is not Census v6 (expected supply 5000)")
+
+
+def _require_funded(sender, rpc):
+    result = _run(["cast", "balance", sender, "--rpc-url", rpc], check=True)
+    if int(result.stdout.strip()) == 0:
+        raise RuntimeError(
+            f"wallet {sender} has no Sepolia ETH; fund this public address from "
+            "https://cloud.google.com/application/web3/faucet/ethereum/sepolia"
+        )
 
 
 def _simulate(census, rpc, sender, signature, call_args):
@@ -315,9 +385,6 @@ def _save_mint_record(output_dir, receipt, records):
 
 def cmd_mint(args):
     drafts = _load_mint_drafts(args)
-    private_key = os.environ.get("PRIVATE_KEY")
-    if not private_key:
-        raise ValueError("PRIVATE_KEY is not set")
     deployment = json.loads(
         (Path(__file__).resolve().parents[1] / "config" / "sepolia.json").read_text()
     )
@@ -328,7 +395,10 @@ def cmd_mint(args):
         or os.environ.get("RPC_URL")
         or deployment["publicRpc"]
     )
-    sender = _sender(private_key)
+    wallet_args, wallet_env = _wallet_credentials()
+    sender = _sender(wallet_args, wallet_env)
+    _require_v6(census, rpc)
+    _require_funded(sender, rpc)
     signature, call_args = _mint_call(drafts)
     print(f"simulating {len(drafts)} draft(s) from {sender}…")
     _simulate(census, rpc, sender, signature, call_args)
@@ -340,13 +410,13 @@ def cmd_mint(args):
             census,
             signature,
             *call_args,
-            "--private-key",
-            private_key,
+            *wallet_args,
             "--rpc-url",
             rpc,
             "--json",
         ],
         timeout=300,
+        env=wallet_env,
     )
     if result.returncode:
         raise RuntimeError("mint failed: " + (result.stderr or result.stdout).strip())
@@ -371,6 +441,26 @@ def cmd_mint(args):
 
 def cmd_sheet(args):
     print(save_contact_sheet(args.output))
+    return 0
+
+
+def cmd_review(args):
+    draft_id = _draft_id(args)
+    manifest = load_draft_manifest(args.output, draft_id)
+    build = manifest.get("build")
+    if not build:
+        raise ValueError(f"draft {draft_id!r} has not been built")
+    if not args.species_match:
+        raise ValueError("Species/Class mismatch: revise the source before minting")
+    manifest["visual_review"] = {
+        "species": manifest["traits"]["Species"],
+        "species_match": True,
+        "bitmap_sha256": build["bitmap_sha256"],
+        "reviewer": _generator_provenance(args.reviewer),
+        "reviewed_at": datetime.now(timezone.utc).isoformat(),
+    }
+    save_draft_manifest(args.output, draft_id, manifest)
+    print(f"Species/Class review locked for {draft_id}: {manifest['traits']['Species']}")
     return 0
 
 
@@ -400,7 +490,6 @@ def main():
     brief = sub.add_parser("brief", help="create or reopen a persistent trait draft")
     brief.add_argument("--subject", required=True)
     _add_draft_arg(brief)
-    brief.add_argument("--species", type=int, default=None)
     brief.set_defaults(fn=cmd_brief)
 
     build = sub.add_parser("build", help="binarize and inspect a draft drawing")
@@ -412,6 +501,12 @@ def main():
         help="optional provenance, for example agent:codex-imagegen or user:upload",
     )
     build.set_defaults(fn=cmd_build)
+
+    review = sub.add_parser("review", help="lock Species/Class visual verification")
+    _add_draft_arg(review)
+    review.add_argument("--species-match", action="store_true", required=True)
+    review.add_argument("--reviewer", default="agent:visual-review")
+    review.set_defaults(fn=cmd_review)
 
     mint = sub.add_parser("mint", help="simulate then mint one or more drafts")
     _add_draft_arg(mint, multiple=True)

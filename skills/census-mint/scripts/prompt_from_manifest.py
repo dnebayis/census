@@ -35,6 +35,7 @@ Asset type: source portrait for an immutable 40×40 onchain Census artwork
 Primary request: Create one distinctive portrait of {subject.strip()}.
 Assigned traits (all are mandatory):
 {trait_lines}
+Identity rule: preserve the requested character's role, attitude, and personal style, but Species controls anatomy. The face and silhouette must unmistakably read as the exact assigned Species; Grey Alien must look alien, Skull-faced Figure must have a skull face, and Android must show mechanical seams.
 Scene/backdrop: pale clean background
 Style/medium: a normal high-resolution clean graphic portrait prepared for later reduction; self-contained Census visual language with no external collection reference
 Composition/framing: exact 1:1 square canvas; close-up portrait headshot, directly front-facing and centered; leave clean space above the hair; shoulders must reach the bottom and both side edges

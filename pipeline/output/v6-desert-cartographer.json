@@ -1,0 +1,52 @@
+{
+  "draft_id": "v6-desert-cartographer",
+  "bytes": 200,
+  "density": 568,
+  "density_pct": 35.5,
+  "isolated_pct": 0.4,
+  "symmetry": 3,
+  "corner_tl_pct": 0.0,
+  "corner_tr_pct": 0.0,
+  "signature": "0x7e040442463c3c00",
+  "mintable": true,
+  "warnings": [
+    "dense \u2014 facial detail may merge"
+  ],
+  "calibration": {
+    "mode": "default",
+    "selected_threshold": 128,
+    "trigger_pct": 45,
+    "target_pct": [
+      32,
+      42
+    ],
+    "candidates": [
+      {
+        "threshold": 128,
+        "density": 568,
+        "density_pct": 35.5,
+        "isolated_pct": 0.4,
+        "symmetry": 3,
+        "corner_tl_pct": 0.0,
+        "corner_tr_pct": 0.0,
+        "signature": "0x7e040442463c3c00",
+        "mintable": true,
+        "warnings": [
+          "dense \u2014 facial detail may merge"
+        ]
+      }
+    ]
+  },
+  "subject": "a desert cartographer who maps vanished roads",
+  "traits": {
+    "Accessory": "Bandaged Jaw",
+    "Age": "Young",
+    "Attire": "Plain Collar",
+    "Expression": "Exhausted",
+    "Eyes": "Plain Eyes",
+    "Facial": "Stubble",
+    "Hair": "Wild Curly Hair",
+    "Headwear": "Beanie",
+    "Species": "Android with Visible Seams"
+  }
+}

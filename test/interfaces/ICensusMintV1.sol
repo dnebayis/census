@@ -7,6 +7,10 @@ interface ICensusMintV1 {
         external
         view
         returns (bool ok, uint8 reason, uint8[] memory warnings);
+    function validate(bytes calldata bitmap, bytes9 traits, address minter, string calldata context)
+        external
+        view
+        returns (bool ok, uint8 reason, uint8[] memory warnings);
     function mint(bytes calldata bitmap, bytes9 traits, string calldata context) external returns (uint256 tokenId);
     function mintBatch(bytes[] calldata bitmaps, bytes9[] calldata traits, string[] calldata contexts)
         external

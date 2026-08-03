@@ -1,0 +1,24 @@
+{
+  "traits": {
+    "Accessory": "None",
+    "Age": "Middle-aged",
+    "Attire": "Armoured Shoulders",
+    "Expression": "One Raised Eyebrow",
+    "Eyes": "Plain Eyes",
+    "Facial": "Clean Shaven",
+    "Hair": "Wild Curly Hair",
+    "Headwear": "Headphones",
+    "Species": "Aquatic Humanoid"
+  },
+  "indices": [
+    8,
+    1,
+    12,
+    0,
+    0,
+    4,
+    6,
+    6,
+    0
+  ]
+}

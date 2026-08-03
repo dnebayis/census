@@ -5,6 +5,7 @@ import {ERC721} from "solady/tokens/ERC721.sol";
 import {Ownable} from "solady/auth/Ownable.sol";
 import {SSTORE2} from "solady/utils/SSTORE2.sol";
 import {LibString} from "solady/utils/LibString.sol";
+import {ReentrancyGuard} from "solady/utils/ReentrancyGuard.sol";
 
 import {Bitmap} from "./lib/Bitmap.sol";
 import {Art} from "./lib/Art.sol";
@@ -17,13 +18,16 @@ import {IAdapter8004} from "./interfaces/IAdapter8004.sol";
 /// @dev Every entry is minted already registered as an ERC-8004 agent, holding exactly one
 ///      skill drawn from a capped pool. The bitmap is written once and never mutated.
 ///      See docs/SPEC.md for the full specification.
-contract Census is ERC721, Ownable, IERC8048 {
+contract Census is ERC721, Ownable, ReentrancyGuard, IERC8048 {
     using LibString for uint256;
 
     // ---------------------------------------------------------------- constants
 
-    uint256 public constant SUPPLY = 10_000;
+    uint256 public constant SUPPLY = 5_000;
     uint256 public constant MAX_PER_WALLET = 5;
+    uint256 public constant MAX_CONTEXT_BYTES = 280;
+    uint256 public constant ROYALTY_BPS = 500;
+    uint256 internal constant BPS_DENOMINATOR = 10_000;
 
     /// @dev Deliberately permissive 1%-95% density band. This rejects only effectively
     ///      blank or solid uploads; composition and visual quality are never mint gates.
@@ -45,6 +49,10 @@ contract Census is ERC721, Ownable, IERC8048 {
     uint8 public constant ERR_WALLET_CAP = 6;
     uint8 public constant ERR_MINT_CLOSED = 7;
     uint8 public constant ERR_TRAITS = 8;
+    uint8 public constant ERR_PAUSED = 9;
+    uint8 public constant ERR_EXACT_DUPLICATE = 10;
+    uint8 public constant ERR_CONTEXT = 11;
+    uint8 public constant ERR_BATCH = 12;
 
     // advisory warning codes
     uint8 public constant WARN_ASYMMETRIC = 1;
@@ -57,6 +65,7 @@ contract Census is ERC721, Ownable, IERC8048 {
     error SoldOut();
     error WalletCapReached();
     error DuplicateSignature();
+    error DuplicateBitmap();
     error ImmutableKey();
     error NotEntryOwner();
     error NonexistentEntry();
@@ -66,10 +75,15 @@ contract Census is ERC721, Ownable, IERC8048 {
     error MintingAlreadyOpen();
     error InvalidTraits();
     error InvalidAdapter();
+    error MintingPaused();
+    error MintingNotPaused();
+    error InvalidContext();
+    error InvalidBatch();
 
     // ---------------------------------------------------------------- immutables
 
     IAdapter8004 public immutable adapter;
+    address public immutable royaltyReceiver;
 
     // ---------------------------------------------------------------- storage
 
@@ -77,7 +91,7 @@ contract Census is ERC721, Ownable, IERC8048 {
     ///      index 7 so all eight share a single slot — the draw reads and writes one word.
     ///      Drawing from a shrinking pool rather than rolling a probability makes the final
     ///      distribution exact by construction: there will be exactly 300 Advisors.
-    uint16[8] internal _pool = [3000, 3000, 1500, 1000, 700, 500, 300, 10_000];
+    uint16[8] internal _pool = [1500, 1500, 750, 500, 350, 250, 150, 5000];
 
     uint256 public totalMinted;
 
@@ -91,6 +105,7 @@ contract Census is ERC721, Ownable, IERC8048 {
 
     string public canonicalHost;
     bool public mintingOpen;
+    bool public paused;
 
     /// @dev Exactly one 256-bit slot: 64 + 24 + 8 + 160. Everything an entry is, in one
     ///      SSTORE. `agentId` is uint24 because the ERC-8004 registry will not issue
@@ -105,6 +120,7 @@ contract Census is ERC721, Ownable, IERC8048 {
 
     mapping(uint256 => Entry) internal _entry;
     mapping(uint64 => bool) public signatureUsed;
+    mapping(bytes32 => bool) public bitmapHashUsed;
     mapping(address => uint256) public mintedBy;
 
     function signatureOf(uint256 tokenId) public view returns (uint64) {
@@ -124,6 +140,7 @@ contract Census is ERC721, Ownable, IERC8048 {
     mapping(uint256 => mapping(bytes32 => bytes)) internal _meta;
 
     event EntryMinted(uint256 indexed tokenId, address indexed to, uint8 skill, uint64 signature, uint256 agentId);
+    event MintingPausedStateChanged(bool paused);
 
     // ---------------------------------------------------------------- setup
 
@@ -132,6 +149,7 @@ contract Census is ERC721, Ownable, IERC8048 {
         if (!_validHost(canonicalHost_)) revert InvalidHost();
         adapter = IAdapter8004(adapter_);
         canonicalHost = canonicalHost_;
+        royaltyReceiver = msg.sender;
         _initializeOwner(msg.sender);
     }
 
@@ -147,6 +165,21 @@ contract Census is ERC721, Ownable, IERC8048 {
     function openMinting() external onlyOwner {
         if (mintingOpen) revert MintingAlreadyOpen();
         mintingOpen = true;
+    }
+
+    /// @notice Stops only new minting. Existing tokens remain transferable and readable.
+    function pauseMinting() external onlyOwner {
+        if (!mintingOpen) revert MintingClosed();
+        if (paused) revert MintingPaused();
+        paused = true;
+        emit MintingPausedStateChanged(true);
+    }
+
+    /// @notice Resumes minting after an emergency pause.
+    function unpauseMinting() external onlyOwner {
+        if (!paused) revert MintingNotPaused();
+        paused = false;
+        emit MintingPausedStateChanged(false);
     }
 
     // ---------------------------------------------------------------- skills
@@ -184,17 +217,35 @@ contract Census is ERC721, Ownable, IERC8048 {
         view
         returns (bool ok, uint8 reason, uint8[] memory warnings)
     {
-        warnings = new uint8[](0);
+        return _validate(bitmap, traits_, minter, "", false);
+    }
 
+    /// @notice Full preflight including the immutable context written during mint.
+    function validate(bytes calldata bitmap, bytes9 traits_, address minter, string calldata context_)
+        external
+        view
+        returns (bool ok, uint8 reason, uint8[] memory warnings)
+    {
+        return _validate(bitmap, traits_, minter, context_, true);
+    }
+
+    function _validate(bytes calldata bitmap, bytes9 traits_, address minter, string memory context_, bool checkContext)
+        internal
+        view
+        returns (bool ok, uint8 reason, uint8[] memory warnings)
+    {
+        warnings = new uint8[](0);
         if (bitmap.length != Bitmap.BYTE_LEN) return (false, ERR_LENGTH, warnings);
         if (!TraitData.valid(traits_)) return (false, ERR_TRAITS, warnings);
         if (!mintingOpen) return (false, ERR_MINT_CLOSED, warnings);
+        if (paused) return (false, ERR_PAUSED, warnings);
+        if (checkContext && !_validContext(context_)) return (false, ERR_CONTEXT, warnings);
 
         bytes memory bm = bitmap;
         (uint256 lit, uint64 sig) = Bitmap.analyze(bm);
-
         if (lit < DENSITY_MIN) return (false, ERR_TOO_SPARSE, warnings);
         if (lit > DENSITY_MAX) return (false, ERR_TOO_DENSE, warnings);
+        if (bitmapHashUsed[keccak256(bm)]) return (false, ERR_EXACT_DUPLICATE, warnings);
         if (signatureUsed[sig]) return (false, ERR_DUPLICATE, warnings);
         if (_pool[7] == 0) return (false, ERR_SOLD_OUT, warnings);
         if (mintedBy[minter] >= MAX_PER_WALLET) return (false, ERR_WALLET_CAP, warnings);
@@ -230,10 +281,12 @@ contract Census is ERC721, Ownable, IERC8048 {
     ///      of five this way costs materially less than five separate transactions.
     function mintBatch(bytes[] calldata bitmaps, bytes9[] calldata traits_, string[] calldata contexts)
         external
+        nonReentrant
         returns (uint256[] memory tokenIds)
     {
         uint256 n = bitmaps.length;
-        if (n != contexts.length || n != traits_.length || n == 0) revert InvalidBitmap(ERR_LENGTH);
+        if (n != contexts.length || n != traits_.length || n == 0 || n > MAX_PER_WALLET) revert InvalidBatch();
+        if (mintedBy[msg.sender] + n > MAX_PER_WALLET) revert WalletCapReached();
 
         tokenIds = new uint256[](n);
         for (uint256 i; i < n; ++i) {
@@ -244,7 +297,11 @@ contract Census is ERC721, Ownable, IERC8048 {
     /// @notice Mint one entry. Free — the caller pays gas only.
     /// @dev One transaction produces the artwork, the skill assignment, the ERC-8004 identity
     ///      and the metadata. There is no activation step; an entry that exists is an agent.
-    function mint(bytes calldata bitmap, bytes9 traits_, string calldata context_) external returns (uint256 tokenId) {
+    function mint(bytes calldata bitmap, bytes9 traits_, string calldata context_)
+        external
+        nonReentrant
+        returns (uint256 tokenId)
+    {
         return _mintOne(bitmap, traits_, context_);
     }
 
@@ -253,8 +310,10 @@ contract Census is ERC721, Ownable, IERC8048 {
         returns (uint256 tokenId)
     {
         if (!mintingOpen) revert MintingClosed();
+        if (paused) revert MintingPaused();
         if (bitmap.length != Bitmap.BYTE_LEN) revert InvalidBitmap(ERR_LENGTH);
         if (!TraitData.valid(traits_)) revert InvalidTraits();
+        if (!_validContext(context_)) revert InvalidContext();
         if (_pool[7] == 0) revert SoldOut();
         if (mintedBy[msg.sender] >= MAX_PER_WALLET) revert WalletCapReached();
 
@@ -263,6 +322,8 @@ contract Census is ERC721, Ownable, IERC8048 {
 
         if (lit < DENSITY_MIN) revert InvalidBitmap(ERR_TOO_SPARSE);
         if (lit > DENSITY_MAX) revert InvalidBitmap(ERR_TOO_DENSE);
+        bytes32 bitmapHash = keccak256(bm);
+        if (bitmapHashUsed[bitmapHash]) revert DuplicateBitmap();
         if (signatureUsed[sig]) revert DuplicateSignature();
 
         unchecked {
@@ -271,6 +332,7 @@ contract Census is ERC721, Ownable, IERC8048 {
         }
 
         signatureUsed[sig] = true;
+        bitmapHashUsed[bitmapHash] = true;
         address ptr = SSTORE2.write(bytes.concat(bm, traits_));
         uint8 skill = _drawSkill(tokenId);
 
@@ -361,7 +423,10 @@ contract Census is ERC721, Ownable, IERC8048 {
     function setMetadata(uint256 tokenId, string calldata key, bytes calldata value) external {
         if (ownerOf(tokenId) != msg.sender) revert NotEntryOwner();
         bytes32 h = keccak256(bytes(key));
-        if (h == keccak256("skill") || h == keccak256("class") || _hasTraitPrefix(key)) revert ImmutableKey();
+        if (
+            h == keccak256("skill") || h == keccak256("class") || h == keccak256("context")
+                || _hasTraitPrefix(key)
+        ) revert ImmutableKey();
         _meta[tokenId][h] = value;
         emit MetadataSet(tokenId, key, key, value);
     }
@@ -405,8 +470,14 @@ contract Census is ERC721, Ownable, IERC8048 {
         );
     }
 
+    /// @notice ERC-2981 default royalty. The receiver is the immutable deploying address.
+    function royaltyInfo(uint256, uint256 salePrice) external view returns (address receiver, uint256 royaltyAmount) {
+        receiver = royaltyReceiver;
+        royaltyAmount = salePrice * ROYALTY_BPS / BPS_DENOMINATOR;
+    }
+
     function supportsInterface(bytes4 id) public view override returns (bool) {
-        return id == 0xdf670be1 || super.supportsInterface(id); // ERC-8048
+        return id == 0xdf670be1 || id == 0x2a55205a || super.supportsInterface(id); // ERC-8048 / ERC-2981
     }
 
     function _validHost(string memory host) private pure returns (bool) {
@@ -422,6 +493,48 @@ contract Census is ERC721, Ownable, IERC8048 {
     function _hasTraitPrefix(string calldata key) private pure returns (bool) {
         bytes calldata b = bytes(key);
         return b.length >= 6 && b[0] == "t" && b[1] == "r" && b[2] == "a" && b[3] == "i" && b[4] == "t" && b[5] == "[";
+    }
+
+    function _validContext(string memory value) private pure returns (bool) {
+        bytes memory b = bytes(value);
+        if (b.length == 0 || b.length > MAX_CONTEXT_BYTES) return false;
+
+        uint256 i;
+        while (i < b.length) {
+            uint8 c = uint8(b[i]);
+            if (c < 0x80) {
+                ++i;
+                continue;
+            }
+
+            uint256 needed;
+            uint32 codepoint;
+            if (c >= 0xC2 && c <= 0xDF) {
+                needed = 1;
+                codepoint = c & 0x1F;
+            } else if (c >= 0xE0 && c <= 0xEF) {
+                needed = 2;
+                codepoint = c & 0x0F;
+            } else if (c >= 0xF0 && c <= 0xF4) {
+                needed = 3;
+                codepoint = c & 0x07;
+            } else {
+                return false;
+            }
+            if (i + needed >= b.length) return false;
+
+            for (uint256 j = 1; j <= needed; ++j) {
+                uint8 continuation = uint8(b[i + j]);
+                if (continuation < 0x80 || continuation > 0xBF) return false;
+                codepoint = (codepoint << 6) | (continuation & 0x3F);
+            }
+            if (
+                (needed == 2 && codepoint < 0x800) || (needed == 3 && codepoint < 0x10000)
+                    || (codepoint >= 0xD800 && codepoint <= 0xDFFF) || codepoint > 0x10FFFF
+            ) return false;
+            i += needed + 1;
+        }
+        return true;
     }
 
     function _traitCategory(bytes32 h) private pure returns (bool found, uint256 category) {

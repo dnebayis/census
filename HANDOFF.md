@@ -1,244 +1,74 @@
-# Census handoff
+# Census v6 handoff
 
-Repository: `https://github.com/dnebayis/census`
+## Current truth — 3 August 2026
 
-## Current phase
+Census v6 is deployed and open on Sepolia at
+`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`. It caps supply at 5,000, limits wallets
+and batches to five, supports owner-only mint pause/unpause, rejects exact bitmap and
+coarse silhouette reuse, validates a 280-byte UTF-8 context, and reports an immutable 5%
+ERC-2981 royalty.
 
-The hardened mint core and read-only ERC-8004 registration API are live. The shared
-RESTAP/MCP runtime exposes seven bounded report-only skills for the active collection.
-OpenSea does not currently index Sepolia tool registries. The archived v3 Executor has
-no implementation or authorization path; v4 and v5 replace it with report-only Advisor.
+Deployment transaction: `0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b`.
+Open transaction: `0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52`.
+First batch transaction: `0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f`.
 
-`runtime-service/` contains the production report-only protocol shell: `llms.txt`,
-address-routed RESTAP discovery, JSON `/talk`, passive `/news`, and MCP 2026-07-28
-Streamable HTTP. Every entry read verifies current Census state and ERC-8217 binding.
-Vercel assigned its first deployment to the stable
-`https://census-runtime-dnebayis.vercel.app` alias; its report-only engines are active
-for matching active-v5 skills but are not advertised in registration JSON. V5 token 1
-is Arbitrageur and token 2 is Mint Scanner; both have Species-derived Alien class.
-Archived v4 tokens 1 and 2 are Advisor entries and token 3 is Tracker. Its bounded news queue and
-sliding-window limits use Redis. The official 30 MB free Redis resource
-`census-runtime-free` is connected to production only; its real queue and distributed
-rate-limit integration test passed. Access is scoped to the active v5 Census contract
-at `https://census-runtime-dnebayis.vercel.app`.
+The rollout minted five visually reviewed drafts as tokens 1–5 and agents 9256–9260.
+The production registration route returns all five, and token 1's HTTP document,
+adapter binding, agent ID and Identity Registry URI were matched live. V5
+`0x5863E1d0539c659204B097359AC1a75C51144E78` is preserved as an open testnet archive.
 
-The Vercel Git project is linked to `dnebayis/census`, production branch `main`, with
-Root Directory fixed to `runtime-service`. Never deploy the monorepo root manually;
-that bypasses the root boundary and can package unrelated local artifacts.
+## Completed implementation
 
-The backend supports both Upstash REST credentials and the official Vercel Redis
-`REDIS_URL`. The 30 MB free plan is being used for the bounded production canary at
-the owner's direction; its durability limits still prevent broader activation.
+- Contract: 5K supply, exact bitmap hash registry, pause, reentrancy protection,
+  context validation, immutable metadata namespaces, expanded trait vocabulary and
+  ERC-2981.
+- Pipeline: secure one-time seed, hidden public Species control, draft-local dense-art
+  calibration, exact/coarse/24-pixel duplicate checks, Species review lock, encrypted
+  Cast keystore option, exact simulation and receipt-derived mint records.
+- Art regression: Border Observer, unchanged 28.2% fixture, sparse fixture and five new
+  Census-only portraits. No RAO, Basies, Flux or Gemini reference language is used.
+- Registration: static project page, address-routed registration API, reusable fallback
+  RPC client, five-second timeout, coalescing and differentiated cache/error behavior.
+- Runtime: report-only engines. Skills provide analysis and links; they never execute a
+  trade, approval, transfer or other financial action.
+- Production v5 canaries: token 1 Arbitrageur discovery/talk and token 2 Mint Scanner
+  discovery/talk/MCP returned 200; rate headers and report-only capability were present;
+  a missing token returned 404.
 
-The Mint Scanner engine performs bounded, newest-first Sepolia ERC-721 mint-log
-scans and emits ranked candidates with transaction/block evidence and explicit
-limitations. A live read-only scan and the Redis-backed integration passed; it remains
-available only to matching immutable-skill entries on the active v5 Census contract.
+## Locked boundaries
 
-Historical v3 production verification passed on 2 August 2026. Token 2 RESTAP discovery
-returned agent 9121 and `canary.available: true`; `/talk` and the MCP
-`mint-scanner` tool returned evidence-backed reports over Sepolia. Token 3 returned
-`runtime_inactive` through both surfaces, a missing token returned 404, and MCP emitted
-Redis-backed rate-limit headers. The runtime uses the public dRPC Sepolia endpoint;
-registration remains `active: false` and does not advertise runtime services.
+There is no central EIP-712 validator or reservation service. Exact bitmap reuse is
+impossible onchain, but targeted pixel edits and directly chosen valid trait indices
+cannot be absolutely prevented. Similarity protection beyond the coarse signature is a
+property of the official pipeline.
 
-Arbitrageur is implemented as the second report-only engine. It uses the fixed OpenSea
-API origin, a secret-managed instant key, at most 20 combined collection-slug or
-`slug:tokenId` targets, same-currency raw-unit comparisons, and order/source evidence.
-It never builds or submits a transaction and does not claim net profit. The instant key
-expires after 30 days and must be rotated before 2026-09-02. Its independent skill
-flag is enabled for the active v5 Census contract; registration remains
-inactive and the engine has no transaction capability.
+Pause stops only new mints. ERC-2981 announces but does not force royalty payment.
+There is no x402 payment flow, executor, ERC721-C, separate agent wallet, RESTAP or
+ERC-8257 integration in v6.
 
-Historical v3 production checks passed on 3 August 2026 for token 3: RESTAP discovery
-returned agent 9122 with the Arbitrageur canary available, `/talk` returned an OpenSea
-report, and MCP exposed and invoked only the `arbitrageur` tool. Same-currency and
-two-sided-order requirements correctly produced non-qualified observations rather than
-false opportunities.
+## Remaining operator actions
 
-The equivalent external production checks for active v5 token 1 / agent 9247
-(`Arbitrageur`) and token 2 / agent 9248 (`Mint Scanner`) remain pending and are the
-third item in `docs/NEXT-STEPS.md`. Their registration endpoints and adapter bindings
-already pass independently.
+The current Vercel CLI credential is not authenticated for environment mutation. Once
+the existing dnebayis project is re-authenticated, set registration
+`ACTIVE_CENSUS_ADDRESS` to v6, configure two `SEPOLIA_RPC_URLS`, and deploy production
+only. Do not create a preview or another Vercel project.
 
-Mainnet ETH and canonical WETH now form the only allowed cross-currency comparison.
-The output marks `currencyConversion.required: true`, states the 1:1 basis, and excludes
-wrapping gas from the gross spread. Other currencies and Sepolia assets still require
-exact matching.
+The OpenSea key shared in chat must be revoked in the OpenSea dashboard and replaced as
+a production-only runtime secret. Do not remove the old production value before a new
+one is ready, and never place the replacement in repository files or frontend code.
+After rotation, production-redeploy runtime and verify OpenSea ingestion for v6 token
+1–5.
 
-Tracker is implemented as the third report-only engine using bounded OpenSea account
-events: at most 10 wallets, transfer/sale/mint filters, one 200-event page per wallet,
-transaction/source evidence, and explicit cursor truncation. The archived v3 collection
-had no token with skill index 2. Do not bind
-it to token 4 (Token Hunter) or reroll draft traits to force a Tracker token.
+Run the complete local suite before every direct-main push. Daily production health and
+weekly standards drift workflows are the ongoing monitors.
 
-Token Hunter was production-verified with archived v3 token 4 / agent 9123. It reads one
-OpenSea trending page (maximum 100), filters by `genesis_date`/`created_at` and 24-hour
-USD volume, and checks at most 20 token details for exact `status: OK`. It never calls
-volume liquidity, never requests a swap quote, and has its own skill flag.
+## User flow
 
-Trend Reader is implemented as the fifth report-only engine: one OpenSea trending page,
-`1h`/`24h`/`7d`, an optional documented category, and at most 10 collection-stat calls.
-It preserves OpenSea rank, attaches exact interval/total evidence, and leaves unavailable
-intervals null. No archived v3 token had skill index 4;
-the archived v2 `night-ledger` is not an active canary.
-
-Fraud Detector completes the six market-data report engines. It uses one OpenSea profile call
-for wallets or collection metadata plus stats for collections, reports provider flags
-and missing evidence, and never assigns a fraud score or accusation. Advisor is the
-seventh report-only engine and returns suggestions plus source links from supplied
-evidence. Production has all seven report-only flags enabled for the active Census
-contract. Immutable skills still
-prevent absent Tracker, Trend Reader, or Fraud Detector tokens from calling those
-engines; a future matching token works without an environment update. No skill builds,
-signs, or submits transactions.
-
-Report-only invocation is gated by `ACTIVE_CENSUS_ADDRESS`, the adapter binding,
-immutable skill assignment, and its skill-specific flag. Archived v3 token 2 was the
-verified Mint Scanner canary; it is blocked after the active address moved again to v5. Registration remains
-inactive even while a production canary is exercised.
-
-Read, in order:
-
-1. `docs/standards-lock.md`
-2. `docs/DECISIONS.md`
-3. `docs/SPEC.md`
-4. `pipeline/AGENTS.md`
-5. `docs/RUNTIME-PLAN.md`
-6. `docs/NEXT-STEPS.md`
-
-## Fixed infrastructure
-
-- ERC-8217 adapter: `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92`
-- ERC-8004 Identity Registry:
-  `0x8004a818bfb912233c491871b3d84c89a494bd9e`
-- Census Sepolia ERC-8257 Tool Registry:
-  `0xd61aa597398a83122fce07a94beddb91fce8f42e`
-- Active Census v5: `0x5863E1d0539c659204B097359AC1a75C51144E78`
-- Archived v4: `0x629B4534D07F1E35a70a403f4521Cd95f34eb030`
-- Archived v3: `0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`
-- Canonical registration origin: `https://census-registration-dnebayis.vercel.app`
-- Archived v2: `0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`
-- Archived v1: `0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`
-- Archived prototype: `0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`
-
-V5 minting is irreversibly open. Deploy transaction:
-`0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9`;
-open-mint transaction:
-`0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280`.
-It uses the broad 1%–95% density band and derives class from Species. Its first batch
-minted tokens 1–2 / agents 9247–9248 with skills Arbitrageur and Mint Scanner in
-transaction `0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318`.
-Archived v4 minted tokens 1–3 / agents
-9244–9246 with skills Advisor, Advisor, and Tracker in transaction
-`0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27`
-at block `11406617`. All three production registration URLs returned HTTP 200 with
-`no-store`; missing-token probes returned 404 and every adapter binding matched.
-
-Archived v3 used open transaction
-`0x6f004d10f293fe8f42a71b843509dac57619565b144ed961fe2f6d4b7281f094`.
-Its first production entry is
-`threshold-keeper`, token 1 / ERC-8004 agent 9119, minted in transaction
-`0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90`
-at block `11390845`. Its verified registration URI is
-`https://census-registration-dnebayis.vercel.app/a/0x1ada8e305f684b13419c51ea40a09a3c5e4760bc/1/registration.json`.
-
-The first v3 batch transaction is
-`0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45`
-at block `11390925`:
-
-- `dawn-cartographer`: token 2 / agent 9121
-- `quiet-machinist`: token 3 / agent 9122
-- `memory-diver`: token 4 / agent 9123
-- `pastel-sentinel`: token 5 / agent 9124
-
-All four registration URLs returned HTTP 200 with `no-store`; each adapter binding and
-Identity Registry URI matched.
-
-Archived v2 genesis draft `genesis-registrar` is token 1 / ERC-8004 agent 9104; mint transaction:
-`0x45d5308d1004940b6db4930b54b3e190b0bc5ca501b341ddb68c210e653527a4`.
-Its verified registration URI is
-`https://census-registration-dnebayis.vercel.app/a/0x3763feca935668e1ffc191f3c509f3a545b3acbc/1/registration.json`.
-The first production batch transaction is
-`0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428`
-at block `11389367`:
-
-- `night-ledger`: token 2 / agent 9106
-- `signal-auditor`: token 3 / agent 9107
-- `archive-courier`: token 4 / agent 9108
-
-All three production registration URLs returned HTTP 200 with `no-store`; the missing
-token probe returned 404, and each live adapter binding and Identity Registry URI
-matched.
-The archived v1 rollout token 1 remains ERC-8004 agent 9100 at
-`https://census-registration-dnebayis.vercel.app/a/0x62514267a0f203e73b66c4f6fa1ed71a6db6bfa4/1/registration.json`.
-
-Production creation now starts at `skills/census-mint/SKILL.md`. The IDE agent must use
-real raster image generation and can inspect the source/comparison/palette preview.
-Only effectively blank or solid output requires regeneration. Art metrics are
-informational and never block minting; PNG/JPEG/WebP user uploads are also accepted.
-Python/SVG smoke drawings are archive proof, not collection art.
-
-User-facing prompts must use only the self-contained Census visual language. Do not
-mention unrelated collections or historical source projects. Token 2 is the regression
-example for the pending draft-local density calibration described in
-`docs/NEXT-STEPS.md`; do not change the global threshold or contract to repair it.
-
-## Safety-critical rollout order
-
-The production-only rollout completed in this order:
-
-1. Push the reviewed source and deploy the registration service to production.
-2. Run its unit/schema/404/chain-read tests.
-3. Obtain the stable public Vercel production project URL.
-4. Deploy Census to Sepolia with that exact URL; it starts closed.
-5. Set `ADAPTER_ADDRESS`, `IDENTITY_REGISTRY_ADDRESS`, `CHAIN_ID`, and
-   `SEPOLIA_RPC_URL` in Vercel production and deploy the address-routed service.
-6. Verify registration JSON and the Identity Registry `agentURI` are identical for a
-   real token.
-7. Only then call the irreversible `openMinting()`.
-
-Future contract deployments reuse this one registration project. Their URIs include
-the Census contract address, so token IDs cannot collide. Never deploy with a temporary
-immutable host.
-
-## Verification
-
-```sh
-forge test -vv
-SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com \
-  forge test --match-path test/SepoliaFork.t.sol -vv
-python3 -m unittest -v pipeline/test_pipeline.py
-cd registration-service
-npm ci
-npm test
-npm audit --audit-level=high
-cd ../runtime-service
-npm ci
-npm test
-npm audit --audit-level=moderate
+```text
+character → assigned immutable traits → normal portrait → calibrated one-bit preview
+→ user approval → exact simulation → mint
 ```
 
-The fork test performs a real adapter registration on fork state, checks the
-registration URI and binding, then transfers the NFT and verifies controller authority
-follows ownership.
-
-## Pipeline facts
-
-`draftId` is the stable local identity. A secure seed and trait assignment are written
-once to `<draftId>.draft.json`; reopening does not reroll. Build records source and
-bitmap SHA-256 hashes, optional source provenance, and stats. Mint derives the sender from `PRIVATE_KEY`,
-simulates the exact call, batches multiple drafts, and writes real receipt token/agent
-IDs under `output/mints/`.
-
-Files `output/7`, `8`, and `9` are legacy artifacts, not proof of minting and not
-automatic token IDs.
-
-`config/sepolia.json` is the machine-readable active deployment record.
-`skills/census-mint/scripts/verify_registration.py` reproduces the external 200/404,
-cache, live adapter binding, and Identity Registry URI checks.
-
-Production registration deploys use the native Vercel GitHub connection from
-`dnebayis/census` `main` to the permanent `census-registration-dnebayis` project. Its
-Root Directory is `registration-service`; no duplicate GitHub Actions deployment is
-used.
+Normal users should see character, preview, public funding address and plain-language
+errors only. Contract/RPC/seed/threshold/ABI details remain agent concerns. Private key,
+mnemonic and keystore password must never be logged or pasted into chat.

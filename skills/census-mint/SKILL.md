@@ -84,8 +84,10 @@ checks, wallet limits, invalid traits, and failed exact simulation remain hard f
 
 ## Mint only on explicit instruction
 
-Require `PRIVATE_KEY` to exist in the local environment, but never read it into chat,
-print it, persist it, or pass it anywhere except the existing pipeline command. Prefer
+Prefer an encrypted local Cast keystore selected by `ETH_KEYSTORE_ACCOUNT` or
+`ETH_KEYSTORE`; its password is requested interactively and must never enter chat or a
+file. `PRIVATE_KEY` is a legacy environment-only fallback and must never be printed,
+persisted or passed anywhere except the existing pipeline command. Prefer
 `SEPOLIA_RPC_URL`, then `RPC_URL`; otherwise use `publicRpc` from `config/sepolia.json`.
 
 Run the CLI with the active Census address:
@@ -111,6 +113,10 @@ registration URL. Before a receipt, call the work item only `draftId`, never tok
 
 - Treat files numbered 7–9 and `rollout-smoke` as legacy proof artifacts.
 - Never overwrite a minted draft or infer IDs from filenames.
+- Never expose seed, Species, threshold, RPC, contract or ABI selection in normal use.
+- Species/Class anatomy is the sole mandatory visual review. Secondary trait visibility
+  remains advisory.
+- Stop with a plain-language “mint paused” message if the owner has paused v6.
 - Never claim runtime availability: registration remains `active: false`, has no
   services, and does not create an agent wallet.
 - Never mint a non-raster source. Provenance may be `agent:*`, `user:*`, or `tool:*`

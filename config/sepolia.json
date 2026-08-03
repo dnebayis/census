@@ -1,6 +1,6 @@
 {
   "chainId": 11155111,
-  "census": "0x5863E1d0539c659204B097359AC1a75C51144E78",
+  "census": "0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab",
   "adapter": "0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92",
   "identityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
   "toolRegistry": "0xd61aa597398a83122fce07a94beddb91fce8f42e",
@@ -53,28 +53,60 @@
   "registrationPath": "/a/{censusAddress}/{tokenId}/registration.json",
   "publicRpc": "https://ethereum-sepolia-rpc.publicnode.com",
   "bitmapFormat": "census-1bit-v2",
+  "traitCatalog": "census-v6",
   "bitmapBytes": 200,
   "artRecordBytes": 209,
+  "supply": 5000,
+  "royaltyBps": 500,
   "mintingOpen": true,
-  "deploymentTransaction": "0x06143fed9e41de4099ff34194bb50930040ff0402262b948fc753d0f672991a9",
-  "deploymentBlock": 11406675,
-  "openMintTransaction": "0x9e12c0bb5053f40a5a3d57f30cf8e5cafcff68b253bc0efeaef903133a479280",
-  "openMintBlock": 11406691,
+  "paused": false,
+  "deploymentTransaction": "0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b",
+  "deploymentBlock": 11407058,
+  "openMintTransaction": "0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52",
+  "openMintBlock": 11407077,
   "rolloutTokenId": 1,
-  "rolloutAgentId": 9247,
-  "rolloutTransaction": "0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318",
+  "rolloutAgentId": 9256,
+  "rolloutTransaction": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f",
   "productionBatches": [
     {
-      "transaction": "0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318",
-      "blockNumber": 11406745,
-      "drafts": ["v5-silent-curator", "v5-border-observer"],
-      "tokens": [1, 2],
-      "agents": [9247, 9248],
-      "skills": ["Arbitrageur", "Mint Scanner"],
-      "classes": ["Alien", "Alien"]
+      "transaction": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f",
+      "blockNumber": 11407080,
+      "drafts": [
+        "v6-botanical-astronaut",
+        "v6-midnight-radio-host",
+        "v6-desert-cartographer",
+        "v6-street-racer",
+        "v6-orbital-archivist"
+      ],
+      "tokens": [1, 2, 3, 4, 5],
+      "agents": [9256, 9257, 9258, 9259, 9260],
+      "skills": [
+        "Fraud Detector",
+        "Arbitrageur",
+        "Mint Scanner",
+        "Arbitrageur",
+        "Tracker"
+      ],
+      "classes": ["Alien", "Alien", "Agent", "Alien", "Agent"]
     }
   ],
   "archivedCensus": [
+    {
+      "address": "0x5863E1d0539c659204B097359AC1a75C51144E78",
+      "canonicalHost": "https://census-registration-dnebayis.vercel.app",
+      "reason": "v5 archived after v6 introduced 5K supply, emergency pause, ERC-2981 royalties, expanded traits, and exact bitmap hashes; mint remains irreversibly open",
+      "productionBatches": [
+        {
+          "transaction": "0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318",
+          "blockNumber": 11406745,
+          "drafts": ["v5-silent-curator", "v5-border-observer"],
+          "tokens": [1, 2],
+          "agents": [9247, 9248],
+          "skills": ["Arbitrageur", "Mint Scanner"],
+          "classes": ["Alien", "Alien"]
+        }
+      ]
+    },
     {
       "address": "0x629B4534D07F1E35a70a403f4521Cd95f34eb030",
       "canonicalHost": "https://census-registration-dnebayis.vercel.app",

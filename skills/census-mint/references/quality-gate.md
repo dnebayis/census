@@ -19,6 +19,7 @@ Require:
 - detailed facial features clearly visible in the final 40×40 preview;
 - exactly two final colors: Census charcoal `#34343A` and warm pastel `#E9DDC7`;
 - every assigned trait expressed with a large unmistakable pixel shape;
+- the assigned Species controls anatomy even when the user's character role is human-coded;
 - no final grey levels, gradients, antialiasing, dithering, text, watermark, border or
   scenery.
 

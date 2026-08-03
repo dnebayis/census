@@ -1,0 +1,52 @@
+{
+  "draft_id": "v6-midnight-radio-host",
+  "bytes": 200,
+  "density": 660,
+  "density_pct": 41.2,
+  "isolated_pct": 0.3,
+  "symmetry": 2,
+  "corner_tl_pct": 4.7,
+  "corner_tr_pct": 4.7,
+  "signature": "0xffff666630000000",
+  "mintable": true,
+  "warnings": [
+    "dense \u2014 facial detail may merge"
+  ],
+  "calibration": {
+    "mode": "default",
+    "selected_threshold": 128,
+    "trigger_pct": 45,
+    "target_pct": [
+      32,
+      42
+    ],
+    "candidates": [
+      {
+        "threshold": 128,
+        "density": 660,
+        "density_pct": 41.2,
+        "isolated_pct": 0.3,
+        "symmetry": 2,
+        "corner_tl_pct": 4.7,
+        "corner_tr_pct": 4.7,
+        "signature": "0xffff666630000000",
+        "mintable": true,
+        "warnings": [
+          "dense \u2014 facial detail may merge"
+        ]
+      }
+    ]
+  },
+  "subject": "a midnight radio host with a calm, magnetic presence",
+  "traits": {
+    "Accessory": "Nose Ring",
+    "Age": "Middle-aged",
+    "Attire": "Armoured Shoulders",
+    "Expression": "Curious",
+    "Eyes": "Mirrored Visor",
+    "Facial": "Scar Across One Cheek",
+    "Hair": "Bald",
+    "Headwear": "Tech Hood",
+    "Species": "Cat-like Humanoid"
+  }
+}

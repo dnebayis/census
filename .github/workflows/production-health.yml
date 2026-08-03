@@ -1,0 +1,38 @@
+name: Production health
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Registration page and v6 binding
+        env:
+          REGISTRATION_ORIGIN: https://census-registration-dnebayis.vercel.app
+          CENSUS_V6: 0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 10 "$REGISTRATION_ORIGIN/" >/dev/null
+          curl --fail --silent --show-error --max-time 10 \
+            "$REGISTRATION_ORIGIN/a/$CENSUS_V6/1/registration.json" \
+            | jq -e '.registrations[0].agentId == 9256 and .active == false' >/dev/null
+          code=$(curl --silent --show-error --max-time 10 --output /dev/null --write-out '%{http_code}' \
+            "$REGISTRATION_ORIGIN/a/$CENSUS_V6/999999/registration.json")
+          test "$code" = "404"
+
+      - name: Report-only runtime discovery
+        env:
+          RUNTIME_ORIGIN: https://census-runtime-dnebayis.vercel.app
+          ARCHIVED_V5: 0x5863E1d0539c659204B097359AC1a75C51144E78
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 10 \
+            "$RUNTIME_ORIGIN/a/$ARCHIVED_V5/1/.well-known/restap.json" \
+            | jq -e '.canary.available == true' >/dev/null

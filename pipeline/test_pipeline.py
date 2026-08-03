@@ -11,22 +11,23 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parent))
 
 import generate
+from config import TRAIT_CATEGORIES
 from PIL import Image
-from binarize import analyse, pack_bitmap, resize_to_grid, threshold_binarize, unpack_bitmap
+from binarize import analyse, binarize_image, pack_bitmap, resize_to_grid, threshold_binarize, unpack_bitmap
 from output import PALETTE, load_existing_traits, load_signature_owners, save_draft_manifest
 from traits import generate_traits, to_indices
 
 
 VALID_TRAITS = {
-    "Species": "human",
-    "Age": "young",
-    "Hair": "bald",
-    "Eyes": "plain eyes",
-    "Facial": "clean shaven",
-    "Expression": "neutral",
-    "Headwear": "bare head",
-    "Attire": "plain collar",
-    "Accessory": "none",
+    "Species": "Human",
+    "Age": "Young",
+    "Hair": "Bald",
+    "Eyes": "Plain Eyes",
+    "Facial": "Clean Shaven",
+    "Expression": "Neutral",
+    "Headwear": "Bare Head",
+    "Attire": "Plain Collar",
+    "Accessory": "None",
 }
 
 
@@ -147,9 +148,69 @@ class PipelineTest(unittest.TestCase):
             )
             self.assertIn((0, 0, 0, 0, 0, 0, 0, 0, 0), load_existing_traits(output))
 
-    def test_weighted_aliases_serialize_to_the_checked_combination(self):
+    def test_forced_trait_serializes_to_its_unique_contract_index(self):
         traits = generate_traits(1, forced={"Species": 3})
-        self.assertEqual(to_indices(traits)[0], 0)
+        self.assertEqual(to_indices(traits)[0], 3)
+        self.assertEqual(traits["Species"], "Android with Visible Seams")
+
+    def test_five_thousand_draws_follow_species_targets(self):
+        species = next(options for key, options in TRAIT_CATEGORIES if key == "Species")
+        counts = {name: 0 for name in species}
+        vr = 0
+        for seed in range(5000):
+            traits = generate_traits(seed)
+            counts[traits["Species"]] += 1
+            vr += traits["Eyes"] == "VR Headset"
+        self.assertTrue(1800 <= counts["Human"] <= 2200)
+        self.assertTrue(20 <= counts["Crystalline Being"] <= 90)
+        self.assertTrue(15 <= vr <= 80)
+
+    def test_dense_draft_calibrates_without_changing_global_threshold(self):
+        image = Image.new("L", (40, 40))
+        for x in range(40):
+            for y in range(40):
+                image.putpixel((x, y), 80 + 2 * x)
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG")
+        _, _, stats = binarize_image(buffer.getvalue())
+        self.assertEqual(stats["calibration"]["mode"], "draft-local")
+        self.assertEqual(stats["calibration"]["selected_threshold"], 112)
+        self.assertTrue(32 <= stats["density_pct"] <= 42)
+
+    def test_border_observer_regression_uses_draft_local_calibration(self):
+        source = Path(__file__).parent / "output" / "v5-border-observer.src.png"
+        gray = resize_to_grid(Image.open(source)).convert("L")
+        self.assertEqual(analyse(threshold_binarize(gray))["density_pct"], 58.0)
+        _, _, calibrated = binarize_image(source)
+        self.assertEqual(calibrated["calibration"]["mode"], "draft-local")
+        self.assertLess(calibrated["calibration"]["selected_threshold"], 128)
+        self.assertTrue(32 <= calibrated["density_pct"] <= 42)
+
+    def test_normal_28_2_percent_fixture_is_byte_identical(self):
+        pixels = [1] * 451 + [0] * (1600 - 451)
+        self.assertEqual(analyse(pixels)["density_pct"], 28.2)
+        image = Image.new("L", (40, 40), 255)
+        image.putdata([0 if pixel else 255 for pixel in pixels])
+        framed = resize_to_grid(image).convert("L")
+        default = threshold_binarize(framed)
+        # The crop reserves four top rows, so this fixture checks the invariant at the
+        # conversion boundary rather than assuming source coordinates survive framing.
+        self.assertLessEqual(analyse(default)["density_pct"], 45)
+        self.assertEqual(
+            pack_bitmap(default),
+            pack_bitmap(threshold_binarize(framed, 128)),
+        )
+
+    def test_sparse_fixture_never_enters_calibration(self):
+        image = Image.new("L", (40, 40), 255)
+        for x in range(10, 20):
+            for y in range(10, 20):
+                image.putpixel((x, y), 0)
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG")
+        _, _, stats = binarize_image(buffer.getvalue())
+        self.assertEqual(stats["calibration"]["mode"], "default")
+        self.assertEqual(stats["calibration"]["selected_threshold"], 128)
 
     def test_signature_owners_are_not_collapsed_to_a_set_bug(self):
         with tempfile.TemporaryDirectory() as output:
@@ -185,6 +246,7 @@ class PipelineTest(unittest.TestCase):
                 "version": generate.PIPELINE_VERSION,
                 "traits": VALID_TRAITS,
                 "traits_hex": "0x000000000000000000",
+                "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
                 "build": {
                     "bitmap_format": generate.BITMAP_FORMAT,
                     "generator": "agent:test-imagegen",
@@ -218,6 +280,7 @@ class PipelineTest(unittest.TestCase):
                     "subject": "a plain portrait",
                     "traits": VALID_TRAITS,
                     "traits_hex": "0x000000000000000000",
+                    "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
                     "build": {
                         "bitmap_format": generate.BITMAP_FORMAT,
                         "generator": "user:raster",
@@ -248,6 +311,7 @@ class PipelineTest(unittest.TestCase):
                     "version": 1,
                     "traits": VALID_TRAITS,
                     "traits_hex": "0x000000000000000000",
+                    "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
                     "build": {
                         "bitmap_format": "census-2bit-v1",
                         "generator": "agent:test-imagegen",
@@ -278,6 +342,7 @@ class PipelineTest(unittest.TestCase):
                         "version": generate.PIPELINE_VERSION,
                         "traits": VALID_TRAITS,
                         "traits_hex": "0x000000000000000000",
+                        "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
                         "build": {
                             "bitmap_format": generate.BITMAP_FORMAT,
                             "generator": "agent:test-imagegen",

@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {LibString} from "solady/utils/LibString.sol";
+import {Base64} from "solady/utils/Base64.sol";
 import {Census} from "../src/Census.sol";
 import {Art} from "../src/lib/Art.sol";
 import {IAdapter8004} from "../src/interfaces/IAdapter8004.sol";
@@ -81,6 +82,38 @@ contract CensusTest is Test {
         closed.openMinting();
     }
 
+    function test_EmergencyPauseStopsOnlyMinting() public {
+        uint256 id = _mint(alice, 1);
+        census.pauseMinting();
+        assertTrue(census.paused());
+
+        (bool ok, uint8 reason,) = census.validate(_bitmap(2), TRAITS, bob);
+        assertFalse(ok);
+        assertEq(reason, census.ERR_PAUSED());
+        vm.prank(bob);
+        vm.expectRevert(Census.MintingPaused.selector);
+        census.mint(_bitmap(2), TRAITS, "ctx");
+
+        vm.prank(alice);
+        census.transferFrom(alice, bob, id);
+        assertEq(census.ownerOf(id), bob);
+        assertGt(bytes(census.tokenURI(id)).length, 100);
+
+        census.unpauseMinting();
+        vm.prank(alice);
+        census.mint(_bitmap(2), TRAITS, "ctx");
+    }
+
+    function test_OnlyOwnerCanPauseOrResume() public {
+        vm.prank(alice);
+        vm.expectRevert();
+        census.pauseMinting();
+        census.pauseMinting();
+        vm.prank(alice);
+        vm.expectRevert();
+        census.unpauseMinting();
+    }
+
     function test_ConstructorRejectsInvalidCanonicalHost() public {
         vm.expectRevert(Census.InvalidHost.selector);
         new Census(address(adapter), "http://census.example");
@@ -90,7 +123,7 @@ contract CensusTest is Test {
     }
 
     function test_ValidateRejectsInvalidTraits() public view {
-        bytes9 invalid = hex"00000000000000000c";
+        bytes9 invalid = hex"0c0000000000000000";
         (bool ok, uint8 reason,) = census.validate(_bitmap(1), invalid, alice);
         assertFalse(ok);
         assertEq(reason, census.ERR_TRAITS());
@@ -100,6 +133,26 @@ contract CensusTest is Test {
         (bool ok, uint8 reason,) = census.validate(new bytes(199), TRAITS, alice);
         assertFalse(ok);
         assertEq(reason, census.ERR_LENGTH());
+    }
+
+    function test_ContextIsBoundedAndValidUtf8() public {
+        (bool ok,,) = census.validate(_bitmap(1), TRAITS, alice, unicode"özenli bir kâtip");
+        assertTrue(ok);
+
+        (bool emptyOk, uint8 emptyReason,) = census.validate(_bitmap(2), TRAITS, alice, "");
+        assertFalse(emptyOk);
+        assertEq(emptyReason, census.ERR_CONTEXT());
+
+        string memory tooLong = new string(281);
+        vm.prank(alice);
+        vm.expectRevert(Census.InvalidContext.selector);
+        census.mint(_bitmap(2), TRAITS, tooLong);
+
+        bytes memory invalidBytes = abi.encodePacked(bytes1(0xc0), bytes1(0xaf));
+        string memory invalidUtf8 = string(invalidBytes);
+        vm.prank(alice);
+        vm.expectRevert(Census.InvalidContext.selector);
+        census.mint(_bitmap(3), TRAITS, invalidUtf8);
     }
 
     function test_ValidateRejectsBlankCanvas() public view {
@@ -156,7 +209,7 @@ contract CensusTest is Test {
         // the same bitmap must now fail preflight for the same reason mint would revert
         (bool ok2, uint8 reason2,) = census.validate(bm, TRAITS, bob);
         assertFalse(ok2);
-        assertEq(reason2, census.ERR_DUPLICATE());
+        assertEq(reason2, census.ERR_EXACT_DUPLICATE());
     }
 
     function test_SoftWarningsDoNotBlockMint() public {
@@ -201,21 +254,21 @@ contract CensusTest is Test {
     }
 
     function test_TraitsRoundTripFromArtRecord() public {
-        bytes9 traits_ = hex"09020c0b0a080b090b";
+        bytes9 traits_ = hex"0b02100f0d0b0f0d0f";
         vm.prank(alice);
         uint256 id = census.mint(_bitmap(1), traits_, "ctx");
 
         assertEq(census.traitsOf(id), traits_);
         assertEq(bytes(census.bitmapOf(id)).length, 200);
-        assertEq(census.traitOf(id, 0), "ape-like humanoid");
-        assertEq(census.traitOf(id, 8), "collar tag");
-        assertEq(string(census.metadata(id, "trait[hair]")), "wild curly hair");
+        assertEq(census.traitOf(id, 0), "Avian Humanoid");
+        assertEq(census.traitOf(id, 8), "Shoulder Badge");
+        assertEq(string(census.metadata(id, "trait[hair]")), "Shaved Geometric Pattern");
     }
 
     function test_InvalidTraitsRevertMint() public {
         vm.prank(alice);
         vm.expectRevert(Census.InvalidTraits.selector);
-        census.mint(_bitmap(1), hex"0a0000000000000000", "ctx");
+        census.mint(_bitmap(1), hex"0c0000000000000000", "ctx");
     }
 
     function test_MintIsFree() public {
@@ -225,9 +278,14 @@ contract CensusTest is Test {
     }
 
     function test_DuplicateSignatureReverts() public {
-        _mint(alice, 3);
+        bytes memory first = _bitmap(3);
+        bytes memory second = _bitmap(3);
+        _setPixel(second, 6, 0, 1); // different bitmap, same 8x8 majority signature
+        vm.prank(alice);
+        census.mint(first, TRAITS, "ctx");
         vm.expectRevert(Census.DuplicateSignature.selector);
-        _mint(bob, 3);
+        vm.prank(bob);
+        census.mint(second, TRAITS, "ctx");
     }
 
     function test_DistinctSeedsProduceDistinctSignatures() public {
@@ -297,7 +355,7 @@ contract CensusTest is Test {
         (bytes[] memory bms, string[] memory ctx) = _batch(1, 6);
         bytes9[] memory traits_ = _traitBatch(6);
         vm.prank(alice);
-        vm.expectRevert(Census.WalletCapReached.selector);
+        vm.expectRevert(Census.InvalidBatch.selector);
         census.mintBatch(bms, traits_, ctx);
     }
 
@@ -307,7 +365,7 @@ contract CensusTest is Test {
         string[] memory ctx = new string[](2);
 
         vm.prank(alice);
-        vm.expectRevert(abi.encodeWithSelector(Census.InvalidBitmap.selector, uint8(1)));
+        vm.expectRevert(Census.InvalidBatch.selector);
         census.mintBatch(bms, traits_, ctx);
     }
 
@@ -321,7 +379,7 @@ contract CensusTest is Test {
         ctx[1] = "ctx";
 
         vm.prank(alice);
-        vm.expectRevert(Census.DuplicateSignature.selector);
+        vm.expectRevert(Census.DuplicateBitmap.selector);
         census.mintBatch(bms, traits_, ctx);
     }
 
@@ -330,6 +388,18 @@ contract CensusTest is Test {
         vm.prank(alice);
         uint256 id = census.mint(bm, TRAITS, "ctx");
         assertEq(keccak256(census.bitmapOf(id)), keccak256(bm), "stored bitmap must be byte-identical");
+        assertTrue(census.bitmapHashUsed(keccak256(bm)));
+    }
+
+    function test_DefaultRoyaltyIsFivePercentToImmutableDeployer() public {
+        (address receiver, uint256 amount) = census.royaltyInfo(123, 2 ether);
+        assertEq(receiver, address(this));
+        assertEq(amount, 0.1 ether);
+
+        census.transferOwnership(alice);
+        (receiver, amount) = census.royaltyInfo(123, 1 ether);
+        assertEq(receiver, address(this));
+        assertEq(amount, 0.05 ether);
     }
 
     // ------------------------------------------------------------ quotas
@@ -347,29 +417,28 @@ contract CensusTest is Test {
             sum += census.remaining(i);
         }
         assertEq(sum, census.remainingTotal(), "per-skill remainders must sum to the total");
-        assertEq(census.remainingTotal(), 10_000 - census.totalMinted());
+        assertEq(census.remainingTotal(), 5_000 - census.totalMinted());
     }
 
     function test_GenesisQuotasMatchTheSpec() public view {
-        assertEq(census.remaining(0), 3000); // Mint Scanner
-        assertEq(census.remaining(1), 3000); // Arbitrageur
-        assertEq(census.remaining(2), 1500); // Tracker
-        assertEq(census.remaining(3), 1000); // Token Hunter
-        assertEq(census.remaining(4), 700); // Trend Reader
-        assertEq(census.remaining(5), 500); // Fraud Detector
-        assertEq(census.remaining(6), 300); // Advisor
-        assertEq(census.remainingTotal(), 10_000);
+        assertEq(census.remaining(0), 1500); // Mint Scanner
+        assertEq(census.remaining(1), 1500); // Arbitrageur
+        assertEq(census.remaining(2), 750); // Tracker
+        assertEq(census.remaining(3), 500); // Token Hunter
+        assertEq(census.remaining(4), 350); // Trend Reader
+        assertEq(census.remaining(5), 250); // Fraud Detector
+        assertEq(census.remaining(6), 150); // Advisor
+        assertEq(census.remainingTotal(), 5_000);
     }
 
     function test_ClassFollowsSpeciesVocabulary() public view {
         assertEq(census.className(0), "Human");
-        assertEq(census.className(3), "Human");
-        assertEq(census.className(4), "Alien"); // cat-like humanoid
+        assertEq(census.className(1), "Alien"); // cat-like humanoid
+        assertEq(census.className(2), "Alien"); // grey alien
+        assertEq(census.className(3), "Agent");
+        assertEq(census.className(4), "Skull");
         assertEq(census.className(5), "Alien");
-        assertEq(census.className(6), "Agent"); // android
-        assertEq(census.className(7), "Skull");
-        assertEq(census.className(8), "Alien"); // reptilian
-        assertEq(census.className(9), "Alien"); // ape-like humanoid
+        assertEq(census.className(11), "Alien");
     }
 
     function test_ClassOfUsesSpeciesNotSkill() public {
@@ -377,16 +446,16 @@ contract CensusTest is Test {
         vm.prank(alice);
         uint256 humanId = census.mint(_bitmap(77), humanTraits, "ctx");
 
-        bytes9 androidTraits = bytes9(hex"060005070304060600");
+        bytes9 androidTraits = bytes9(hex"030005070304060600");
         vm.prank(alice);
         uint256 androidId = census.mint(_bitmap(78), androidTraits, "ctx");
 
         assertEq(census.classOf(humanId), "Human");
         assertEq(string(census.metadata(humanId, "class")), "Human");
-        assertEq(census.traitOf(humanId, 0), "human");
+        assertEq(census.traitOf(humanId, 0), "Human");
         assertEq(census.classOf(androidId), "Agent");
         assertEq(string(census.metadata(androidId, "class")), "Agent");
-        assertEq(census.traitOf(androidId, 0), "android with visible seams");
+        assertEq(census.traitOf(androidId, 0), "Android with Visible Seams");
     }
 
     // ------------------------------------------------------------ ERC-8048
@@ -407,6 +476,10 @@ contract CensusTest is Test {
         vm.prank(alice);
         vm.expectRevert(Census.ImmutableKey.selector);
         census.setMetadata(id, "class", bytes("Skull"));
+
+        vm.prank(alice);
+        vm.expectRevert(Census.ImmutableKey.selector);
+        census.setMetadata(id, "context", bytes("changed"));
 
         vm.prank(alice);
         vm.expectRevert(Census.ImmutableKey.selector);
@@ -462,10 +535,11 @@ contract CensusTest is Test {
         assertTrue(census.supportsInterface(0xdf670be1));
         assertTrue(census.supportsInterface(0x80ac58cd), "ERC721");
         assertTrue(census.supportsInterface(0x5b5e139f), "ERC721Metadata");
+        assertTrue(census.supportsInterface(0x2a55205a), "ERC2981");
     }
 
     function test_MintAbiMatchesLockedSnapshot() public pure {
-        assertEq(Census.validate.selector, ICensusMintV1.validate.selector);
+        assertEq(bytes4(keccak256("validate(bytes,bytes9,address)")), bytes4(0xc05c5e0d));
         assertEq(Census.mint.selector, ICensusMintV1.mint.selector);
         assertEq(Census.mintBatch.selector, ICensusMintV1.mintBatch.selector);
         assertEq(Census.bitmapOf.selector, ICensusMintV1.bitmapOf.selector);
@@ -481,6 +555,17 @@ contract CensusTest is Test {
 
         assertTrue(bytes(uri).length > 100);
         assertEq(_slice(uri, 0, 29), "data:application/json;base64,", "must be a self-contained data URI");
+    }
+
+    function test_TokenURIUsesOpenSeaStringAttributesAndBackground() public {
+        uint256 id = _mint(alice, 1);
+        string memory uri = census.tokenURI(id);
+        bytes memory json = Base64.decode(_slice(uri, 29, bytes(uri).length - 29));
+        string memory decoded = string(json);
+        assertTrue(_contains(decoded, '"background_color":"E9DDC7"'));
+        assertTrue(_contains(decoded, '"trait_type":"Class","value":"Human"'));
+        assertTrue(_contains(decoded, '"trait_type":"Species","value":"Human"'));
+        assertFalse(_contains(decoded, "display_type"));
     }
 
     function test_TokenURICommitsToTraits() public pure {
@@ -596,6 +681,16 @@ contract CensusOptimisationHazardTest is Test {
         assertTrue(adapter.observedBitmapNonZero(), "bitmap pointer was null mid-mint");
         assertEq(census.skillOf(id), adapter.observedSkillPlusOne() - 1);
     }
+
+    function test_AdapterCannotReenterMint() public {
+        adapter.setProbe(address(census));
+        adapter.setReenter(true);
+        vm.prank(alice);
+        uint256 id = census.mint(_bitmap(), TRAITS, "ctx");
+        assertEq(id, 1);
+        assertTrue(adapter.reentrantMintBlocked());
+        assertEq(census.totalMinted(), 1);
+    }
 }
 
 interface ICensusProbe {
@@ -608,6 +703,8 @@ contract HighIdAdapter is IAdapter8004 {
     address public probe;
     uint256 public observedSkillPlusOne;
     bool public observedBitmapNonZero;
+    bool public reenter;
+    bool public reentrantMintBlocked;
 
     mapping(uint256 => Binding) internal _binding;
 
@@ -619,6 +716,10 @@ contract HighIdAdapter is IAdapter8004 {
         probe = p;
     }
 
+    function setReenter(bool enabled) external {
+        reenter = enabled;
+    }
+
     function register(TokenStandard s, address tc, uint256 tid, string memory, MetadataEntry[] memory)
         public
         returns (uint256 agentId)
@@ -626,6 +727,12 @@ contract HighIdAdapter is IAdapter8004 {
         if (probe != address(0)) {
             observedSkillPlusOne = uint256(ICensusProbe(probe).skillOf(tid)) + 1;
             observedBitmapNonZero = ICensusProbe(probe).bitmapOf(tid).length == 200;
+        }
+        if (reenter) {
+            (bool ok,) = probe.call(
+                abi.encodeWithSignature("mint(bytes,bytes9,string)", new bytes(200), bytes9(0), "reentrant")
+            );
+            reentrantMintBlocked = !ok;
         }
         agentId = nextAgentId++;
         _binding[agentId] = Binding({standard: s, tokenContract: tc, tokenId: tid});

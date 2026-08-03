@@ -44,7 +44,15 @@ WARN_DENSITY_HIGH_PCT = 35  # advisory readability risk; never blocks minting
 # smoke tests, but they are not the collection's production art workflow.
 
 MAX_RETRIES = 3
-MAX_SUPPLY = 10_000
+MAX_SUPPLY = 5_000
+
+# Draft-local density calibration. The collection-wide conversion remains threshold
+# 128; only a draft whose default preview exceeds 45% is offered lighter candidates.
+CALIBRATION_TRIGGER_PCT = 45
+CALIBRATION_TARGET_MIN_PCT = 32
+CALIBRATION_TARGET_MAX_PCT = 42
+CALIBRATION_THRESHOLDS = (120, 112, 104, 96, 88, 80, 72, 64, 56, 48, 40)
+NEAR_DUPLICATE_PIXELS = 24
 
 # Accepted production inputs from an image-capable agent.
 ACCEPTED_INPUTS = (".png", ".jpg", ".jpeg", ".webp")
@@ -59,48 +67,72 @@ ACCEPTED_INPUTS = (".png", ".jpg", ".jpeg", ".webp")
 
 TRAIT_CATEGORIES = [
     ("Species", [
-        "human", "human", "human", "human",
-        "cat-like humanoid", "grey alien", "android with visible seams",
-        "skull-faced figure", "reptilian humanoid", "ape-like humanoid",
+        "Human", "Cat-like Humanoid", "Grey Alien", "Android with Visible Seams",
+        "Skull-faced Figure", "Reptilian Humanoid", "Ape-like Humanoid",
+        "Insectoid Humanoid", "Aquatic Humanoid", "Horned Alien",
+        "Crystalline Being", "Avian Humanoid",
     ]),
-    ("Age", ["young", "middle-aged", "old"]),
+    ("Age", ["Young", "Middle-aged", "Old"]),
     ("Hair", [
-        "bald", "short cropped hair", "messy shoulder-length hair", "long straight hair",
-        "high ponytail", "buzz cut", "afro", "mohawk", "slicked-back hair",
-        "twin braids", "topknot", "receding hairline", "wild curly hair",
+        "Bald", "Short Cropped Hair", "Messy Shoulder-length Hair", "Long Straight Hair",
+        "High Ponytail", "Buzz Cut", "Afro", "Mohawk", "Slicked-back Hair",
+        "Twin Braids", "Topknot", "Receding Hairline", "Wild Curly Hair",
+        "Textured Crop", "Dreadlocks", "Bob Cut", "Shaved Geometric Pattern",
     ]),
     ("Eyes", [
-        "plain eyes", "narrow eyes", "wide staring eyes", "heavy-lidded tired eyes",
-        "one eye scarred shut", "round spectacles", "thick square glasses",
-        "dark sunglasses", "a single large eye", "goggles pushed up onto the forehead",
-        "mirrored visor", "eyepatch",
+        "Plain Eyes", "Narrow Eyes", "Wide Staring Eyes", "Heavy-lidded Tired Eyes",
+        "One Eye Scarred Shut", "Round Spectacles", "Thick Square Glasses",
+        "Dark Sunglasses", "Single Large Eye", "Forehead Goggles", "Mirrored Visor",
+        "Eyepatch", "VR Headset", "Cybernetic Lens", "Luminous Eyes",
+        "Wraparound Glasses",
     ]),
     ("Facial", [
-        "clean shaven", "clean shaven", "stubble", "full beard", "goatee",
-        "thick moustache", "muttonchops", "a scar across one cheek", "face tattoo",
-        "freckles", "gaunt hollow cheeks",
+        "Clean Shaven", "Stubble", "Full Beard", "Goatee", "Thick Moustache",
+        "Muttonchops", "Scar Across One Cheek", "Face Tattoo", "Freckles",
+        "Gaunt Hollow Cheeks", "Circuit Seams", "Ritual Markings", "Facial Piercings",
+        "Split Brow Scar",
     ]),
     ("Expression", [
-        "neutral", "neutral", "slight frown", "faint smile", "grim set jaw",
-        "one raised eyebrow", "exhausted", "smirk", "wide-eyed alarm",
+        "Neutral", "Slight Frown", "Faint Smile", "Grim Set Jaw",
+        "One Raised Eyebrow", "Exhausted", "Smirk", "Wide-eyed Alarm",
+        "Focused", "Curious", "Stern", "Calm",
     ]),
     ("Headwear", [
-        "bare head", "bare head", "bare head", "flat cap", "beanie", "wide-brim hat",
-        "hood up", "bandana", "headphones", "crown", "bucket hat", "helmet",
+        "Bare Head", "Flat Cap", "Beanie", "Wide-brim Hat", "Hood Up", "Bandana",
+        "Headphones", "Crown", "Bucket Hat", "Helmet", "Pilot Cap", "Antenna Crown",
+        "Tech Hood", "Open-face Space Helmet", "Head Wrap", "Visored Cap",
     ]),
     ("Attire", [
-        "plain collar", "high collar coat", "hoodie", "suit and tie", "turtleneck",
-        "worker overalls", "armoured shoulders", "robe", "bare shoulders",
-        "scarf wrapped high",
+        "Plain Collar", "High Collar Coat", "Hoodie", "Suit and Tie", "Turtleneck",
+        "Worker Overalls", "Armoured Shoulders", "Robe", "Bare Shoulders",
+        "Scarf Wrapped High", "Techwear Jacket", "Flight Suit", "Ceremonial Armour",
+        "Utility Vest",
     ]),
     ("Accessory", [
-        "none", "none", "none", "none", "cigarette", "earring", "nose ring",
-        "neck tattoo", "bandaged jaw", "monocle", "breathing mask", "collar tag",
+        "None", "Cigarette", "Earring", "Nose Ring", "Neck Tattoo", "Bandaged Jaw",
+        "Monocle", "Breathing Mask", "Collar Tag", "Holographic Earpiece",
+        "Respirator", "Data Cable", "Neck Interface", "Ear Cuff", "Temple Implant",
+        "Shoulder Badge",
     ]),
 ]
+
+# Integer weights keep deterministic selection independent of floating-point behavior.
+# Species weights are the exact 5K target counts. Other categories preserve the old
+# relative emphasis while making the new values uncommon.
+TRAIT_WEIGHTS = {
+    "Species": [2000, 400, 400, 400, 300, 350, 350, 250, 250, 200, 50, 50],
+    "Age": [1, 1, 1],
+    "Hair": [10] * 13 + [2, 2, 2, 2],
+    "Eyes": [10] * 12 + [1, 3, 3, 3],
+    "Facial": [20] + [10] * 9 + [2, 2, 2, 2],
+    "Expression": [20] + [10] * 7 + [3, 3, 3, 3],
+    "Headwear": [30] + [10] * 9 + [2, 1, 2, 2, 2, 2],
+    "Attire": [10] * 10 + [2, 2, 2, 2],
+    "Accessory": [40] + [10] * 8 + [2, 2, 1, 2, 2, 2, 2],
+}
 
 # Options that add nothing to a prompt — dropped from the description so instruction
 # budget is not spent telling the model to draw no hat.
 TRAIT_SKIP = {
-    "bare head", "none", "clean shaven", "plain eyes", "neutral", "plain collar", "bald",
+    "Bare Head", "None", "Clean Shaven", "Plain Eyes", "Neutral", "Plain Collar", "Bald",
 }

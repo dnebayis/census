@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#34343a">
+    <meta name="description" content="Census turns a character brief into an immutable one-bit onchain portrait and ERC-8004 identity.">
+    <title>Census — one character, one onchain identity</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Census / Sepolia</p>
+          <h1 id="hero-title">Your character.<br>Recorded once.</h1>
+          <p class="lede">Describe the person. Census assigns immutable traits, reduces the portrait to one bit, and binds it to an ERC-8004 identity.</p>
+          <a class="text-link" href="#agent-prompt">Start with your agent <span aria-hidden="true">↓</span></a>
+        </div>
+        <figure class="portrait-stage" aria-label="A live Census one-bit portrait">
+          <div class="portrait-grid" aria-hidden="true"></div>
+          <img id="portrait" alt="Census one-bit portrait" width="640" height="640">
+          <figcaption id="portrait-status">Loading an onchain portrait…</figcaption>
+        </figure>
+      </section>
+
+      <section class="flow" aria-labelledby="flow-title">
+        <p class="eyebrow">The whole flow</p>
+        <h2 id="flow-title">Draft → image → preview → mint</h2>
+        <p>Your agent handles the contract details. You choose the character and approve the exact 40×40 preview before anything is minted.</p>
+      </section>
+
+      <section class="api" aria-labelledby="api-title">
+        <div>
+          <p class="eyebrow">Read-only API</p>
+          <h2 id="api-title">Registration, directly from the chain.</h2>
+        </div>
+        <dl>
+          <div><dt>Network</dt><dd>Ethereum Sepolia · 11155111</dd></div>
+          <div><dt>Format</dt><dd>ERC-8004 registration-v1</dd></div>
+          <div><dt>Endpoint</dt><dd><code>/a/&lt;contract&gt;/&lt;tokenId&gt;/registration.json</code></dd></div>
+          <div><dt>Artwork</dt><dd>40×40 · one bit · fully onchain</dd></div>
+        </dl>
+      </section>
+
+      <section class="prompt" id="agent-prompt" aria-labelledby="prompt-title">
+        <p class="eyebrow">Give this to your agent</p>
+        <h2 id="prompt-title">Begin with a character, not a contract.</h2>
+        <div class="prompt-row">
+          <pre id="prompt-text">Create a Census portrait for: &lt;character&gt;. Preserve the character’s role and identity, let Census assign and lock the immutable traits, show me the final 40×40 one-bit preview, and ask for confirmation before minting on Sepolia.</pre>
+          <button id="copy-prompt" type="button">Copy prompt</button>
+        </div>
+        <p class="privacy">Private keys and wallet passwords stay in your encrypted local Cast keystore. Census never asks you to paste them into a chat.</p>
+      </section>
+    </main>
+    <footer><span>Census</span><span>ERC-8004 · ERC-8048 · ERC-8217</span></footer>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+{
+  "build": {
+    "bitmap_file": "v6-botanical-astronaut.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0x5a0af663a719f2875ede7f0b091c55229e2047bffcca9c75a8349c2aafd7722a",
+    "generator": "agent:codex-imagegen",
+    "source_file": "v6-botanical-astronaut.agent-v1.png",
+    "source_sha256": "0x0999b9c0be7584819994bb28c69bb30a003f13831f3e9355495b2b97f2d60768",
+    "stats": {
+      "calibration": {
+        "candidates": [
+          {
+            "corner_tl_pct": 0.0,
+            "corner_tr_pct": 0.0,
+            "density": 358,
+            "density_pct": 22.4,
+            "isolated_pct": 0.8,
+            "mintable": true,
+            "signature": "0x7e3c002400000000",
+            "symmetry": 0,
+            "threshold": 128,
+            "warnings": []
+          }
+        ],
+        "mode": "default",
+        "selected_threshold": 128,
+        "target_pct": [
+          32,
+          42
+        ],
+        "trigger_pct": 45
+      },
+      "corner_tl_pct": 0.0,
+      "corner_tr_pct": 0.0,
+      "density": 358,
+      "density_pct": 22.4,
+      "isolated_pct": 0.8,
+      "mintable": true,
+      "signature": "0x7e3c002400000000",
+      "subject": "a botanical astronaut who catalogs seeds between worlds",
+      "symmetry": 0,
+      "traits": {
+        "Accessory": "Bandaged Jaw",
+        "Age": "Old",
+        "Attire": "Utility Vest",
+        "Expression": "Calm",
+        "Eyes": "Single Large Eye",
+        "Facial": "Goatee",
+        "Hair": "High Ponytail",
+        "Headwear": "Crown",
+        "Species": "Aquatic Humanoid"
+      },
+      "warnings": []
+    },
+    "stats_file": "v6-botanical-astronaut.json"
+  },
+  "draft_id": "v6-botanical-astronaut",
+  "mint": {
+    "agent_id": 9256,
+    "block_number": 11407080,
+    "draft_id": "v6-botanical-astronaut",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0x7e3c002400000000",
+    "skill": 5,
+    "token_id": 1,
+    "transaction_hash": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f"
+  },
+  "seed": "0x976c4df2014311fcbcec68a57720601b",
+  "subject": "a botanical astronaut who catalogs seeds between worlds",
+  "trait_indices": [
+    8,
+    2,
+    4,
+    8,
+    3,
+    11,
+    7,
+    13,
+    5
+  ],
+  "traits": {
+    "Accessory": "Bandaged Jaw",
+    "Age": "Old",
+    "Attire": "Utility Vest",
+    "Expression": "Calm",
+    "Eyes": "Single Large Eye",
+    "Facial": "Goatee",
+    "Hair": "High Ponytail",
+    "Headwear": "Crown",
+    "Species": "Aquatic Humanoid"
+  },
+  "traits_hex": "0x08020408030b070d05",
+  "version": 3,
+  "visual_review": {
+    "bitmap_sha256": "0x5a0af663a719f2875ede7f0b091c55229e2047bffcca9c75a8349c2aafd7722a",
+    "reviewed_at": "2026-08-03T00:55:49.916915+00:00",
+    "reviewer": "agent:codex-visual",
+    "species": "Aquatic Humanoid",
+    "species_match": true
+  }
+}

@@ -13,6 +13,10 @@ from PIL import Image, ImageOps
 
 from config import (
     BITMAP_BYTES,
+    CALIBRATION_TARGET_MAX_PCT,
+    CALIBRATION_TARGET_MIN_PCT,
+    CALIBRATION_THRESHOLDS,
+    CALIBRATION_TRIGGER_PCT,
     DENSITY_MAX,
     DENSITY_MIN,
     GRID_HEIGHT,
@@ -58,10 +62,10 @@ def resize_to_grid(image: Image.Image) -> Image.Image:
     return canvas
 
 
-def threshold_binarize(gray: Image.Image) -> np.ndarray:
-    """Values at or below the configured threshold become foreground 1."""
+def threshold_binarize(gray: Image.Image, threshold: int = THRESHOLD) -> np.ndarray:
+    """Values at or below the selected draft threshold become foreground 1."""
     values = np.asarray(gray, dtype=np.uint8)
-    return (values <= THRESHOLD).astype(np.uint8).reshape(-1)
+    return (values <= threshold).astype(np.uint8).reshape(-1)
 
 
 def pack_bitmap(pixels) -> bytes:
@@ -163,8 +167,40 @@ def analyse(pixels) -> dict:
 
 
 def binarize_image(source):
-    """Load → aspect-preserving cover crop → grayscale → fixed threshold → pack."""
+    """Apply the stable default, calibrating only an unusually dense draft."""
     resized = resize_to_grid(load_image(source)).convert("L")
-    pixels = threshold_binarize(resized)
+    default_pixels = threshold_binarize(resized)
+    default_stats = analyse(default_pixels)
+    candidates = [{"threshold": THRESHOLD, **default_stats}]
+    pixels = default_pixels
+    selected_threshold = THRESHOLD
+
+    if default_stats["density_pct"] > CALIBRATION_TRIGGER_PCT:
+        generated = []
+        for threshold in CALIBRATION_THRESHOLDS:
+            candidate_pixels = threshold_binarize(resized, threshold)
+            candidate_stats = analyse(candidate_pixels)
+            generated.append((threshold, candidate_pixels, candidate_stats))
+            candidates.append({"threshold": threshold, **candidate_stats})
+            if CALIBRATION_TARGET_MIN_PCT <= candidate_stats["density_pct"] <= CALIBRATION_TARGET_MAX_PCT:
+                selected_threshold = threshold
+                pixels = candidate_pixels
+                break
+        else:
+            # Prefer the smallest correction closest to the upper target. This avoids
+            # turning an unusually dark draft into a sparse or hollow portrait.
+            selected_threshold, pixels, _ = min(
+                generated,
+                key=lambda item: (abs(item[2]["density_pct"] - CALIBRATION_TARGET_MAX_PCT), -item[0]),
+            )
+
     bitmap = pack_bitmap(pixels)
-    return bitmap, pixels, analyse(pixels)
+    stats = analyse(pixels)
+    stats["calibration"] = {
+        "mode": "default" if selected_threshold == THRESHOLD else "draft-local",
+        "selected_threshold": selected_threshold,
+        "trigger_pct": CALIBRATION_TRIGGER_PCT,
+        "target_pct": [CALIBRATION_TARGET_MIN_PCT, CALIBRATION_TARGET_MAX_PCT],
+        "candidates": candidates,
+    }
+    return bitmap, pixels, stats

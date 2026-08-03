@@ -53,29 +53,30 @@ Sepolia fork.
 1. Build the shared protocol shell: `llms.txt`, RESTAP catalog, JSON `/talk`, passive
    `/news`, MCP projection, address-routed chain reads, and schemas. This local shell is
    implemented under `runtime-service/`; matching report-only skills are scoped to
-   active v5 entries. V5 token 1 exposes Arbitrageur and token 2 exposes Mint Scanner;
+   active v6 entries. V6 token 1 exposes Fraud Detector, tokens 2 and 4 Arbitrageur,
+   token 3 Mint Scanner and token 5 Tracker;
    archived v4 tokens 1 and 2 expose Advisor and token 3 exposes Tracker but are no
    longer accepted by the active gate.
    Redis-backed bounded news storage and distributed sliding-window limits are
    implemented for both Upstash REST and standard Redis connections. The standard
    Redis queue and limiter passed a real integration test against
-   `census-runtime-free`. The resource is production-only and the active v5 Census
-   collection is enabled for report-only execution. The earlier v3 RESTAP, MCP,
+   `census-runtime-free`. The resource is production-only; its active-address environment
+   switch from archived v5 to v6 remains an operator action. The earlier v3 RESTAP, MCP,
    inactive-token, missing-token, chain-read, and Redis rate-limit checks passed on
-   2 August 2026; v5 token 1 and token 2 external canary verification remains pending.
+   2 August 2026; v5 token 1 and token 2 external canaries passed on 3 August 2026.
    This bounded canary does not make the non-persistent free database a durability gate
    for broader activation.
 2. Implement Mint Scanner end to end, then the other six report-only
    skill engines. Its deterministic, bounded Sepolia scan engine is implemented with
    evidence and limitations; invocation is collection-scoped and skill-gated.
    Arbitrageur's bounded OpenSea listing/offer comparison
-   engine and independent v5 token 1 gate are implemented and enabled as the bounded
+   engine and immutable-skill gate are implemented as the bounded
    production canary with the secret-managed instant key. Tracker's bounded OpenSea
-   account-event engine and independent gate are implemented but unreachable until
-   a naturally assigned matching v5 token exists. Token Hunter's bounded OpenSea
+   account-event engine and independent gate are implemented; v6 token 5 is naturally
+   assigned Tracker. Token Hunter's bounded OpenSea
    trending/detail engine and archived v3 token 4 verification are implemented. The remaining
    Trend Reader's bounded OpenSea ranking/stats engine and independent gate are also
-   implemented but remain unreachable until a matching v5 token exists. The
+   implemented but remain unreachable until a matching v6 token exists. The
    Fraud Detector's bounded provider-label assessment is implemented as the sixth and
    final market-data report engine. Advisor is the seventh report-only engine. All seven report-only flags are enabled for the active
    Census contract. Future matching tokens work automatically after adapter-binding and

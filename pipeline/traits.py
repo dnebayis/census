@@ -7,7 +7,7 @@ onchain, keeping the visible portrait and immutable metadata aligned.
 import random
 from typing import Dict, Optional, Set, Tuple
 
-from config import TRAIT_CATEGORIES, TRAIT_SKIP, MAX_RETRIES
+from config import TRAIT_CATEGORIES, TRAIT_SKIP, TRAIT_WEIGHTS, MAX_RETRIES
 
 TRAIT_KEYS = [name for name, _ in TRAIT_CATEGORIES]
 
@@ -40,11 +40,11 @@ def generate_traits(
         rng = random.Random(seed + attempt * 7919)
         idx = []
         for name, options in TRAIT_CATEGORIES:
-            idx.append(forced[name] if name in forced else rng.randrange(len(options)))
-        # Weighted vocabularies repeat some display values (for example four human
-        # slots). Canonicalize aliases before uniqueness checks so two drafts cannot
-        # serialize to the same bytes9 after appearing distinct during the draw.
-        combo = tuple(options.index(options[i]) for (_, options), i in zip(TRAIT_CATEGORIES, idx))
+            if name in forced:
+                idx.append(forced[name])
+            else:
+                idx.append(rng.choices(range(len(options)), weights=TRAIT_WEIGHTS[name], k=1)[0])
+        combo = tuple(idx)
 
         if combo in existing:
             continue

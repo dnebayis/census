@@ -1,124 +1,82 @@
 # Census
 
-Census is a capped collection of 10,000 fully-onchain 40×40 portraits. Every token is
-created together with an ERC-8004 identity through the ERC-8217 adapter. The portrait,
-skill, Species-derived class, and nine trait indices are immutable.
+Census is a capped collection of 5,000 fully-onchain 40×40 one-bit portraits on
+Ethereum Sepolia. A user describes the character; Census assigns and locks nine visual
+traits, the pipeline produces a portrait and preview, and minting binds the NFT to an
+ERC-8004 identity.
 
-This repository delivers the hardened mint core, a read-only ERC-8004 registration
-service, bounded report-only runtime skills over RESTAP and MCP, and seven open ERC-8257
-tool registrations on Sepolia. Every skill is read-only and limited to observations,
-suggestions, evidence, and links; see
-[`docs/RUNTIME-PLAN.md`](docs/RUNTIME-PLAN.md).
+## Active deployment
 
-## Deployment status
+| Component | Sepolia / production |
+| --- | --- |
+| Census v6 | [`0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`](https://sepolia.etherscan.io/address/0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab) |
+| Adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
+| Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
+| Registration | https://census-registration-dnebayis.vercel.app |
+| Network | Ethereum Sepolia (`11155111`) |
 
-| Component | Sepolia |
-|---|---|
-| Census v5 | [`0x5863E1d0539c659204B097359AC1a75C51144E78`](https://sepolia.etherscan.io/address/0x5863E1d0539c659204B097359AC1a75C51144E78) — mint open, Species-derived class |
-| Registration | [`https://census-registration-dnebayis.vercel.app`](https://census-registration-dnebayis.vercel.app) — permanent single project |
-| Runtime | [`https://census-runtime-dnebayis.vercel.app`](https://census-runtime-dnebayis.vercel.app) — collection-scoped report-only production runtime; not advertised by registration |
-| ERC-8217 adapter | `0x7621630cB63a73a194f45A3E6801B8C6A7eC2f92` |
-| ERC-8004 Identity Registry | `0x8004a818bfb912233c491871b3d84c89a494bd9e` |
-| ERC-8257 Tool Registry | `0xd61aa597398a83122fce07a94beddb91fce8f42e` — Census Sepolia reference deployment |
-| Archived v4 | [`0x629B4534D07F1E35a70a403f4521Cd95f34eb030`](https://sepolia.etherscan.io/address/0x629B4534D07F1E35a70a403f4521Cd95f34eb030) — tokens 1–3 preserved; skill-derived class retired |
-| Archived v3 | [`0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc`](https://sepolia.etherscan.io/address/0x1aDA8E305F684B13419c51eA40A09A3C5E4760bc) — tokens 1–5 preserved; immutable Executor retired |
-| Archived v2 | [`0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC`](https://sepolia.etherscan.io/address/0x3763fEcA935668E1fFC191F3C509f3A545B3ACBC) — tokens 1–4 preserved |
-| Archived v1 | [`0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4`](https://sepolia.etherscan.io/address/0x62514267a0F203e73B66C4F6Fa1ed71A6db6BfA4) — agent 9100 preserved |
-| Archived prototype | [`0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5`](https://sepolia.etherscan.io/address/0x7734226FaAFEb74d5f123b366c8a7a7f0B5d13F5) |
+V6 deployed closed in transaction
+[`0x5ffc…d5b`](https://sepolia.etherscan.io/tx/0x5ffc78c41977536b63891b68dcd8dbfcbde129f3641db971313df5cce7e18d5b),
+opened in [`0xca2d…c52`](https://sepolia.etherscan.io/tx/0xca2df7ad64df21a7dd7dd9c965f56e0b3fd8a9799ff6667f185773752ebedc52),
+and minted its five-entry rollout batch in
+[`0x08be…50f`](https://sepolia.etherscan.io/tx/0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f).
+Tokens 1–5 bind to agents 9256–9260. V5 remains open on Sepolia but is archive-only.
 
-V5 permissionless minting is irreversibly open. Its first batch minted
-`v5-silent-curator` and `v5-border-observer` as tokens 1–2 / agents 9247–9248 with
-skills Arbitrageur and Mint Scanner; both Species-derived classes are Alien, in
-transaction
-[`0x442d85…2318`](https://sepolia.etherscan.io/tx/0x442d85b53862e66a6ec9b831a65aecd2f93d03c0ce0eb13834ee305019fd2318).
-V4 is archive-only because its class label followed skill rather than Species. Its preserved
-first batch minted
-`v4-ember-librarian`, `v4-quiet-navigator`, and `v4-pastel-analyst` as tokens 1–3 /
-agents 9244–9246 with skills Advisor, Advisor, and Tracker in transaction
-[`0x8e3806…c27`](https://sepolia.etherscan.io/tx/0x8e38064c74e3a93f27aa315af1b221352411c03b711b8d73cec8be4989ba7c27).
-The
-archived v3 first production entry,
-`threshold-keeper`, minted token 1 / ERC-8004 agent 9119 in transaction
-[`0xe6f91c…c7d90`](https://sepolia.etherscan.io/tx/0xe6f91c84898e30ae0c23d6533ad3f5b79cc7f28c39c4b3844f49ecb443fc7d90).
-Its live registration is
-[`/a/<contract>/1/registration.json`](https://census-registration-dnebayis.vercel.app/a/0x1ada8e305f684b13419c51ea40a09a3c5e4760bc/1/registration.json).
-The archived v3 batch minted `dawn-cartographer`, `quiet-machinist`, `memory-diver`, and
-`pastel-sentinel` as tokens 2–5 / agents 9121–9124 in transaction
-[`0x8117fb…ace45`](https://sepolia.etherscan.io/tx/0x8117fb3679291b0f8a3e14d03e385059cfaf57971ab195702354f894538ace45).
-Archived v2 genesis draft `genesis-registrar`
-minted token 1 and ERC-8004 agent 9104; its live registration is
-[`/a/<contract>/1/registration.json`](https://census-registration-dnebayis.vercel.app/a/0x3763feca935668e1ffc191f3c509f3a545b3acbc/1/registration.json).
-The first production batch minted `night-ledger`, `signal-auditor`, and
-`archive-courier` as tokens 2–4 / agents 9106–9108 in transaction
-[`0x7db94f…b3428`](https://sepolia.etherscan.io/tx/0x7db94f76591fd74d5e8fbb50c5ae13019f7062951b175138e2c6f407a90b3428).
-V1 rollout entry 1 remains bound to ERC-8004 agent 9100 through the permanent host. Archived
-deployments are historical only; scripts and examples must not use them as active
-addresses.
+## What v6 guarantees
 
-Production art remains agent-native by default, while any PNG, JPEG, or WebP upload is
-also accepted. [`census-mint`](skills/census-mint/SKILL.md) uses an aspect-preserving
-40×36 cover crop on the 40×40 canvas so portrait sources are not squeezed and shoulders
-can reach both side edges, then generates the one-bit 40×40
-result and reports visual statistics without forcing iterative redraws. Procedural
-Python/SVG smoke art is not a production input.
+- Supply is 5,000; at most five tokens may be minted per wallet and per batch.
+- New mints can be paused and unpaused only by the owner. Transfers, ownership changes,
+  metadata, art and registration reads continue while paused.
+- Exact bitmap hashes and the existing coarse silhouette signatures cannot be minted
+  twice. The official pipeline also blocks exact source reuse and portraits within 24
+  pixels of an existing bitmap.
+- Context is non-empty, valid UTF-8 and at most 280 bytes. Art, context, class, skill and
+  all nine trait metadata namespaces are immutable after mint.
+- ERC-2981 reports a 5% royalty to the immutable deployer receiver. It is marketplace
+  signalling, not a transfer restriction or guaranteed royalty enforcement.
+- `mint` and `mintBatch` are reentrancy protected; adapter state is called only after
+  Census effects are committed.
 
-Source prompts use a self-contained Census visual language: clean graphic portraits,
-flat light face planes, sparse deliberate linework, and no hatching or unrelated
-collection references. Dense-art correction is planned as a draft-local calibration;
-the contract band and normal portraits will not be changed to repair one image. See
-[`docs/NEXT-STEPS.md`](docs/NEXT-STEPS.md).
+No central mint signature is used. Consequently a caller using the contract directly
+can choose any valid trait indices, and targeted bitmap edits may evade similarity
+checks. Those are explicit boundaries, not security claims.
 
-The approved v2 visual fixture is
-[the 40×40 one-bit preview](docs/assets/census-v2-1bit-preview-v2.png), with its
-[source comparison](docs/assets/census-v2-source-vs-1bit-v2.png). It records the locked
-four-pixel top margin and 28.2% example density; it is a quality fixture, not a minted
-entry.
+## Character and trait model
 
-## Mint invariants
+The user controls the subject, role, clothing direction and overall feeling. Census
+generates a secure draft seed and assigns traits once; normal use exposes neither seed,
+species nor reroll controls. Species controls anatomy: a Grey Alien samurai must still
+look alien, a Skull entry must have a skull face, and an Agent must show android seams.
 
-- Deployment starts with minting closed. The owner can call `openMinting()` exactly
-  once; there is no pause or close function.
-- `canonicalHost` is fixed at construction, must start with `https://`, and cannot end
-  in `/`.
-- Every identity URI is
-  `https://<canonicalHost>/a/<censusAddress>/<tokenId>/registration.json`. The contract
-  address namespace lets every deployment share one permanent registration project.
-- Only effectively blank or solid bitmaps are rejected (below 1% or above 95%
-  foreground). Composition warnings never block minting.
-- One SSTORE2 record contains 200 bitmap bytes followed by nine trait-index bytes.
-- `bitmapOf` exposes only the bitmap. `traitsOf` and `traitOf` read the suffix.
-- `skill`, `class`, and every `trait[...]` key are immutable. The current NFT owner can
-  write other ERC-8048 keys.
-- `skill` describes function. `class` is derived only from the immutable Species trait:
-  human → Human, android → Agent, skull-faced → Skull, and other non-human species →
-  Alien.
-- Agent control belongs to the current NFT owner. Census does not create a wallet,
-  build transactions, request signatures, or submit contract calls.
+OpenSea attributes are `Class`, `Skill`, `Species`, `Age`, `Hair`, `Eyes`, `Facial`,
+`Expression`, `Headwear`, `Attire` and `Accessory`, with human-readable string values
+and `background_color: "E9DDC7"`. The expanded vocabulary includes VR Headset,
+Cybernetic Lens, Tech Hood, Flight Suit, Respirator and other low-frequency values.
 
-## Development
+## Human flow
 
-```sh
-forge fmt --check
-forge test -vv
-python3 -m unittest -v pipeline/test_pipeline.py
-cd registration-service && npm ci && npm test && npm audit --audit-level=high
-cd ../runtime-service && npm ci && npm test && npm audit --audit-level=moderate
+```text
+character description → locked traits → normal portrait → draft calibration
+→ final 40×40 preview → user confirmation → exact simulation → mint
 ```
 
-The current local Foundry mock measurement is about 710k gas per separate mint and 429k
-per entry for a four-entry batch, a 40% saving. A single measured mint is about 781k.
-These numbers include the mock
-adapter and are comparison figures, not a prediction of production transaction cost.
+Start with:
 
-## Documents
+> Create a Census portrait for: `<character>`. Preserve the character’s role and identity, let Census assign and lock the immutable traits, show me the final 40×40 one-bit preview, and ask for confirmation before minting on Sepolia.
 
-- [Technical specification](docs/SPEC.md)
-- [Locked decisions](docs/DECISIONS.md)
-- [Plain-language overview](docs/OVERVIEW.md)
-- [Standards lock](docs/standards-lock.md)
-- [Sepolia deployment record](docs/DEPLOYMENT.md)
-- [Remaining ordered work](docs/NEXT-STEPS.md)
-- [ERC-8257 discovery record](docs/ERC8257.md)
-- [Pipeline guide](pipeline/README.md)
-- [Agent-native mint skill](skills/census-mint/SKILL.md)
-- [Handoff](HANDOFF.md)
+The agent uses an encrypted local Cast keystore and displays only the public address for
+funding. Private keys, mnemonic phrases and passwords must never be pasted into chat,
+written to artifacts or logged.
+
+## Repository
+
+- `src/` — Census v6 and onchain art
+- `pipeline/` — deterministic draft, calibration, review and safe batch minting
+- `registration-service/` — static project page plus read-only ERC-8004 registration API
+- `runtime-service/` — report-only discovery/talk/MCP services; never trades, approves,
+  transfers or performs a financial action for the user
+- `skills/census-mint/` — IDE-agent mint workflow
+- `docs/` — specification, decisions, deployment record and remaining work
+
+The implemented standards scope is ERC-8004, ERC-8048, ERC-8217 and ERC-2981.
+ERC-8257, RESTAP, x402 payments and transaction executors are not part of Census v6.

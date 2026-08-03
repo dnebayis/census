@@ -1,0 +1,105 @@
+{
+  "build": {
+    "bitmap_file": "v6-midnight-radio-host.hex",
+    "bitmap_format": "census-1bit-v2",
+    "bitmap_sha256": "0x2cddb53f9ac07096b6e930ab0d7746c00a26ae563a26e0dc564df65b3cdcd293",
+    "generator": "agent:codex-imagegen",
+    "source_file": "v6-midnight-radio-host.agent-v1.png",
+    "source_sha256": "0x8f96ec665ba0d822720567277a9d3191fc7a6c74a1e9c5f1db5bdffe49aa6bda",
+    "stats": {
+      "calibration": {
+        "candidates": [
+          {
+            "corner_tl_pct": 4.7,
+            "corner_tr_pct": 4.7,
+            "density": 660,
+            "density_pct": 41.2,
+            "isolated_pct": 0.3,
+            "mintable": true,
+            "signature": "0xffff666630000000",
+            "symmetry": 2,
+            "threshold": 128,
+            "warnings": [
+              "dense \u2014 facial detail may merge"
+            ]
+          }
+        ],
+        "mode": "default",
+        "selected_threshold": 128,
+        "target_pct": [
+          32,
+          42
+        ],
+        "trigger_pct": 45
+      },
+      "corner_tl_pct": 4.7,
+      "corner_tr_pct": 4.7,
+      "density": 660,
+      "density_pct": 41.2,
+      "isolated_pct": 0.3,
+      "mintable": true,
+      "signature": "0xffff666630000000",
+      "subject": "a midnight radio host with a calm, magnetic presence",
+      "symmetry": 2,
+      "traits": {
+        "Accessory": "Nose Ring",
+        "Age": "Middle-aged",
+        "Attire": "Armoured Shoulders",
+        "Expression": "Curious",
+        "Eyes": "Mirrored Visor",
+        "Facial": "Scar Across One Cheek",
+        "Hair": "Bald",
+        "Headwear": "Tech Hood",
+        "Species": "Cat-like Humanoid"
+      },
+      "warnings": [
+        "dense \u2014 facial detail may merge"
+      ]
+    },
+    "stats_file": "v6-midnight-radio-host.json"
+  },
+  "draft_id": "v6-midnight-radio-host",
+  "mint": {
+    "agent_id": 9257,
+    "block_number": 11407080,
+    "draft_id": "v6-midnight-radio-host",
+    "owner": "0x21acb554118029815ef4c61bda33523b626743f3",
+    "signature": "0xffff666630000000",
+    "skill": 1,
+    "token_id": 2,
+    "transaction_hash": "0x08be0a0b56c5c82e1619c8249c7251d6ac00d0bf2ee9634f3e9998661511b50f"
+  },
+  "seed": "0xf566d988d4d84c9c5870866a5861aebe",
+  "subject": "a midnight radio host with a calm, magnetic presence",
+  "trait_indices": [
+    1,
+    1,
+    0,
+    10,
+    6,
+    9,
+    12,
+    6,
+    3
+  ],
+  "traits": {
+    "Accessory": "Nose Ring",
+    "Age": "Middle-aged",
+    "Attire": "Armoured Shoulders",
+    "Expression": "Curious",
+    "Eyes": "Mirrored Visor",
+    "Facial": "Scar Across One Cheek",
+    "Hair": "Bald",
+    "Headwear": "Tech Hood",
+    "Species": "Cat-like Humanoid"
+  },
+  "traits_hex": "0x0101000a06090c0603",
+  "version": 3,
+  "visual_review": {
+    "bitmap_sha256": "0x2cddb53f9ac07096b6e930ab0d7746c00a26ae563a26e0dc564df65b3cdcd293",
+    "reviewed_at": "2026-08-03T00:55:49.997253+00:00",
+    "reviewer": "agent:codex-visual",
+    "species": "Cat-like Humanoid",
+    "species_match": true
+  }
+}
