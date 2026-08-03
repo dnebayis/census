@@ -10,8 +10,8 @@ before reduction. Do not name or imitate an unrelated collection in user-facing 
 Require:
 
 - exact square close-up portrait headshot, directly front-facing;
-- the head is centered with clean space above the hair and shoulders reaching the
-  bottom;
+- the head is centered with generous clean space above hair, ears, horns and headwear;
+  nothing touches or is cut by the source or final portrait's top edge;
 - a high-resolution clean graphic portrait, not source pixel art;
 - broad high-contrast shapes and controlled facial detail that survive reduction;
 - flat light face planes, sparse deliberate linework, and no texture fill or hatching;
@@ -20,6 +20,7 @@ Require:
 - exactly two final colors: Census charcoal `#34343A` and warm pastel `#E9DDC7`;
 - every assigned trait expressed with a large unmistakable pixel shape;
 - the assigned Species controls anatomy even when the user's character role is human-coded;
+- one-eyed anatomy and fin-like aquatic silhouettes are retired from the official flow;
 - no final grey levels, gradients, antialiasing, dithering, text, watermark, border or
   scenery.
 
@@ -31,13 +32,14 @@ packing, and palette application.
 
 The following are quality suggestions, not mint requirements:
 
-1. The species, head shape, eyes, expression, and overall silhouette can be recognized
+1. The species, head shape, both-eye region, expression, and overall silhouette can be recognized
    without consulting the source. Secondary traits should remain visible when the
    reduction allows it, but a small lost detail is advisory rather than a structural
    failure.
 2. Eyes and mouth remain distinct; the face is not a single dark mass.
 3. The outer silhouette is continuous and the shoulders anchor the bottom edge.
-4. The top corners are empty and there is no accidental frame.
+4. At least one additional blank row remains below the four reserved top rows; the head
+   is visibly complete and there is no accidental frame.
 5. Only foreground and background exist; there are no grey pixels or simulated shading.
 6. The result looks intentionally illustrated, not procedurally filled.
 

@@ -23,7 +23,7 @@ from output import (
     save_draft_manifest,
     save_token,
 )
-from traits import generate_traits, to_indices
+from traits import generate_traits, official_traits_supported, to_indices
 
 
 BRIEF = """\
@@ -44,7 +44,8 @@ IDENTITY
   - Species controls anatomy and must be unmistakable in the face and silhouette.
 
 COMPOSITION
-  - Exact 1:1 square canvas; close-up headshot, directly front-facing, with clean space above the hair.
+  - Exact 1:1 square canvas; close-up headshot, directly front-facing, with generous clean space above every part of the head, ears, horns, hair, and headwear.
+  - Nothing may touch or be cut by the source image's top edge.
   - Keep shoulders reaching the bottom and both side edges.
   - Broad flat shapes and sparse controlled facial detail that survive at 40x40.
   - Pale clean background, light face planes, and separated dark features.
@@ -106,6 +107,10 @@ def cmd_brief(args):
                 "create a new draft id"
             )
         traits = manifest["traits"]
+        if not official_traits_supported(traits):
+            raise ValueError(
+                f"draft {draft_id!r} uses a retired visual assignment; create a new draft id"
+            )
     else:
         seed = secrets.randbits(128)
         traits = generate_traits(seed, load_existing_traits(args.output))
@@ -200,6 +205,7 @@ def cmd_build(args):
         "corner_tl_pct",
         "corner_tr_pct",
         "signature",
+        "headroom_rows",
     ):
         print(f"  {key:<15}: {stats[key]}")
     print("\n  warnings       : " + (", ".join(stats["warnings"]) or "none"))
@@ -253,16 +259,32 @@ def _load_mint_drafts(args):
         if manifest.get("version") != PIPELINE_VERSION or build.get("bitmap_format") != BITMAP_FORMAT:
             raise ValueError(f"draft {draft_id!r} is not built for {BITMAP_FORMAT}")
         _generator_provenance(build.get("generator"))
+        if not official_traits_supported(manifest.get("traits", {})):
+            raise ValueError(
+                f"draft {draft_id!r} uses a retired one-eye or aquatic assignment; "
+                "create a new draft"
+            )
         bitmap = bytes.fromhex((Path(args.output) / f"{draft_id}.hex").read_text().strip())
         if _sha256(bitmap) != build["bitmap_sha256"]:
             raise ValueError(f"draft {draft_id!r} bitmap changed after build")
         review = manifest.get("visual_review") or {}
-        if not review.get("species_match") or review.get("bitmap_sha256") != build["bitmap_sha256"]:
+        if (
+            not review.get("species_match")
+            or not review.get("framing_ok")
+            or not review.get("readable")
+            or not review.get("user_approved")
+            or review.get("bitmap_sha256") != build["bitmap_sha256"]
+        ):
             raise ValueError(
-                f"draft {draft_id!r} has no Species/Class review for its current preview; "
-                f"run `review --draft {draft_id} --species-match` after inspecting it"
+                f"draft {draft_id!r} needs an approved current preview; show the 40×40 PNG "
+                "to the user, then run `review --species-match --framing-ok --readable "
+                "--user-approved`"
             )
         stats = build["stats"]
+        if stats.get("headroom_rows", 0) <= 4:
+            raise ValueError(
+                f"draft {draft_id!r} touches the top crop; regenerate it with visible headroom"
+            )
         if not stats["mintable"]:
             raise ValueError(f"draft {draft_id!r} is not locally mintable")
         if stats["signature"] in signatures:
@@ -452,15 +474,30 @@ def cmd_review(args):
         raise ValueError(f"draft {draft_id!r} has not been built")
     if not args.species_match:
         raise ValueError("Species/Class mismatch: revise the source before minting")
+    if not args.framing_ok:
+        raise ValueError("framing rejected: no head, hair, ears, horns, or headwear may be cut")
+    if not args.readable:
+        raise ValueError("preview unreadable: revise the source before minting")
+    if not args.user_approved:
+        raise ValueError("show the exact 40×40 preview and wait for user approval")
+    if build.get("stats", {}).get("headroom_rows", 0) <= 4:
+        raise ValueError("head touches the portrait crop; regenerate with more top space")
     manifest["visual_review"] = {
         "species": manifest["traits"]["Species"],
         "species_match": True,
+        "framing_ok": True,
+        "readable": True,
+        "user_approved": True,
         "bitmap_sha256": build["bitmap_sha256"],
         "reviewer": _generator_provenance(args.reviewer),
         "reviewed_at": datetime.now(timezone.utc).isoformat(),
     }
     save_draft_manifest(args.output, draft_id, manifest)
-    print(f"Species/Class review locked for {draft_id}: {manifest['traits']['Species']}")
+    preview_path = (Path(args.output) / f"{draft_id}.png").resolve()
+    compare_path = (Path(args.output) / f"{draft_id}.compare.png").resolve()
+    print(f"Approved preview locked for {draft_id}: {manifest['traits']['Species']}")
+    print(f"  preview: {preview_path}")
+    print(f"  source comparison: {compare_path}")
     return 0
 
 
@@ -502,9 +539,12 @@ def main():
     )
     build.set_defaults(fn=cmd_build)
 
-    review = sub.add_parser("review", help="lock Species/Class visual verification")
+    review = sub.add_parser("review", help="lock the user-approved exact 40×40 preview")
     _add_draft_arg(review)
     review.add_argument("--species-match", action="store_true", required=True)
+    review.add_argument("--framing-ok", action="store_true", required=True)
+    review.add_argument("--readable", action="store_true", required=True)
+    review.add_argument("--user-approved", action="store_true", required=True)
     review.add_argument("--reviewer", default="agent:visual-review")
     review.set_defaults(fn=cmd_review)
 

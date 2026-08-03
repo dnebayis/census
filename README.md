@@ -52,6 +52,9 @@ OpenSea attributes are `Class`, `Skill`, `Species`, `Age`, `Hair`, `Eyes`, `Faci
 `Expression`, `Headwear`, `Attire` and `Accessory`, with human-readable string values
 and `background_color: "E9DDC7"`. The expanded vocabulary includes VR Headset,
 Cybernetic Lens, Tech Hood, Flight Suit, Respirator and other low-frequency values.
+The official pipeline no longer assigns Aquatic Humanoid or one-eye values; their
+indices remain only because v6 metadata is immutable and existing testnet tokens cannot
+be edited.
 
 ## Human flow
 
@@ -62,7 +65,7 @@ character description → locked traits → normal portrait → draft calibratio
 
 Start with:
 
-> Create a Census portrait for: `<character>`. Preserve the character’s role and identity, let Census assign and lock the immutable traits, show me the final 40×40 one-bit preview, and ask for confirmation before minting on Sepolia.
+> Use the Census workflow at `https://github.com/dnebayis/census/tree/main/skills/census-mint` and the public API docs at `https://census-registration-dnebayis.vercel.app/#api`. Create a Census portrait for: `<character>`. Preserve the character’s role and identity, let Census assign and lock the immutable traits, display the final palette-exact 40×40 one-bit PNG in this conversation, and wait for my explicit approval before simulating or minting on Sepolia.
 
 The agent uses an encrypted local Cast keystore and displays only the public address for
 funding. Private keys, mnemonic phrases and passwords must never be pasted into chat,

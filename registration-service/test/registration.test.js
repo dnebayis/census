@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   MissingBindingError,
@@ -15,6 +16,18 @@ const image = "data:image/svg+xml;base64,PHN2Zy8+";
 const tokenUri =
   "data:application/json;base64," +
   Buffer.from(JSON.stringify({ image })).toString("base64");
+
+test("public docs expose preview, API links, and the local mint workflow", () => {
+  const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+  assert.match(html, /role="tab"[^>]+>Docs</);
+  assert.match(html, /role="tab"[^>]+>API</);
+  assert.match(html, /id="portrait"/);
+  assert.match(html, /census-registration-dnebayis\.vercel\.app\/a\//);
+  assert.match(html, /census-runtime-dnebayis\.vercel\.app/);
+  assert.match(html, /github\.com\/dnebayis\/census\/tree\/main\/skills\/census-mint/);
+  assert.match(html, /wait for my explicit approval before simulating or minting/);
+  assert.match(html, /There is no hosted mint endpoint/);
+});
 
 function fakeClient(overrides = {}) {
   return {

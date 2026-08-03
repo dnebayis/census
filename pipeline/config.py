@@ -117,18 +117,27 @@ TRAIT_CATEGORIES = [
 ]
 
 # Integer weights keep deterministic selection independent of floating-point behavior.
-# Species weights are the exact 5K target counts. Other categories preserve the old
-# relative emphasis while making the new values uncommon.
+# Species weights are the official pipeline's 5K-scale targets. Contract vocabulary
+# indices stay stable, but options retired from visual assignment receive zero weight.
 TRAIT_WEIGHTS = {
-    "Species": [2000, 400, 400, 400, 300, 350, 350, 250, 250, 200, 50, 50],
+    "Species": [2100, 450, 450, 400, 300, 400, 350, 250, 0, 200, 50, 50],
     "Age": [1, 1, 1],
     "Hair": [10] * 13 + [2, 2, 2, 2],
-    "Eyes": [10] * 12 + [1, 3, 3, 3],
+    "Eyes": [10, 10, 10, 10, 0, 10, 10, 10, 0, 10, 10, 0, 1, 3, 3, 3],
     "Facial": [20] + [10] * 9 + [2, 2, 2, 2],
     "Expression": [20] + [10] * 7 + [3, 3, 3, 3],
     "Headwear": [30] + [10] * 9 + [2, 1, 2, 2, 2, 2],
     "Attire": [10] * 10 + [2, 2, 2, 2],
     "Accessory": [40] + [10] * 8 + [2, 2, 1, 2, 2, 2, 2],
+}
+
+# Kept at their immutable contract indices for serialization compatibility, but never
+# assigned or accepted by the official pipeline. Existing minted testnet tokens remain
+# unchanged. Aquatic anatomy caused fin-like silhouettes at 40×40; one-eye values made
+# faces unreadable after reduction.
+RETIRED_ASSIGNMENTS = {
+    "Species": {"Aquatic Humanoid"},
+    "Eyes": {"One Eye Scarred Shut", "Single Large Eye", "Eyepatch"},
 }
 
 # Options that add nothing to a prompt — dropped from the description so instruction

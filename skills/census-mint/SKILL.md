@@ -66,8 +66,17 @@ python3 generate.py build \
 ```
 
 Use the actual agent identifier when another image-capable IDE agent generated it.
-Inspect both `<draftId>.compare.png` and the palette-exact 1-bit `<draftId>.png` with an image
-viewer. Also read `<draftId>.json`.
+Inspect both `<draftId>.compare.png` and the palette-exact 1-bit `<draftId>.png` with an
+image viewer. In Codex, render the actual PNG directly in the conversation; do not
+replace it with a text description or ASCII preview. Also read `<draftId>.json`.
+
+Before minting, show the palette-exact preview to the user and wait for explicit
+approval. Then lock that exact bitmap:
+
+```sh
+python3 generate.py review --draft <draftId> \
+  --species-match --framing-ok --readable --user-approved
+```
 
 Redraw the same draft only when:
 
@@ -114,6 +123,9 @@ registration URL. Before a receipt, call the work item only `draftId`, never tok
 - Treat files numbered 7–9 and `rollout-smoke` as legacy proof artifacts.
 - Never overwrite a minted draft or infer IDs from filenames.
 - Never expose seed, Species, threshold, RPC, contract or ABI selection in normal use.
+- Never assign or mint retired official-flow values: Aquatic Humanoid, One Eye Scarred
+  Shut, Single Large Eye or Eyepatch. Their immutable contract indices remain only for
+  historical compatibility.
 - Species/Class anatomy is the sole mandatory visual review. Secondary trait visibility
   remains advisory.
 - Stop with a plain-language “mint paused” message if the owner has paused v6.

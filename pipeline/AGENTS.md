@@ -30,6 +30,11 @@ python3 generate.py build \
   --draft <same-draft-id> \
   --file <drawing.png>
 
+# Render the real PNG in the conversation and wait for explicit approval.
+python3 generate.py review \
+  --draft <same-draft-id> \
+  --species-match --framing-ok --readable --user-approved
+
 ETH_KEYSTORE_ACCOUNT=census python3 generate.py mint \
   --draft <same-draft-id>
 ```
@@ -46,7 +51,10 @@ transaction, and they can never be overridden.
 - Never offer `--species`, seed, threshold, RPC or ABI selection to a normal user.
 - Never infer token or agent IDs from filenames or counters.
 - Never use Python, SVG, ASCII, or procedural smoke art as a production source.
-- Inspect the comparison sheet and palette-exact PNG when visual review is requested.
+- Always render the palette-exact PNG in the conversation and wait for explicit user
+  approval before minting. Text or ASCII is not a preview.
+- Reject Aquatic Humanoid and one-eye values in the official flow; do not manually call
+  the contract to bypass the pipeline retirement.
 - For more than one draft, repeat `--draft`; let the CLI use `mintBatch`.
 - If exact simulation fails, stop. Do not bypass it with a manual send.
 - Keep legacy output 7–9 as artifacts only.
@@ -67,6 +75,8 @@ Prefer:
 - head and shoulders, directly forward;
 - strong left/right symmetry;
 - empty top corners and a pale clean background;
+- at least one visible blank row beyond the four reserved rows; no hair, ears, horns or
+  headwear cut by the top edge;
 - large flat stencil/screen-print regions;
 - solid eyes, brows, and mouth;
 - shoulders cut by the bottom edge.

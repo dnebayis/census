@@ -142,6 +142,9 @@ def preview(pixels) -> str:
 def analyse(pixels) -> dict:
     lit = density(pixels)
     sig = signature(pixels)
+    grid = np.asarray(pixels).reshape(GRID, GRID)
+    occupied_rows = np.flatnonzero(grid.any(axis=1))
+    headroom_rows = int(occupied_rows[0]) if occupied_rows.size else GRID_HEIGHT
     top_left, top_right = corner_density(pixels)
     stats = {
         "density": lit,
@@ -151,6 +154,7 @@ def analyse(pixels) -> dict:
         "corner_tl_pct": round(top_left * 100 / 64, 1),
         "corner_tr_pct": round(top_right * 100 / 64, 1),
         "signature": f"0x{sig:016x}",
+        "headroom_rows": headroom_rows,
         "mintable": DENSITY_MIN <= lit <= DENSITY_MAX,
     }
     warnings = []
@@ -162,6 +166,8 @@ def analyse(pixels) -> dict:
         warnings.append("asymmetric — not front facing?")
     if max(stats["corner_tl_pct"], stats["corner_tr_pct"]) > WARN_CORNER_PCT:
         warnings.append("crowded top corner — framing")
+    if stats["headroom_rows"] <= PORTRAIT_TOP:
+        warnings.append("head touches portrait crop — regenerate with more top space")
     stats["warnings"] = warnings
     return stats
 

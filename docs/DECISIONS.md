@@ -227,6 +227,20 @@ Species expands to twelve weighted values and the nine-category layout remains b
 User-facing flow hides Species, seed, threshold, RPC and ABI choices. The user's role
 and identity control the subject while assigned Species controls anatomy.
 
+### D27 — One-eye and aquatic assignments are retired; preview approval is mandatory
+
+The first v6 batch showed that Single Large Eye becomes unreadable and Aquatic Humanoid
+can produce fin-like silhouettes at 40×40. Their immutable contract indices cannot be
+removed from deployed v6 or edited on existing tokens. The official pipeline therefore
+assigns zero weight to Aquatic Humanoid, One Eye Scarred Shut, Single Large Eye and
+Eyepatch, and refuses an old unminted draft containing them.
+
+Every future mint must be bound to a palette-exact PNG that was displayed to the user.
+The bitmap-hash review records Species match, readability, complete top framing and
+explicit approval. At least one extra blank row is required after the four reserved top
+rows. Direct contract calls remain outside this pipeline guarantee; absolute vocabulary
+removal would require a new deployment.
+
 ## Active Sepolia record
 
 - Census v6: `0xEC36917c75B7e40601a0255bfc8EE4FABc61B4ab`

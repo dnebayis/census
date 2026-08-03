@@ -64,16 +64,21 @@ Trait byte order is fixed:
 8. Attire
 9. Accessory
 
-Species target weights over 5,000 assignments are Human 40%; Cat-like Humanoid,
-Grey Alien and Android 8% each; Skull-faced Figure 6%; Reptilian and Ape-like Humanoid
-7% each; Insectoid and Aquatic Humanoid 5% each; Horned Alien 4%; Crystalline Being
-and Avian Humanoid 1% each.
+Official pipeline targets over 5,000 assignments are Human 42%; Cat-like Humanoid and
+Grey Alien 9% each; Android and Reptilian Humanoid 8% each; Ape-like Humanoid 7%;
+Skull-faced Figure 6%; Insectoid Humanoid 5%; Horned Alien 4%; Crystalline Being and
+Avian Humanoid 1% each. Aquatic Humanoid has zero public assignment weight.
 
 The expanded vocabulary includes Textured Crop, Dreadlocks, Bob Cut, Shaved Geometric
 Pattern, VR Headset, Cybernetic Lens, Luminous Eyes, Wraparound Glasses, Circuit Seams,
 Ritual Markings, Facial Piercings, Focused, Curious, Stern, Pilot Cap, Antenna Crown,
 Tech Hood, Open-face Space Helmet, Techwear Jacket, Flight Suit, Ceremonial Armour,
 Utility Vest, Holographic Earpiece, Respirator, Data Cable and Neck Interface.
+
+Aquatic Humanoid, One Eye Scarred Shut, Single Large Eye and Eyepatch remain at their
+immutable v6 indices for historical decoding but have zero assignment weight and are
+rejected by the official build/mint flow. Existing tokens are not mutated. Absolute
+contract-level removal would require a new deployment.
 
 The manifest hides seed and Species selection from normal user options and has no
 reroll. The subject determines role and identity; assigned Species determines anatomy.
@@ -82,6 +87,11 @@ Skull-faced Figure maps to Skull and all other non-human species map to Alien.
 
 The contract enforces vocabulary validity and metadata immutability, not centralized
 trait assignment. Direct valid contract calls remain possible by design.
+
+The agent must display the palette-exact 40×40 PNG before mint. Review records are bound
+to the bitmap hash and require Species match, two-eye/readability confirmation, complete
+top framing and explicit user approval. The first foreground row must be below the four
+reserved rows so the head cannot touch the crop boundary.
 
 ## 6. Metadata and royalties
 

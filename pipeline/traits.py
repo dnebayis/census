@@ -7,7 +7,7 @@ onchain, keeping the visible portrait and immutable metadata aligned.
 import random
 from typing import Dict, Optional, Set, Tuple
 
-from config import TRAIT_CATEGORIES, TRAIT_SKIP, TRAIT_WEIGHTS, MAX_RETRIES
+from config import MAX_RETRIES, RETIRED_ASSIGNMENTS, TRAIT_CATEGORIES, TRAIT_SKIP, TRAIT_WEIGHTS
 
 TRAIT_KEYS = [name for name, _ in TRAIT_CATEGORIES]
 
@@ -62,6 +62,13 @@ def validate_traits(traits: Traits) -> bool:
     if set(traits) != set(TRAIT_KEYS):
         return False
     return all(traits[name] in options for name, options in TRAIT_CATEGORIES)
+
+
+def official_traits_supported(traits: Traits) -> bool:
+    """True when traits are valid and allowed in the current public art pipeline."""
+    return validate_traits(traits) and all(
+        traits[name] not in retired for name, retired in RETIRED_ASSIGNMENTS.items()
+    )
 
 
 def to_indices(traits: Traits) -> TraitIndices:

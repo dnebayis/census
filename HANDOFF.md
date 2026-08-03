@@ -25,6 +25,9 @@ adapter binding, agent ID and Identity Registry URI were matched live. V5
 - Pipeline: secure one-time seed, hidden public Species control, draft-local dense-art
   calibration, exact/coarse/24-pixel duplicate checks, Species review lock, encrypted
   Cast keystore option, exact simulation and receipt-derived mint records.
+- Art correction after the first batch: Aquatic Humanoid and all one-eye assignments
+  have zero public weight and are rejected before mint. A hash-bound exact PNG preview,
+  complete top framing, readability and explicit user approval are mandatory.
 - Art regression: Border Observer, unchanged 28.2% fixture, sparse fixture and five new
   Census-only portraits. No RAO, Basies, Flux or Gemini reference language is used.
 - Registration: static project page, address-routed registration API, reusable fallback
@@ -76,3 +79,7 @@ character → assigned immutable traits → normal portrait → calibrated one-b
 Normal users should see character, preview, public funding address and plain-language
 errors only. Contract/RPC/seed/threshold/ABI details remain agent concerns. Private key,
 mnemonic and keystore password must never be logged or pasted into chat.
+
+The deployed token 1 remains immutable and documents why these assignments were
+retired. Removing the values from the contract itself requires a future deployment;
+the official v6 pipeline does not produce or accept them again.

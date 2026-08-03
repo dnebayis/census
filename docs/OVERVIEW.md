@@ -18,8 +18,10 @@ registration origin is `https://census-registration-dnebayis.vercel.app`, the ad
 4. Drafts at or below 45% density remain byte-for-byte on threshold 128. Denser drafts
    test descending thresholds and choose the smallest change that reaches 32–42% while
    preserving Species and primary facial readability.
-5. The user reviews the final 40×40 preview. The exact transaction is simulated from the
-   same sender, then one draft uses `mint` and two to five use `mintBatch`.
+5. The agent displays the palette-exact 40×40 PNG in the conversation. The user checks
+   readability, Species anatomy and complete top framing, then explicitly approves that
+   bitmap. The exact transaction is simulated from the same sender; one draft uses
+   `mint` and two to five use `mintBatch`.
 6. Census stores bitmap plus nine trait bytes in one SSTORE2 record and registers the
    new owner-controlled identity through the adapter.
 
@@ -33,6 +35,10 @@ guards and checks-effects-interactions protect adapter calls.
 There is deliberately no EIP-712 mint authority. Direct callers can select valid trait
 indices, and carefully edited bitmaps can evade similarity checks. ERC-2981 announces a
 5% royalty but does not restrict transfers. Owner pause affects only new mints.
+
+Aquatic Humanoid and one-eye values remain decodable contract vocabulary but are retired
+from assignment and rejected by the official pipeline. Existing testnet tokens do not
+change; contract-level removal would require another deployment.
 
 ## Metadata and services
 

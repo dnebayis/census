@@ -15,7 +15,7 @@ from config import TRAIT_CATEGORIES
 from PIL import Image
 from binarize import analyse, binarize_image, pack_bitmap, resize_to_grid, threshold_binarize, unpack_bitmap
 from output import PALETTE, load_existing_traits, load_signature_owners, save_draft_manifest
-from traits import generate_traits, to_indices
+from traits import generate_traits, official_traits_supported, to_indices
 
 
 VALID_TRAITS = {
@@ -29,6 +29,16 @@ VALID_TRAITS = {
     "Attire": "Plain Collar",
     "Accessory": "None",
 }
+
+
+def approved_review(bitmap):
+    return {
+        "species_match": True,
+        "framing_ok": True,
+        "readable": True,
+        "user_approved": True,
+        "bitmap_sha256": generate._sha256(bitmap),
+    }
 
 
 class PipelineTest(unittest.TestCase):
@@ -164,6 +174,22 @@ class PipelineTest(unittest.TestCase):
         self.assertTrue(1800 <= counts["Human"] <= 2200)
         self.assertTrue(20 <= counts["Crystalline Being"] <= 90)
         self.assertTrue(15 <= vr <= 80)
+        self.assertEqual(counts["Aquatic Humanoid"], 0)
+        self.assertTrue(all(official_traits_supported(generate_traits(seed)) for seed in range(5000)))
+
+    def test_one_eye_and_aquatic_assignments_are_retired_from_public_flow(self):
+        for eyes in ("One Eye Scarred Shut", "Single Large Eye", "Eyepatch"):
+            traits = {**VALID_TRAITS, "Eyes": eyes}
+            self.assertFalse(official_traits_supported(traits))
+        self.assertFalse(
+            official_traits_supported({**VALID_TRAITS, "Species": "Aquatic Humanoid"})
+        )
+
+    def test_headroom_metric_detects_a_portrait_touching_the_crop(self):
+        pixels = [0] * 1600
+        pixels[4 * 40 + 20] = 1
+        self.assertEqual(analyse(pixels)["headroom_rows"], 4)
+        self.assertIn("head touches portrait crop — regenerate with more top space", analyse(pixels)["warnings"])
 
     def test_dense_draft_calibrates_without_changing_global_threshold(self):
         image = Image.new("L", (40, 40))
@@ -246,7 +272,7 @@ class PipelineTest(unittest.TestCase):
                 "version": generate.PIPELINE_VERSION,
                 "traits": VALID_TRAITS,
                 "traits_hex": "0x000000000000000000",
-                "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
+                "visual_review": approved_review(bitmap),
                 "build": {
                     "bitmap_format": generate.BITMAP_FORMAT,
                     "generator": "agent:test-imagegen",
@@ -255,6 +281,7 @@ class PipelineTest(unittest.TestCase):
                         "mintable": True,
                         "warnings": ["asymmetric"],
                         "signature": "0x01",
+                        "headroom_rows": 5,
                     },
                 },
             }
@@ -280,12 +307,12 @@ class PipelineTest(unittest.TestCase):
                     "subject": "a plain portrait",
                     "traits": VALID_TRAITS,
                     "traits_hex": "0x000000000000000000",
-                    "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
+                    "visual_review": approved_review(bitmap),
                     "build": {
                         "bitmap_format": generate.BITMAP_FORMAT,
                         "generator": "user:raster",
                         "bitmap_sha256": generate._sha256(bitmap),
-                        "stats": {"mintable": True, "warnings": [], "signature": "0x01"},
+                        "stats": {"mintable": True, "warnings": [], "signature": "0x01", "headroom_rows": 5},
                     },
                 },
             )
@@ -311,12 +338,12 @@ class PipelineTest(unittest.TestCase):
                     "version": 1,
                     "traits": VALID_TRAITS,
                     "traits_hex": "0x000000000000000000",
-                    "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
+                    "visual_review": approved_review(bitmap),
                     "build": {
                         "bitmap_format": "census-2bit-v1",
                         "generator": "agent:test-imagegen",
                         "bitmap_sha256": generate._sha256(bitmap),
-                        "stats": {"mintable": True, "warnings": [], "signature": "0x01"},
+                        "stats": {"mintable": True, "warnings": [], "signature": "0x01", "headroom_rows": 5},
                     },
                 },
             )
@@ -342,7 +369,7 @@ class PipelineTest(unittest.TestCase):
                         "version": generate.PIPELINE_VERSION,
                         "traits": VALID_TRAITS,
                         "traits_hex": "0x000000000000000000",
-                        "visual_review": {"species_match": True, "bitmap_sha256": generate._sha256(bitmap)},
+                        "visual_review": approved_review(bitmap),
                         "build": {
                             "bitmap_format": generate.BITMAP_FORMAT,
                             "generator": "agent:test-imagegen",
@@ -351,6 +378,7 @@ class PipelineTest(unittest.TestCase):
                                 "mintable": True,
                                 "warnings": [],
                                 "signature": "0xsame",
+                                "headroom_rows": 5,
                             },
                         },
                     },

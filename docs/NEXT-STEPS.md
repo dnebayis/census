@@ -4,6 +4,11 @@ V6 contract, calibration, five-portrait regression set, first batch and live
 registration binding are complete. Remaining work is operational rather than a new
 contract design.
 
+The official v6 pipeline has retired Aquatic Humanoid and one-eye assignments and now
+requires an exact displayed preview with explicit approval. Existing v6 tokens are
+immutable. Decide on a v7 deployment only if these values must also become impossible
+through direct contract calls; pipeline-level removal requires no redeploy.
+
 1. Re-authenticate the existing `dnebayis` Vercel project and configure a second
    Sepolia endpoint in secret-managed `SEPOLIA_RPC_URLS`. The public active v6 address
    is already pinned in both project configurations.

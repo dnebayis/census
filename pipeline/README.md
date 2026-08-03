@@ -29,6 +29,11 @@ python3 generate.py build \
   --draft tired-bureaucrat \
   --file output/tired-bureaucrat.png
 
+# The agent displays output/tired-bureaucrat.png. After explicit user approval:
+python3 generate.py review \
+  --draft tired-bureaucrat \
+  --species-match --framing-ok --readable --user-approved
+
 ETH_KEYSTORE_ACCOUNT=census python3 generate.py mint \
   --draft tired-bureaucrat
 ```
@@ -50,9 +55,10 @@ ETH_KEYSTORE_ACCOUNT=census python3 generate.py mint \
 
 For Codex and compatible IDE agents, use the repo skill at
 `skills/census-mint/SKILL.md`. It creates the prompt from the immutable draft manifest,
-uses the IDE's image generation and can open the source and 40×40 previews for visual
-review. Art metrics are informational; only effectively blank or solid output is
-rejected. Production build inputs are raster-only:
+uses the IDE's image generation and opens the source and 40×40 previews for visual
+review. The exact PNG must be displayed to and approved by the user before minting.
+Species anatomy, complete top framing and overall readability are mandatory visual
+checks. Production build inputs are raster-only:
 PNG, JPEG, or WebP. Python drawings, SVG, ASCII, and the historical rollout smoke image
 are not accepted as production art.
 
@@ -82,7 +88,9 @@ The manifest contains:
 The pipeline:
 
 - hash-checks built artifacts;
+- rejects retired official-flow assignments: Aquatic Humanoid and one-eye values;
 - checks duplicates against existing artifacts and separately inside a batch;
+- requires a current, readable, completely framed, user-approved 40×40 PNG;
 - refuses only effectively blank or solid drafts;
 - reports advisory warnings without blocking, including a >35% density readability risk;
 - derives the sender locally from an encrypted Cast keystore; `PRIVATE_KEY` remains a
@@ -109,7 +117,8 @@ The chosen mode, threshold, candidates and bitmap hash are persisted.
 
 The source portrait is aspect-preserving cover-cropped once to 40×36 and placed at y=4
 on the 40×40 canvas, leaving four empty rows above the head while keeping the shoulders
-at the bottom and both side edges. A
+at the bottom and both side edges. At least one additional blank row must remain before
+the first head pixel, preventing hair, ears, horns or headwear from being cropped. A
 default threshold of 128 produces a row-major, MSB-first, one-bit bitmap of exactly 200
 bytes. Signature and density calculations mirror `src/lib/Bitmap.sol`. The preview and
 onchain SVG use charcoal `#34343A` on warm pastel `#E9DDC7`.

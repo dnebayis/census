@@ -38,11 +38,11 @@ Assigned traits (all are mandatory):
 Identity rule: preserve the requested character's role, attitude, and personal style, but Species controls anatomy. The face and silhouette must unmistakably read as the exact assigned Species; Grey Alien must look alien, Skull-faced Figure must have a skull face, and Android must show mechanical seams.
 Scene/backdrop: pale clean background
 Style/medium: a normal high-resolution clean graphic portrait prepared for later reduction; self-contained Census visual language with no external collection reference
-Composition/framing: exact 1:1 square canvas; close-up portrait headshot, directly front-facing and centered; leave clean space above the hair; shoulders must reach the bottom and both side edges
+Composition/framing: exact 1:1 square canvas; close-up portrait headshot, directly front-facing and centered; leave generous clean space above every part of the head, ears, horns, hair, and headwear; nothing may touch or be cut by the top source edge; shoulders must reach the bottom and both side edges
 Color: high-contrast grayscale or charcoal source with a pale background, light face planes, and clearly separated dark shapes
 Constraints: strong anatomy; broad flat shapes; sparse deliberate linework; express every assigned trait with a large unmistakable shape
 Downstream: the pipeline—not the image generator—owns the single 40×40 reduction, thresholding, 1-bit packing, and Census palette
-Avoid: pixel-art source, hatching, cross-hatching, stippling, texture fill, large merged dark masses, tiny hairline detail, profile, scenery, border, text, logo, watermark
+Avoid: one-eyed anatomy, fins, pixel-art source, hatching, cross-hatching, stippling, texture fill, large merged dark masses, tiny hairline detail, profile, scenery, border, text, logo, watermark
 {correction}"""
 
 

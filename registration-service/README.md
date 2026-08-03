@@ -1,8 +1,10 @@
 # Census registration service
 
 This directory serves the read-only ERC-8004 registration API and the static Census
-project page. It has no wallet connection, transaction path, dashboard, agent runtime,
-MCP, RESTAP or payment service.
+Docs/API interface. The dark production page includes general project documentation,
+public endpoint examples, the official agent-workflow link, and a live onchain token
+preview. It has no wallet connection, transaction path, dashboard, hosted mint API or
+payment service.
 
 `GET /a/<censusAddress>/<tokenId>/registration.json` reads Sepolia, verifies the Census
 token's ERC-8217 adapter binding, and returns the current context and fully-onchain SVG
